@@ -41,6 +41,9 @@ public final class DatabaseConnectionManager implements AutoCloseable {
 
         this.dataSource = new HikariDataSource(config);
         log.info("DataSource inicializado exitosamente.");
+
+        // Hook de apagado ordenado para liberar conexiones y threads de MySQL
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close, "Shutdown-DatabasePool"));
     }
 
     /**
@@ -84,6 +87,10 @@ public final class DatabaseConnectionManager implements AutoCloseable {
             log.info("Cerrando DataSource de HikariCP...");
             dataSource.close();
             log.info("DataSource cerrado.");
+        }
+        try {
+            com.mysql.cj.jdbc.AbandonedConnectionCleanupThread.checkedShutdown();
+        } catch (Exception ignored) {
         }
     }
 }
