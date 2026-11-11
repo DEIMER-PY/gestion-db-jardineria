@@ -31,6 +31,7 @@ public class MainDashboardWindow extends JFrame {
     private PedidoView pedidoView;
     private PagoView pagoView;
     private GamaView gamaView;
+    private PatternsHubView patternsView;
 
     private JButton btnNavActive;
     private JLabel lblStatusSync;
@@ -71,6 +72,7 @@ public class MainDashboardWindow extends JFrame {
         pedidoView = new PedidoView(registry.getPedidoService(), registry.getDetallePedidoService());
         pagoView = new PagoView(registry.getPagoService());
         gamaView = new GamaView(registry.getGamaProductoService());
+        patternsView = new PatternsHubView(registry);
 
         contentPanel.add(dashboardView, "DASHBOARD");
         contentPanel.add(oficinaView, "OFICINAS");
@@ -80,6 +82,7 @@ public class MainDashboardWindow extends JFrame {
         contentPanel.add(pedidoView, "PEDIDOS");
         contentPanel.add(pagoView, "PAGOS");
         contentPanel.add(gamaView, "GAMAS");
+        contentPanel.add(patternsView, "PATRONES");
 
         add(contentPanel, BorderLayout.CENTER);
 
@@ -152,11 +155,12 @@ public class MainDashboardWindow extends JFrame {
         sidebar.setPreferredSize(new Dimension(240, 0));
         sidebar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(120, 125, 135, 80)));
 
-        JPanel menuItems = new JPanel(new GridLayout(8, 1, 0, 4));
+        JPanel menuItems = new JPanel(new GridLayout(9, 1, 0, 4));
         menuItems.setBorder(new EmptyBorder(12, 10, 12, 10));
         menuItems.setOpaque(false);
 
         JButton btnDash = createNavButton("📊 Dashboard General", "DASHBOARD");
+        JButton btnPat = createNavButton("🏛️ Patrones GoF", "PATRONES");
         JButton btnOfi = createNavButton("🏢 Oficinas", "OFICINAS");
         JButton btnEmp = createNavButton("👥 Empleados", "EMPLEADOS");
         JButton btnCli = createNavButton("🛍️ Clientes", "CLIENTES");
@@ -166,6 +170,7 @@ public class MainDashboardWindow extends JFrame {
         JButton btnGama = createNavButton("🌿 Gamas de Producto", "GAMAS");
 
         menuItems.add(btnDash);
+        menuItems.add(btnPat);
         menuItems.add(btnOfi);
         menuItems.add(btnEmp);
         menuItems.add(btnCli);
@@ -274,6 +279,7 @@ public class MainDashboardWindow extends JFrame {
     private String getHumanReadableName(String cardName) {
         return switch (cardName) {
             case "DASHBOARD" -> "Dashboard General";
+            case "PATRONES" -> "Centro de Patrones GoF (7 Patrones Estructurales)";
             case "OFICINAS" -> "Gestión de Oficinas";
             case "EMPLEADOS" -> "Gestión de Empleados";
             case "CLIENTES" -> "Gestión de Clientes";
