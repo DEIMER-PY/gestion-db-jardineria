@@ -2,6 +2,8 @@ package com.jardineria.infrastructure.adapter.in.ui.views;
 
 import com.jardineria.application.service.ProductoService;
 import com.jardineria.domain.model.Producto;
+import com.jardineria.domain.pattern.flyweight.GamaFlyweight;
+import com.jardineria.domain.pattern.flyweight.GamaFlyweightFactory;
 import com.jardineria.infrastructure.adapter.in.ui.components.ExportHelper;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
 
@@ -16,7 +18,8 @@ import java.math.RoundingMode;
 import java.util.List;
 
 /**
- * Vista de catálogo de productos, control de stock crítico, márgenes comerciales y exportación.
+ * Vista de catálogo de productos con inspector de ficha técnica lateral,
+ * control de stock crítico, márgenes comerciales y exportación CSV.
  */
 public class ProductoView extends JPanel {
     private final ProductoService service;
@@ -27,13 +30,24 @@ public class ProductoView extends JPanel {
     private JCheckBox chkBajoStock;
     private List<Producto> cachedProductos;
 
+    // Inspector lateral
+    private JLabel lblPreviewTitle;
+    private JLabel lblPreviewGama;
+    private JLabel lblPreviewStock;
+    private JLabel lblPreviewPvp;
+    private JLabel lblPreviewProv;
+    private JLabel lblPreviewMargen;
+    private JLabel lblPreviewProveedor;
+    private JLabel lblPreviewDimensiones;
+    private JProgressBar progressStock;
+
     public ProductoView(ProductoService service) {
         this.service = service;
         setLayout(new BorderLayout(12, 12));
         setBorder(new EmptyBorder(16, 16, 16, 16));
 
         initToolbar();
-        initTable();
+        initMasterDetailView();
         refreshTable();
     }
 
@@ -104,7 +118,12 @@ public class ProductoView extends JPanel {
         add(toolbar, BorderLayout.NORTH);
     }
 
-    private void initTable() {
+    private void initMasterDetailView() {
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setResizeWeight(0.72);
+        splitPane.setContinuousLayout(true);
+
+        // Tabla izquierda
         String[] cols = {"Código", "Nombre del Producto", "Gama", "Proveedor", "Nivel de Stock", "Precio de Venta", "Precio Proveedor", "Margen (€)", "Margen (%)"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
@@ -114,11 +133,179 @@ public class ProductoView extends JPanel {
         };
 
         table = UiHelper.createStyledTable(tableModel);
-
-        // Asignar renderizador de badge de stock para columna 4 (Nivel de Stock)
         table.getColumnModel().getColumn(4).setCellRenderer(UiHelper.createStockBadgeRenderer());
 
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                actualizarInspectorLateral();
+            }
+        });
+
+        splitPane.setLeftComponent(new JScrollPane(table));
+
+        // Inspector lateral derecho
+        JPanel inspector = createInspectorPanel();
+        splitPane.setRightComponent(inspector);
+
+        add(splitPane, BorderLayout.CENTER);
+    }
+
+    private JPanel createInspectorPanel() {
+        JPanel panel = new JPanel(new BorderLayout(8, 12));
+        panel.setPreferredSize(new Dimension(300, 0));
+        panel.putClientProperty("FlatLaf.style", "arc: 14");
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("🔍 Ficha Técnica del Producto"),
+                new EmptyBorder(12, 14, 12, 14)
+        ));
+
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setOpaque(false);
+
+        lblPreviewTitle = new JLabel("Seleccione un producto");
+        lblPreviewTitle.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblPreviewTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lblPreviewGama = new JLabel("Familia: --");
+        lblPreviewGama.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        lblPreviewGama.setForeground(UiHelper.COLOR_PRIMARY);
+        lblPreviewGama.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JSeparator sep1 = new JSeparator();
+        sep1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        sep1.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel lblStockHdr = new JLabel("Nivel de Inventario:");
+        lblStockHdr.setFont(new Font("SansSerif", Font.BOLD, 11));
+        lblStockHdr.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lblPreviewStock = new JLabel("-- unidades en almacén");
+        lblPreviewStock.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        lblPreviewStock.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        progressStock = new JProgressBar(0, 100);
+        progressStock.setValue(0);
+        progressStock.setStringPainted(true);
+        progressStock.setMaximumSize(new Dimension(Integer.MAX_VALUE, 18));
+        progressStock.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JSeparator sep2 = new JSeparator();
+        sep2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        sep2.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel lblFinHdr = new JLabel("Márgenes Financieros:");
+        lblFinHdr.setFont(new Font("SansSerif", Font.BOLD, 11));
+        lblFinHdr.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lblPreviewPvp = new JLabel("PVP Venta: --");
+        lblPreviewPvp.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        lblPreviewPvp.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lblPreviewProv = new JLabel("Coste Proveedor: --");
+        lblPreviewProv.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        lblPreviewProv.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lblPreviewMargen = new JLabel("Margen Bruto: --");
+        lblPreviewMargen.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lblPreviewMargen.setForeground(UiHelper.COLOR_PRIMARY);
+        lblPreviewMargen.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JSeparator sep3 = new JSeparator();
+        sep3.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        sep3.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lblPreviewProveedor = new JLabel("Proveedor: --");
+        lblPreviewProveedor.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        lblPreviewProveedor.setForeground(new Color(140, 145, 155));
+        lblPreviewProveedor.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lblPreviewDimensiones = new JLabel("Dimensiones: --");
+        lblPreviewDimensiones.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        lblPreviewDimensiones.setForeground(new Color(140, 145, 155));
+        lblPreviewDimensiones.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        content.add(lblPreviewTitle);
+        content.add(Box.createVerticalStrut(4));
+        content.add(lblPreviewGama);
+        content.add(Box.createVerticalStrut(10));
+        content.add(sep1);
+        content.add(Box.createVerticalStrut(10));
+        content.add(lblStockHdr);
+        content.add(Box.createVerticalStrut(4));
+        content.add(lblPreviewStock);
+        content.add(Box.createVerticalStrut(6));
+        content.add(progressStock);
+        content.add(Box.createVerticalStrut(10));
+        content.add(sep2);
+        content.add(Box.createVerticalStrut(10));
+        content.add(lblFinHdr);
+        content.add(Box.createVerticalStrut(4));
+        content.add(lblPreviewPvp);
+        content.add(Box.createVerticalStrut(2));
+        content.add(lblPreviewProv);
+        content.add(Box.createVerticalStrut(2));
+        content.add(lblPreviewMargen);
+        content.add(Box.createVerticalStrut(10));
+        content.add(sep3);
+        content.add(Box.createVerticalStrut(10));
+        content.add(lblPreviewProveedor);
+        content.add(Box.createVerticalStrut(2));
+        content.add(lblPreviewDimensiones);
+
+        panel.add(content, BorderLayout.NORTH);
+
+        return panel;
+    }
+
+    private void actualizarInspectorLateral() {
+        int row = table.getSelectedRow();
+        if (row < 0 || cachedProductos == null) return;
+
+        String codigo = (String) tableModel.getValueAt(row, 0);
+        Producto p = cachedProductos.stream()
+                .filter(prod -> prod.getCodigoProducto().equalsIgnoreCase(codigo))
+                .findFirst()
+                .orElse(null);
+
+        if (p == null) return;
+
+        GamaFlyweight fw = GamaFlyweightFactory.getFlyweight(p.getGama());
+        lblPreviewTitle.setText("<html><b>" + p.getNombre() + "</b> (" + p.getCodigoProducto() + ")</html>");
+        lblPreviewGama.setText(fw.emojiVisual() + " Gama: " + p.getGama());
+        lblPreviewGama.setForeground(fw.colorTema());
+
+        int stock = p.getCantidadEnStock();
+        progressStock.setValue(Math.min(100, stock));
+        if (stock <= 10) {
+            lblPreviewStock.setText("⚠️ " + stock + " uds (Stock Crítico)");
+            lblPreviewStock.setForeground(UiHelper.COLOR_DANGER);
+            progressStock.setForeground(UiHelper.COLOR_DANGER);
+        } else if (stock <= 30) {
+            lblPreviewStock.setText("⚡ " + stock + " uds (Stock Moderado)");
+            lblPreviewStock.setForeground(UiHelper.COLOR_WARNING);
+            progressStock.setForeground(UiHelper.COLOR_WARNING);
+        } else {
+            lblPreviewStock.setText("✔ " + stock + " uds (Stock Óptimo)");
+            lblPreviewStock.setForeground(UiHelper.COLOR_PRIMARY);
+            progressStock.setForeground(UiHelper.COLOR_PRIMARY);
+        }
+
+        BigDecimal pVenta = (p.getPrecioVenta() != null) ? p.getPrecioVenta() : BigDecimal.ZERO;
+        BigDecimal pProv = (p.getPrecioProveedor() != null) ? p.getPrecioProveedor() : BigDecimal.ZERO;
+        BigDecimal margenEur = pVenta.subtract(pProv);
+        String margenPorc = "0.0%";
+        if (pProv.compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal porc = margenEur.divide(pProv, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            margenPorc = String.format("%.1f%%", porc.doubleValue());
+        }
+
+        lblPreviewPvp.setText("PVP Venta: " + UiHelper.formatCurrency(pVenta));
+        lblPreviewProv.setText("Coste Proveedor: " + UiHelper.formatCurrency(pProv));
+        lblPreviewMargen.setText("Margen: +" + UiHelper.formatCurrency(margenEur) + " (" + margenPorc + ")");
+
+        lblPreviewProveedor.setText("Proveedor: " + (p.getProveedor() != null ? p.getProveedor() : "Sin asignar"));
+        lblPreviewDimensiones.setText("Dimensiones: " + (p.getDimensiones() != null ? p.getDimensiones() : "Estándar"));
     }
 
     public void refreshTable() {
