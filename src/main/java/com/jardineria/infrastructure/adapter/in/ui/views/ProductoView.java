@@ -273,7 +273,7 @@ public class ProductoView extends JPanel {
         GamaFlyweight fw = GamaFlyweightFactory.getFlyweight(p.getGama());
         lblPreviewTitle.setText("<html><b>" + p.getNombre() + "</b> (" + p.getCodigoProducto() + ")</html>");
         lblPreviewGama.setText(fw.emojiVisual() + " Gama: " + p.getGama());
-        lblPreviewGama.setForeground(fw.colorTema());
+        lblPreviewGama.setForeground(Color.decode(fw.colorHex()));
 
         int stock = p.getCantidadEnStock();
         progressStock.setValue(Math.min(100, stock));

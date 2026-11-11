@@ -111,7 +111,8 @@ public class GamaView extends JPanel {
 
                 // Crear tarjeta visual para la galería superior
                 GamaFlyweight fw = GamaFlyweightFactory.getFlyweight(g.getGama());
-                cardsPanel.add(createGamaCard(g.getGama(), fw.emojiVisual(), fw.colorTema(), g.getDescripcionTexto()));
+                Color color = Color.decode(fw.colorHex());
+                cardsPanel.add(createGamaCard(g.getGama(), fw.emojiVisual(), color, g.getDescripcionTexto()));
             }
 
             cardsPanel.revalidate();
