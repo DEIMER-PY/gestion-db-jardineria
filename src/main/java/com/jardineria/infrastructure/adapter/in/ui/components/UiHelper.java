@@ -10,14 +10,16 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Utilitarios de interfaz para estandarizar estilos, botones, renderizadores y tablas.
+ * Utilitarios de interfaz para estandarizar estilos, botones vectoriales, renderizadores, tablas y notificaciones.
+ * Libre de emojis planos y optimizado para accesibilidad visual de alta gama.
  */
 public final class UiHelper {
-    public static final Color COLOR_PRIMARY = new Color(46, 160, 67);    // Emerald Green
-    public static final Color COLOR_SECONDARY = new Color(56, 139, 253); // Royal Blue
-    public static final Color COLOR_DANGER = new Color(248, 81, 73);     // Crimson Red
-    public static final Color COLOR_WARNING = new Color(210, 153, 34);   // Amber
-    public static final Color COLOR_PURPLE = new Color(163, 113, 247);   // Purple
+    public static final Color COLOR_PRIMARY = new Color(16, 185, 129);   // Modern Emerald
+    public static final Color COLOR_SECONDARY = new Color(59, 130, 246); // Modern Blue
+    public static final Color COLOR_DANGER = new Color(239, 68, 68);     // Modern Rose / Red
+    public static final Color COLOR_WARNING = new Color(245, 158, 11);   // Modern Amber
+    public static final Color COLOR_PURPLE = new Color(139, 92, 246);    // Modern Indigo / Violet
+    public static final Color COLOR_CYAN = new Color(6, 182, 212);       // Modern Cyan
 
     private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-ES"));
 
@@ -29,12 +31,37 @@ public final class UiHelper {
         return CURRENCY_FORMAT.format(amount);
     }
 
-    public static JButton createButton(String text, String emoji, Color bg) {
-        JButton btn = new JButton((emoji != null ? emoji + " " : "") + text);
+    public static JButton createButton(String text, Color bg) {
+        JButton btn = new JButton(text);
         btn.setFont(new Font("SansSerif", Font.BOLD, 12));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setBackground(bg);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
         btn.putClientProperty("JButton.buttonType", "roundRect");
         btn.putClientProperty("Component.arc", 10);
+        btn.setBorder(new EmptyBorder(6, 14, 6, 14));
+        return btn;
+    }
+
+    // Sobrecarga de compatibilidad: Descarta emojis para mantener estética profesional limpia
+    public static JButton createButton(String text, String ignoredEmoji, Color bg) {
+        return createButton(text, bg);
+    }
+
+    public static JButton createIconButton(String text, VectorIcons.IconType iconType, Color bg) {
+        JButton btn = new JButton(text);
+        if (iconType != null) {
+            btn.setIcon(VectorIcons.get(iconType, 16, Color.WHITE));
+        }
+        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setBackground(bg);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.putClientProperty("JButton.buttonType", "roundRect");
+        btn.putClientProperty("Component.arc", 10);
+        btn.setBorder(new EmptyBorder(6, 12, 6, 12));
         return btn;
     }
 
@@ -44,7 +71,7 @@ public final class UiHelper {
         btn.setFocusPainted(false);
         btn.putClientProperty("JButton.buttonType", "roundRect");
         btn.putClientProperty("Component.arc", 10);
-        btn.setBorder(new EmptyBorder(6, 12, 6, 12));
+        btn.setBorder(new EmptyBorder(6, 14, 6, 14));
     }
 
     public static void styleSearchField(JTextField field, String placeholder) {
@@ -105,13 +132,13 @@ public final class UiHelper {
                     String str = value.toString().trim().toUpperCase();
                     if (str.contains("ENTREGADO")) {
                         lbl.setForeground(COLOR_PRIMARY);
-                        lbl.setText("● Entregado");
+                        lbl.setText("Entregado");
                     } else if (str.contains("PENDIENTE")) {
                         lbl.setForeground(COLOR_WARNING);
-                        lbl.setText("⏳ Pendiente");
+                        lbl.setText("Pendiente");
                     } else if (str.contains("RECHAZADO")) {
                         lbl.setForeground(COLOR_DANGER);
-                        lbl.setText("✖ Rechazado");
+                        lbl.setText("Rechazado");
                     }
                 }
                 return lbl;
@@ -131,14 +158,14 @@ public final class UiHelper {
                     if (stock <= 10) {
                         lbl.setForeground(COLOR_DANGER);
                         lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
-                        lbl.setText(stock + " ⚠️ CRÍTICO");
+                        lbl.setText(stock + " [CRÍTICO]");
                     } else if (stock <= 30) {
                         lbl.setForeground(COLOR_WARNING);
                         lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
-                        lbl.setText(stock + " ⚡ MEDIO");
+                        lbl.setText(stock + " [MEDIO]");
                     } else {
                         lbl.setForeground(COLOR_PRIMARY);
-                        lbl.setText(stock + " ✔ ÓPTIMO");
+                        lbl.setText(stock + " [ÓPTIMO]");
                     }
                 }
                 return lbl;
@@ -147,11 +174,15 @@ public final class UiHelper {
     }
 
     public static void showSuccess(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, message, "Operación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+        ToastNotificationManager.showSuccess("Operación Exitosa", message);
     }
 
     public static void showError(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, message, "Error", JOptionPane.ERROR_MESSAGE);
+        ToastNotificationManager.showError("Error", message);
+    }
+
+    public static void showInfo(Component parent, String message) {
+        ToastNotificationManager.showInfo("Información", message);
     }
 
     public static boolean showConfirm(Component parent, String message, String title) {

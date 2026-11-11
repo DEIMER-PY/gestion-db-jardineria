@@ -40,7 +40,10 @@ public class PatternsHubView extends JPanel {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
 
-        JLabel lblTitle = new JLabel("🏛️ Centro de Arquitectura: 7 Patrones de Diseño Estructurales GoF");
+        JLabel lblTitle = new JLabel("Centro de Arquitectura: 7 Patrones de Diseño Estructurales GoF",
+                com.jardineria.infrastructure.adapter.in.ui.components.VectorIcons.get(
+                        com.jardineria.infrastructure.adapter.in.ui.components.VectorIcons.IconType.PATTERNS, 20, UiHelper.COLOR_PRIMARY),
+                SwingConstants.LEFT);
         lblTitle.setFont(new Font("SansSerif", Font.BOLD, 18));
 
         JLabel lblSub = new JLabel("Implementación en código e infografías educativas integradas directamente en el sistema");
@@ -70,20 +73,20 @@ public class PatternsHubView extends JPanel {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-        tabbedPane.addTab("🍽️ Facade", createFacadePanel());
-        tabbedPane.addTab("🔌 Adapter", createAdapterPanel());
-        tabbedPane.addTab("🫓 Decorator", createDecoratorPanel());
-        tabbedPane.addTab("📦 Composite", createCompositePanel());
-        tabbedPane.addTab("🛡️ Proxy", createProxyPanel());
-        tabbedPane.addTab("🌲 Flyweight", createFlyweightPanel());
-        tabbedPane.addTab("🌉 Bridge", createBridgePanel());
+        tabbedPane.addTab("Facade", createFacadePanel());
+        tabbedPane.addTab("Adapter", createAdapterPanel());
+        tabbedPane.addTab("Decorator", createDecoratorPanel());
+        tabbedPane.addTab("Composite", createCompositePanel());
+        tabbedPane.addTab("Proxy", createProxyPanel());
+        tabbedPane.addTab("Flyweight", createFlyweightPanel());
+        tabbedPane.addTab("Bridge", createBridgePanel());
 
         split.setLeftComponent(tabbedPane);
 
         // Panel Derecho: Consola de Salida en Vivo
         JPanel consolePanel = new JPanel(new BorderLayout(0, 6));
         consolePanel.setOpaque(false);
-        consolePanel.setBorder(BorderFactory.createTitledBorder("📟 Consola de Ejecución en Vivo"));
+        consolePanel.setBorder(BorderFactory.createTitledBorder("Consola de Ejecución en Vivo"));
 
         txtConsole = new JTextArea();
         txtConsole.setEditable(false);
@@ -93,7 +96,7 @@ public class PatternsHubView extends JPanel {
         txtConsole.setMargin(new Insets(10, 10, 10, 10));
         txtConsole.setText("Bienvenido al Centro de Patrones de Diseño GoF.\nSeleccione cualquier patrón a la izquierda y presione 'Ejecutar Demostración' para ver el flujo en tiempo real.\n\n");
 
-        JButton btnClear = UiHelper.createButton("Limpiar Consola", "🧹", Color.DARK_GRAY);
+        JButton btnClear = UiHelper.createButton("Limpiar Consola", Color.DARK_GRAY);
         btnClear.addActionListener(e -> txtConsole.setText(""));
 
         consolePanel.add(new JScrollPane(txtConsole), BorderLayout.CENTER);
@@ -197,7 +200,7 @@ public class PatternsHubView extends JPanel {
         JLabel lblTitle = new JLabel(title);
         lblTitle.setFont(new Font("SansSerif", Font.BOLD, 15));
 
-        JLabel lblSub = new JLabel("💡 " + subtitle);
+        JLabel lblSub = new JLabel(subtitle);
         lblSub.setFont(new Font("SansSerif", Font.ITALIC, 11));
         lblSub.setForeground(UiHelper.COLOR_PRIMARY);
 
@@ -222,7 +225,7 @@ public class PatternsHubView extends JPanel {
 
     private void runFacadeDemo() {
         logToConsole("==================================================");
-        logToConsole("🚀 EJECUTANDO DEMOSTRACIÓN: PATRÓN FACADE");
+        logToConsole("[DEMOSTRACIÓN EN VIVO] PATRÓN ESTRUCTURAL: FACADE");
         logToConsole("==================================================");
         try {
             JardineriaBusinessFacade facade = registry.getBusinessFacade();
@@ -259,7 +262,7 @@ public class PatternsHubView extends JPanel {
 
     private void runAdapterDemo() {
         logToConsole("==================================================");
-        logToConsole("🔌 EJECUTANDO DEMOSTRACIÓN: PATRÓN ADAPTER");
+        logToConsole("[DEMOSTRACIÓN EN VIVO] PATRÓN ADAPTER");
         logToConsole("==================================================");
         try {
             PayPalAdapter payPalAdapter = new PayPalAdapter(null);
@@ -275,15 +278,15 @@ public class PatternsHubView extends JPanel {
             logToConsole("   - Cargo en micro-unidades traducido al dominio.");
             logToConsole("   - ID Generado: " + pagoStripe.getIdTransaccion());
             logToConsole("   - Importe: " + UiHelper.formatCurrency(pagoStripe.getTotal()));
-            logToConsole("✔ Ambas pasarelas interoperan sin modificar el dominio.");
+            logToConsole("[OK] Ambas pasarelas interoperan sin modificar el dominio.");
         } catch (Exception e) {
-            logToConsole("❌ Error en demo Adapter: " + e.getMessage());
+            logToConsole("[ERROR] Error en demo Adapter: " + e.getMessage());
         }
     }
 
     private void runDecoratorDemo() {
         logToConsole("==================================================");
-        logToConsole("🫓 EJECUTANDO DEMOSTRACIÓN: PATRÓN DECORATOR");
+        logToConsole("[DEMOSTRACIÓN EN VIVO] PATRÓN DECORATOR");
         logToConsole("==================================================");
         PriceCalculator calc = new BasePriceCalculator();
         calc = new BulkDiscountDecorator(calc);
@@ -304,7 +307,7 @@ public class PatternsHubView extends JPanel {
 
     private void runCompositeDemo() {
         logToConsole("==================================================");
-        logToConsole("📦 EJECUTANDO DEMOSTRACIÓN: PATRÓN COMPOSITE");
+        logToConsole("[DEMOSTRACIÓN EN VIVO] PATRÓN COMPOSITE");
         logToConsole("==================================================");
         try {
             var p1 = registry.getProductoService().listarTodos().stream().findFirst().orElse(null);
@@ -321,15 +324,15 @@ public class PatternsHubView extends JPanel {
             kitJardin.renderEstructura(sb, "");
             logToConsole("Estructura de Componente Compuesto renderizada:");
             logToConsole(sb.toString());
-            logToConsole("✔ El cliente trata de forma idéntica a un producto individual o a un lote compuesto.");
+            logToConsole("[OK] El cliente trata de forma idéntica a un producto individual o a un lote compuesto.");
         } catch (Exception e) {
-            logToConsole("❌ Error: " + e.getMessage());
+            logToConsole("[ERROR] Error: " + e.getMessage());
         }
     }
 
     private void runProxyDemo() {
         logToConsole("==================================================");
-        logToConsole("🛡️ EJECUTANDO DEMOSTRACIÓN: PATRÓN PROXY");
+        logToConsole("[DEMOSTRACIÓN EN VIVO] PATRÓN PROXY");
         logToConsole("==================================================");
         try {
             CachedProductLookupProxy proxy = registry.getCachedProductProxy();
@@ -355,13 +358,13 @@ public class PatternsHubView extends JPanel {
             lblProxyStats.setText(String.format("Proxy Cache: %d Hits | %d Misses (%.1f%%)",
                     proxy.getCacheHits(), proxy.getCacheMisses(), proxy.getHitRatio()));
         } catch (Exception e) {
-            logToConsole("❌ Error: " + e.getMessage());
+            logToConsole("[ERROR] Error: " + e.getMessage());
         }
     }
 
     private void runFlyweightDemo() {
         logToConsole("==================================================");
-        logToConsole("🌲 EJECUTANDO DEMOSTRACIÓN: PATRÓN FLYWEIGHT");
+        logToConsole("[DEMOSTRACIÓN EN VIVO] PATRÓN FLYWEIGHT");
         logToConsole("==================================================");
         GamaFlyweight f1 = GamaFlyweightFactory.getFlyweight("Aromáticas");
         GamaFlyweight f2 = GamaFlyweightFactory.getFlyweight("aromáticas");
@@ -369,14 +372,14 @@ public class PatternsHubView extends JPanel {
 
         logToConsole("Instancia f1 (Aromáticas): " + System.identityHashCode(f1));
         logToConsole("Instancia f2 (aromáticas): " + System.identityHashCode(f2));
-        logToConsole("¿Son la misma referencia física en RAM?: " + (f1 == f2 ? "✔ SÍ (Flyweight compartido)" : "NO"));
+        logToConsole("¿Son la misma referencia física en RAM?: " + (f1 == f2 ? "[OK] SÍ (Flyweight compartido)" : "NO"));
         logToConsole("Instancia f3 (Herramientas): " + System.identityHashCode(f3));
         logToConsole("Total de Flyweights compartidos en el pool: " + GamaFlyweightFactory.getFlyweightsCount());
     }
 
     private void runBridgeDemo() {
         logToConsole("==================================================");
-        logToConsole("🌉 EJECUTANDO DEMOSTRACIÓN: PATRÓN BRIDGE");
+        logToConsole("[DEMOSTRACIÓN EN VIVO] PATRÓN BRIDGE");
         logToConsole("==================================================");
         List<String> columnas = List.of("Código Pedido", "Estado", "Cliente", "Importe");
         List<List<String>> filas = List.of(

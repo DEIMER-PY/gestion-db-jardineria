@@ -67,7 +67,7 @@ public class ProductoView extends JPanel {
         chkBajoStock.addActionListener(e -> filtrarEnTiempoReal());
         filterPanel.add(chkBajoStock);
 
-        filterPanel.add(new JLabel("🔍 Buscar:"));
+        filterPanel.add(new JLabel("Buscar:"));
         txtSearch = new JTextField(12);
         UiHelper.styleSearchField(txtSearch, "Nombre o código...");
         txtSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -97,13 +97,13 @@ public class ProductoView extends JPanel {
         JButton btnEdit = UiHelper.createButton("Editar", "✏️", UiHelper.COLOR_SECONDARY);
         btnEdit.addActionListener(e -> editarSeleccionado());
 
-        JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
+        JButton btnDelete = UiHelper.createButton("Eliminar", "", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionado());
 
-        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "", UiHelper.COLOR_PURPLE);
         btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "catalogo_productos"));
 
-        JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
+        JButton btnRefresh = UiHelper.createButton("Refrescar", "", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
@@ -155,7 +155,7 @@ public class ProductoView extends JPanel {
         panel.setPreferredSize(new Dimension(300, 0));
         panel.putClientProperty("FlatLaf.style", "arc: 14");
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("🔍 Ficha Técnica del Producto"),
+                BorderFactory.createTitledBorder("Ficha Técnica del Producto"),
                 new EmptyBorder(12, 14, 12, 14)
         ));
 
@@ -433,7 +433,7 @@ public class ProductoView extends JPanel {
         form.add(txtPrecioProv);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Guardar Producto", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Guardar Producto", "", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {

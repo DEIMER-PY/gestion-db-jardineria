@@ -38,7 +38,7 @@ public class GamaView extends JPanel {
         JPanel toolbar = new JPanel(new BorderLayout(8, 8));
         toolbar.setOpaque(false);
 
-        JLabel lblTitle = new JLabel("🌿 Catálogo de Familias y Gamas de Productos (Galería Visual & CRUD)");
+        JLabel lblTitle = new JLabel("Catálogo de Familias y Gamas de Productos (Galería Visual & CRUD)");
         lblTitle.setFont(new Font("SansSerif", Font.BOLD, 15));
 
         JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
@@ -50,13 +50,13 @@ public class GamaView extends JPanel {
         JButton btnEdit = UiHelper.createButton("Editar", "✏️", UiHelper.COLOR_SECONDARY);
         btnEdit.addActionListener(e -> editarSeleccionada());
 
-        JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
+        JButton btnDelete = UiHelper.createButton("Eliminar", "", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionada());
 
-        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "", UiHelper.COLOR_PURPLE);
         btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "gamas_productos"));
 
-        JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
+        JButton btnRefresh = UiHelper.createButton("Refrescar", "", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
@@ -227,7 +227,7 @@ public class GamaView extends JPanel {
         form.add(txtImg);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Guardar Gama", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Guardar Gama", "", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {

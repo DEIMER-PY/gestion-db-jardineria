@@ -46,7 +46,7 @@ public class EmpleadoView extends JPanel {
         cbFilter.addActionListener(e -> filtrarEnTiempoReal());
         filterPanel.add(cbFilter);
 
-        filterPanel.add(new JLabel("🔍 Buscar:"));
+        filterPanel.add(new JLabel("Buscar:"));
         txtSearch = new JTextField(14);
         UiHelper.styleSearchField(txtSearch, "Nombre, puesto o correo...");
         txtSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -76,13 +76,13 @@ public class EmpleadoView extends JPanel {
         JButton btnEdit = UiHelper.createButton("Editar", "✏️", UiHelper.COLOR_SECONDARY);
         btnEdit.addActionListener(e -> editarSeleccionado());
 
-        JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
+        JButton btnDelete = UiHelper.createButton("Eliminar", "", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionado());
 
-        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "", UiHelper.COLOR_PURPLE);
         btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "empleados_jardineria"));
 
-        JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
+        JButton btnRefresh = UiHelper.createButton("Refrescar", "", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
@@ -232,7 +232,7 @@ public class EmpleadoView extends JPanel {
         form.add(txtPuesto);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Guardar Empleado", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Guardar Empleado", "", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {

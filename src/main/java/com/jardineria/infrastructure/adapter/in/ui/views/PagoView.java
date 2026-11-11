@@ -50,7 +50,7 @@ public class PagoView extends JPanel {
         cbFormaPago.addActionListener(e -> filtrarEnTiempoReal());
         filterPanel.add(cbFormaPago);
 
-        filterPanel.add(new JLabel("🔍 Buscar:"));
+        filterPanel.add(new JLabel("Buscar:"));
         txtSearch = new JTextField(12);
         UiHelper.styleSearchField(txtSearch, "Cliente o transacción...");
         txtSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -71,7 +71,7 @@ public class PagoView extends JPanel {
         });
         filterPanel.add(txtSearch);
 
-        lblTotalIngresos = new JLabel("💰 Total Recaudado: 0,00 €");
+        lblTotalIngresos = new JLabel("Total Recaudado: 0,00 €");
         lblTotalIngresos.setFont(new Font("SansSerif", Font.BOLD, 13));
         lblTotalIngresos.setForeground(UiHelper.COLOR_PRIMARY);
         filterPanel.add(Box.createHorizontalStrut(12));
@@ -83,13 +83,13 @@ public class PagoView extends JPanel {
         JButton btnNew = UiHelper.createButton("Registrar Pago", "➕", UiHelper.COLOR_PRIMARY);
         btnNew.addActionListener(e -> mostrarDialogoNuevoPago());
 
-        JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
+        JButton btnDelete = UiHelper.createButton("Eliminar", "", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionado());
 
-        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "", UiHelper.COLOR_PURPLE);
         btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "pagos_jardineria"));
 
-        JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
+        JButton btnRefresh = UiHelper.createButton("Refrescar", "", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
@@ -121,7 +121,7 @@ public class PagoView extends JPanel {
             cachedPagos = service.listarTodos();
             filtrarEnTiempoReal();
             BigDecimal total = service.calcularTotalIngresos();
-            lblTotalIngresos.setText("💰 Total Recaudado: " + UiHelper.formatCurrency(total));
+            lblTotalIngresos.setText("Total Recaudado: " + UiHelper.formatCurrency(total));
         } catch (Exception e) {
             UiHelper.showError(this, "Error al listar pagos: " + e.getMessage());
         }
@@ -201,7 +201,7 @@ public class PagoView extends JPanel {
         form.add(txtTotal);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Registrar Pago", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Registrar Pago", "", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {
