@@ -2,6 +2,7 @@ package com.jardineria.infrastructure.adapter.in.ui.views;
 
 import com.jardineria.application.service.GamaProductoService;
 import com.jardineria.domain.model.GamaProducto;
+import com.jardineria.infrastructure.adapter.in.ui.components.ExportHelper;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * Vista de administración para Gamas o Familias de Productos.
+ * Vista de administración para Gamas o Familias de Productos con exportación CSV.
  */
 public class GamaView extends JPanel {
     private final GamaProductoService service;
@@ -47,12 +48,16 @@ public class GamaView extends JPanel {
         JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionada());
 
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "gamas_productos"));
+
         JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
         actionsPanel.add(btnEdit);
         actionsPanel.add(btnDelete);
+        actionsPanel.add(btnExport);
         actionsPanel.add(btnRefresh);
 
         toolbar.add(lblTitle, BorderLayout.WEST);
@@ -62,7 +67,7 @@ public class GamaView extends JPanel {
     }
 
     private void initTable() {
-        String[] cols = {"Nombre Gama", "Descripción de la Familia", "Imagen de Referencia"};
+        String[] cols = {"Nombre de la Gama", "Descripción Detallada", "Referencia Visual / Imagen"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -82,7 +87,7 @@ public class GamaView extends JPanel {
                 tableModel.addRow(new Object[]{
                         g.getGama(),
                         g.getDescripcionTexto() != null ? g.getDescripcionTexto() : "",
-                        g.getImagen() != null ? g.getImagen() : ""
+                        g.getImagen() != null ? g.getImagen() : "Sin imagen asignada"
                 });
             }
         } catch (Exception e) {
@@ -112,10 +117,10 @@ public class GamaView extends JPanel {
             return;
         }
         String gama = (String) tableModel.getValueAt(row, 0);
-        if (UiHelper.showConfirm(this, "¿Eliminar gama '" + gama + "'?", "Confirmar")) {
+        if (UiHelper.showConfirm(this, "¿Está seguro de eliminar la gama '" + gama + "'?", "Confirmar Eliminación")) {
             try {
                 service.eliminarGama(gama);
-                UiHelper.showSuccess(this, "Gama eliminada");
+                UiHelper.showSuccess(this, "Gama eliminada exitosamente");
                 refreshTable();
             } catch (Exception e) {
                 UiHelper.showError(this, "Error: " + e.getMessage());
@@ -126,7 +131,7 @@ public class GamaView extends JPanel {
     private void mostrarDialogoFormulario(GamaProducto gEdit) {
         boolean esEdicion = (gEdit != null);
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-                esEdicion ? "Editar Gama" : "Nueva Gama", true);
+                esEdicion ? "Editar Gama" : "Registrar Nueva Gama", true);
         dialog.setLayout(new BorderLayout(10, 10));
 
         JPanel form = new JPanel(new GridLayout(3, 2, 8, 8));
@@ -137,15 +142,15 @@ public class GamaView extends JPanel {
         JTextField txtDesc = new JTextField(esEdicion && gEdit.getDescripcionTexto() != null ? gEdit.getDescripcionTexto() : "");
         JTextField txtImg = new JTextField(esEdicion && gEdit.getImagen() != null ? gEdit.getImagen() : "");
 
-        form.add(new JLabel("Nombre Gama:"));
+        form.add(new JLabel("Nombre de la Gama:"));
         form.add(txtGama);
-        form.add(new JLabel("Descripción:"));
+        form.add(new JLabel("Descripción de la Familia:"));
         form.add(txtDesc);
-        form.add(new JLabel("Imagen (URL/Ruta):"));
+        form.add(new JLabel("Imagen o URL de Referencia:"));
         form.add(txtImg);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Guardar", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Guardar Gama", "💾", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {
@@ -156,7 +161,7 @@ public class GamaView extends JPanel {
                 } else {
                     service.crearGama(g);
                 }
-                UiHelper.showSuccess(dialog, "Gama guardada con éxito");
+                UiHelper.showSuccess(dialog, "Gama guardada exitosamente");
                 dialog.dispose();
                 refreshTable();
             } catch (Exception ex) {

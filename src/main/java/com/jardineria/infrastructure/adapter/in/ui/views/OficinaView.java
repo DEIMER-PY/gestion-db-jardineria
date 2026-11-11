@@ -2,22 +2,26 @@ package com.jardineria.infrastructure.adapter.in.ui.views;
 
 import com.jardineria.application.service.OficinaService;
 import com.jardineria.domain.model.Oficina;
+import com.jardineria.infrastructure.adapter.in.ui.components.ExportHelper;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
 /**
- * Vista de administración y CRUD para Oficinas.
+ * Vista de administración y CRUD para Oficinas con búsqueda en tiempo real y exportación CSV.
  */
 public class OficinaView extends JPanel {
     private final OficinaService service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField txtSearch;
+    private List<Oficina> cachedOficinas;
 
     public OficinaView(OficinaService service) {
         this.service = service;
@@ -36,23 +40,29 @@ public class OficinaView extends JPanel {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         searchPanel.setOpaque(false);
 
-        JLabel lblSearch = new JLabel("🔍 Filtrar por País/Ciudad:");
+        JLabel lblSearch = new JLabel("🔍 Buscar oficina:");
         lblSearch.setFont(new Font("SansSerif", Font.BOLD, 12));
-        txtSearch = new JTextField(15);
+        txtSearch = new JTextField(18);
+        UiHelper.styleSearchField(txtSearch, "País, ciudad o código...");
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
 
-        JButton btnSearch = UiHelper.createButton("Filtrar", null, UiHelper.COLOR_SECONDARY);
-        btnSearch.addActionListener(e -> filtrar());
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
 
-        JButton btnClear = UiHelper.createButton("Limpiar", null, Color.GRAY);
-        btnClear.addActionListener(e -> {
-            txtSearch.setText("");
-            refreshTable();
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
         });
 
         searchPanel.add(lblSearch);
         searchPanel.add(txtSearch);
-        searchPanel.add(btnSearch);
-        searchPanel.add(btnClear);
 
         JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actionsPanel.setOpaque(false);
@@ -66,12 +76,16 @@ public class OficinaView extends JPanel {
         JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionada());
 
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "oficinas_jardineria"));
+
         JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
         actionsPanel.add(btnEdit);
         actionsPanel.add(btnDelete);
+        actionsPanel.add(btnExport);
         actionsPanel.add(btnRefresh);
 
         toolbar.add(searchPanel, BorderLayout.WEST);
@@ -81,7 +95,7 @@ public class OficinaView extends JPanel {
     }
 
     private void initTable() {
-        String[] cols = {"Código", "Ciudad", "País", "Región", "Cód. Postal", "Teléfono", "Dirección 1", "Dirección 2"};
+        String[] cols = {"Código", "Ciudad", "País", "Región", "Cód. Postal", "Teléfono", "Dirección Principal", "Dirección Adicional"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -95,9 +109,24 @@ public class OficinaView extends JPanel {
 
     public void refreshTable() {
         try {
-            tableModel.setRowCount(0);
-            List<Oficina> list = service.listarTodas();
-            for (Oficina o : list) {
+            cachedOficinas = service.listarTodas();
+            filtrarEnTiempoReal();
+        } catch (Exception e) {
+            UiHelper.showError(this, "Error al listar oficinas: " + e.getMessage());
+        }
+    }
+
+    private void filtrarEnTiempoReal() {
+        if (cachedOficinas == null) return;
+        String query = txtSearch.getText().trim().toLowerCase();
+
+        tableModel.setRowCount(0);
+        for (Oficina o : cachedOficinas) {
+            String cod = o.getCodigoOficina().toLowerCase();
+            String ciu = o.getCiudad().toLowerCase();
+            String pai = o.getPais().toLowerCase();
+
+            if (query.isEmpty() || cod.contains(query) || ciu.contains(query) || pai.contains(query)) {
                 tableModel.addRow(new Object[]{
                         o.getCodigoOficina(),
                         o.getCiudad(),
@@ -109,39 +138,13 @@ public class OficinaView extends JPanel {
                         o.getLineaDireccion2() != null ? o.getLineaDireccion2() : ""
                 });
             }
-        } catch (Exception e) {
-            UiHelper.showError(this, "Error al listar oficinas: " + e.getMessage());
-        }
-    }
-
-    private void filtrar() {
-        String texto = txtSearch.getText().trim();
-        if (texto.isEmpty()) {
-            refreshTable();
-            return;
-        }
-        try {
-            tableModel.setRowCount(0);
-            List<Oficina> list = service.buscarPorPais(texto);
-            if (list.isEmpty()) {
-                list = service.buscarPorCiudad(texto);
-            }
-            for (Oficina o : list) {
-                tableModel.addRow(new Object[]{
-                        o.getCodigoOficina(), o.getCiudad(), o.getPais(),
-                        o.getRegion(), o.getCodigoPostal(), o.getTelefono(),
-                        o.getLineaDireccion1(), o.getLineaDireccion2()
-                });
-            }
-        } catch (Exception e) {
-            UiHelper.showError(this, "Error al filtrar oficinas: " + e.getMessage());
         }
     }
 
     private void editarSeleccionada() {
         int row = table.getSelectedRow();
         if (row < 0) {
-            UiHelper.showError(this, "Por favor seleccione una oficina de la tabla");
+            UiHelper.showError(this, "Por favor seleccione una oficina de la tabla para editar");
             return;
         }
         String id = (String) tableModel.getValueAt(row, 0);
@@ -149,7 +152,7 @@ public class OficinaView extends JPanel {
             Oficina oficina = service.obtenerPorId(id);
             mostrarDialogoFormulario(oficina);
         } catch (Exception e) {
-            UiHelper.showError(this, "Error al cargar oficina: " + e.getMessage());
+            UiHelper.showError(this, "Error al cargar datos de la oficina: " + e.getMessage());
         }
     }
 
@@ -160,7 +163,7 @@ public class OficinaView extends JPanel {
             return;
         }
         String id = (String) tableModel.getValueAt(row, 0);
-        if (UiHelper.showConfirm(this, "¿Está seguro de eliminar la oficina " + id + "?", "Confirmar Eliminación")) {
+        if (UiHelper.showConfirm(this, "¿Está seguro de eliminar la oficina con código " + id + "?", "Confirmar Eliminación")) {
             try {
                 service.eliminarOficina(id);
                 UiHelper.showSuccess(this, "Oficina eliminada correctamente");
@@ -174,7 +177,7 @@ public class OficinaView extends JPanel {
     private void mostrarDialogoFormulario(Oficina oficinaEdit) {
         boolean esEdicion = (oficinaEdit != null);
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-                esEdicion ? "Editar Oficina" : "Nueva Oficina", true);
+                esEdicion ? "Editar Oficina" : "Registrar Nueva Oficina", true);
         dialog.setLayout(new BorderLayout(10, 10));
 
         JPanel form = new JPanel(new GridLayout(8, 2, 8, 8));
@@ -190,25 +193,25 @@ public class OficinaView extends JPanel {
         JTextField txtDir1 = new JTextField(esEdicion ? oficinaEdit.getLineaDireccion1() : "");
         JTextField txtDir2 = new JTextField(esEdicion && oficinaEdit.getLineaDireccion2() != null ? oficinaEdit.getLineaDireccion2() : "");
 
-        form.add(new JLabel("Código Oficina:"));
+        form.add(new JLabel("Código de Oficina:"));
         form.add(txtCodigo);
         form.add(new JLabel("Ciudad:"));
         form.add(txtCiudad);
         form.add(new JLabel("País:"));
         form.add(txtPais);
-        form.add(new JLabel("Región:"));
+        form.add(new JLabel("Región / Comunidad:"));
         form.add(txtRegion);
         form.add(new JLabel("Código Postal:"));
         form.add(txtCp);
         form.add(new JLabel("Teléfono:"));
         form.add(txtTel);
-        form.add(new JLabel("Línea Dirección 1:"));
+        form.add(new JLabel("Dirección Principal (Línea 1):"));
         form.add(txtDir1);
-        form.add(new JLabel("Línea Dirección 2:"));
+        form.add(new JLabel("Dirección Adicional (Línea 2):"));
         form.add(txtDir2);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Guardar", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Guardar Oficina", "💾", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {
