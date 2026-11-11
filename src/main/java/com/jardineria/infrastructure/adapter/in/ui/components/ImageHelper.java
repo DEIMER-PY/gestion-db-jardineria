@@ -70,7 +70,7 @@ public final class ImageHelper {
         JLabel lbl = new JLabel();
         lbl.setHorizontalAlignment(SwingConstants.CENTER);
         lbl.setPreferredSize(new Dimension(w, h));
-        lbl.putClientProperty("FlatLaf.style", "arc: 12");
+        lbl.setBorder(BorderFactory.createLineBorder(new Color(100, 110, 125, 60), 1, true));
 
         if (icon != null) {
             lbl.setIcon(icon);
