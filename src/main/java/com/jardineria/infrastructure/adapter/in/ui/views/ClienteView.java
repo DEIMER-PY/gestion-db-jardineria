@@ -41,7 +41,7 @@ public class ClienteView extends JPanel {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         searchPanel.setOpaque(false);
 
-        JLabel lblSearch = new JLabel("🔍 Buscar cliente:");
+        JLabel lblSearch = new JLabel("Buscar cliente:");
         lblSearch.setFont(new Font("SansSerif", Font.BOLD, 12));
         txtSearch = new JTextField(18);
         UiHelper.styleSearchField(txtSearch, "Nombre, contacto, ciudad o país...");
@@ -74,13 +74,13 @@ public class ClienteView extends JPanel {
         JButton btnEdit = UiHelper.createButton("Editar", "✏️", UiHelper.COLOR_SECONDARY);
         btnEdit.addActionListener(e -> editarSeleccionado());
 
-        JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
+        JButton btnDelete = UiHelper.createButton("Eliminar", "", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionado());
 
-        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "", UiHelper.COLOR_PURPLE);
         btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "clientes_jardineria"));
 
-        JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
+        JButton btnRefresh = UiHelper.createButton("Refrescar", "", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
@@ -215,7 +215,7 @@ public class ClienteView extends JPanel {
         form.add(txtLimite);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Guardar Cliente", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Guardar Cliente", "", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {

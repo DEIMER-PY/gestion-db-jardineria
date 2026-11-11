@@ -59,7 +59,7 @@ public class PedidoView extends JPanel {
         cbEstadoFilter.addActionListener(e -> filtrarEnTiempoReal());
         filterPanel.add(cbEstadoFilter);
 
-        filterPanel.add(new JLabel("🔍 Buscar:"));
+        filterPanel.add(new JLabel("Buscar:"));
         txtSearch = new JTextField(12);
         UiHelper.styleSearchField(txtSearch, "Código o cliente...");
         txtSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -89,16 +89,16 @@ public class PedidoView extends JPanel {
         JButton btnEntregar = UiHelper.createButton("Marcar Entregado", "✅", UiHelper.COLOR_PRIMARY);
         btnEntregar.addActionListener(e -> cambiarEstadoSeleccionado("Entregado"));
 
-        JButton btnRechazar = UiHelper.createButton("Rechazar", "🚫", UiHelper.COLOR_DANGER);
+        JButton btnRechazar = UiHelper.createButton("Rechazar", "", UiHelper.COLOR_DANGER);
         btnRechazar.addActionListener(e -> cambiarEstadoSeleccionado("Rechazado"));
 
-        JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", Color.DARK_GRAY);
+        JButton btnDelete = UiHelper.createButton("Eliminar", "", Color.DARK_GRAY);
         btnDelete.addActionListener(e -> eliminarSeleccionado());
 
-        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "", UiHelper.COLOR_PURPLE);
         btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, ordersTable, "pedidos_jardineria"));
 
-        JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.GRAY);
+        JButton btnRefresh = UiHelper.createButton("Refrescar", "", Color.GRAY);
         btnRefresh.addActionListener(e -> refreshOrders());
 
         actionsPanel.add(btnNew);
@@ -122,7 +122,7 @@ public class PedidoView extends JPanel {
         // Panel Superior: Pedidos (Maestro)
         JPanel masterPanel = new JPanel(new BorderLayout(0, 4));
         masterPanel.setOpaque(false);
-        masterPanel.add(new JLabel("📋 Listado General de Pedidos:"), BorderLayout.NORTH);
+        masterPanel.add(new JLabel("Listado General de Pedidos:"), BorderLayout.NORTH);
 
         String[] orderCols = {"Código Pedido", "Fecha de Pedido", "Fecha Esperada", "Fecha de Entrega", "Estado Operativo", "Código de Cliente"};
         ordersTableModel = new DefaultTableModel(orderCols, 0) {
@@ -147,13 +147,13 @@ public class PedidoView extends JPanel {
 
         JPanel detailHeader = new JPanel(new BorderLayout());
         detailHeader.setOpaque(false);
-        lblDetallesTitle = new JLabel("🛒 Líneas del Pedido (Seleccione un pedido para ver los productos)");
+        lblDetallesTitle = new JLabel("Líneas del Pedido (Seleccione un pedido para ver los productos)");
         lblDetallesTitle.setFont(new Font("SansSerif", Font.BOLD, 12));
 
         JPanel detailActions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         detailActions.setOpaque(false);
 
-        JButton btnExportDetalles = UiHelper.createButton("Exportar Líneas CSV", "📥", UiHelper.COLOR_SECONDARY);
+        JButton btnExportDetalles = UiHelper.createButton("Exportar Líneas CSV", "", UiHelper.COLOR_SECONDARY);
         btnExportDetalles.addActionListener(e -> ExportHelper.exportTableToCsv(this, detailsTable, "lineas_pedido"));
 
         JButton btnAddDetail = UiHelper.createButton("Agregar Producto a Pedido", "➕", UiHelper.COLOR_PRIMARY);
@@ -229,11 +229,11 @@ public class PedidoView extends JPanel {
         int row = ordersTable.getSelectedRow();
         if (row < 0) {
             detailsTableModel.setRowCount(0);
-            lblDetallesTitle.setText("🛒 Líneas del Pedido: Ningún pedido seleccionado");
+            lblDetallesTitle.setText("Líneas del Pedido: Ningún pedido seleccionado");
             return;
         }
         Integer idPedido = (Integer) ordersTableModel.getValueAt(row, 0);
-        lblDetallesTitle.setText("🛒 Líneas del Pedido #" + idPedido + ":");
+        lblDetallesTitle.setText("Líneas del Pedido #" + idPedido + ":");
         try {
             detailsTableModel.setRowCount(0);
             List<DetallePedido> detalles = detalleService.listarPorPedido(idPedido);
@@ -248,7 +248,7 @@ public class PedidoView extends JPanel {
                         UiHelper.formatCurrency(d.getSubtotal())
                 });
             }
-            lblDetallesTitle.setText(String.format("🛒 Líneas del Pedido #%d — Total Facturado: %s (%d artículos)",
+            lblDetallesTitle.setText(String.format("Líneas del Pedido #%d — Total Facturado: %s (%d artículos)",
                     idPedido, UiHelper.formatCurrency(totalAcumulado), detalles.size()));
         } catch (Exception e) {
             UiHelper.showError(this, "Error al cargar detalles del pedido: " + e.getMessage());
@@ -314,7 +314,7 @@ public class PedidoView extends JPanel {
         form.add(cbEstado);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Crear Pedido", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Crear Pedido", "", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {

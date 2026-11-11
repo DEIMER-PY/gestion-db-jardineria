@@ -2,6 +2,7 @@ package com.jardineria.infrastructure;
 
 import com.jardineria.infrastructure.adapter.in.cli.ConsoleMenuRunner;
 import com.jardineria.infrastructure.adapter.in.ui.MainDashboardWindow;
+import com.jardineria.infrastructure.adapter.in.ui.components.ElectronModeLauncher;
 import com.jardineria.infrastructure.adapter.in.ui.components.ThemeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +10,14 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Punto de entrada principal para el Sistema de Gestión de Jardinería.
- * Permite ejecución dual:
- *  1. Interfaz Gráfica Moderna con Dashboard (por defecto en entornos con Display).
- *  2. Consola Interactiva (CLI) pasando el argumento --cli o en entornos headless.
+ * Soporta modos de ejecución múltiple:
+ *  1. Interfaz Gráfica Nativa Moderna (GUI con FlatLaf + Iconografía Vectorial).
+ *  2. Modo Aplicación de Escritorio Web (--app / --desktop-app vía Chromium/Chrome en modo ventana independiente sin barra de direcciones).
+ *  3. Consola Interactiva (--cli o en entornos sin display/headless).
  */
 public class JardineriaApplication {
     private static final Logger log = LoggerFactory.getLogger(JardineriaApplication.class);
@@ -22,12 +25,14 @@ public class JardineriaApplication {
     public static void main(String[] args) {
         log.info("Iniciando Sistema de Gestión de Jardinería...");
 
-        boolean forceCli = Arrays.asList(args).contains("--cli");
+        List<String> argList = Arrays.asList(args);
+        boolean forceCli = argList.contains("--cli");
+        boolean forceApp = argList.contains("--app") || argList.contains("--desktop-app");
         boolean isHeadless = GraphicsEnvironment.isHeadless();
 
         ServiceRegistry registry = ServiceRegistry.getInstance();
 
-        if (forceCli || isHeadless) {
+        if (forceCli || (isHeadless && !forceApp)) {
             if (isHeadless && !forceCli) {
                 log.info("Entorno gráfico no detectado (headless mode). Iniciando en modo Consola (CLI).");
             } else {
@@ -35,8 +40,13 @@ public class JardineriaApplication {
             }
             ConsoleMenuRunner cli = new ConsoleMenuRunner(registry);
             cli.run();
+        } else if (forceApp) {
+            log.info("Argumento --app / --desktop-app recibido. Lanzando Aplicación de Escritorio enriquecida...");
+            String url = (registry.getWebServer() != null) ? registry.getWebServer().getDashboardUrl() : "http://localhost:8080/dashboard";
+            ElectronModeLauncher.openElectronMode(url);
+            log.info("Aplicación de Escritorio en ejecución en {}", url);
         } else {
-            log.info("Iniciando Interfaz Gráfica Moderna (GUI Dashboard con FlatLaf)...");
+            log.info("Iniciando Interfaz Gráfica Moderna (GUI con FlatLaf y Componentes Vectoriales)...");
             ThemeManager.setupInitialTheme();
 
             SwingUtilities.invokeLater(() -> {
@@ -45,8 +55,9 @@ public class JardineriaApplication {
                     window.setVisible(true);
                     log.info("Ventana de Dashboard mostrada con éxito.");
                 } catch (Exception e) {
-                    log.error("Error al iniciar la interfaz gráfica, cambiando a consola", e);
-                    new ConsoleMenuRunner(registry).run();
+                    log.error("Error al iniciar la interfaz gráfica Swing, iniciando en modo Web App...", e);
+                    String url = (registry.getWebServer() != null) ? registry.getWebServer().getDashboardUrl() : "http://localhost:8080/dashboard";
+                    ElectronModeLauncher.openElectronMode(url);
                 }
             });
         }

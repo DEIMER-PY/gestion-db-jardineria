@@ -75,7 +75,9 @@ public final class ImageHelper {
         if (icon != null) {
             lbl.setIcon(icon);
         } else {
-            lbl.setText("🖼️ " + patternKey);
+            lbl.setIcon(VectorIcons.get(VectorIcons.IconType.PATTERNS, 20, UiHelper.COLOR_PRIMARY));
+            lbl.setText(" Esquema: " + patternKey);
+            lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
             lbl.setOpaque(true);
             lbl.setBackground(new Color(30, 41, 59));
             lbl.setForeground(Color.LIGHT_GRAY);
