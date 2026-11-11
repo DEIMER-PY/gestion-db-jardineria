@@ -75,7 +75,12 @@ public class DashboardView extends JPanel {
 
         JButton btnElectron = UiHelper.createButton("Modo Web / Electron", "🚀", UiHelper.COLOR_PURPLE);
         btnElectron.setToolTipText("Abrir panel web interactivo en Google Chrome (Modo App)");
-        btnElectron.addActionListener(e -> ElectronModeLauncher.openElectronMode("http://localhost:8080/dashboard"));
+        btnElectron.addActionListener(e -> {
+            String url = (com.jardineria.infrastructure.ServiceRegistry.getInstance().getWebServer() != null)
+                    ? com.jardineria.infrastructure.ServiceRegistry.getInstance().getWebServer().getDashboardUrl()
+                    : "http://localhost:8081/dashboard";
+            ElectronModeLauncher.openElectronMode(url);
+        });
 
         JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_SECONDARY);
         btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, ordersTable, "pedidos_recientes"));
