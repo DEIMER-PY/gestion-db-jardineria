@@ -2,22 +2,27 @@ package com.jardineria.infrastructure.adapter.in.ui.views;
 
 import com.jardineria.application.service.EmpleadoService;
 import com.jardineria.domain.model.Empleado;
+import com.jardineria.infrastructure.adapter.in.ui.components.ExportHelper;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
 /**
- * Vista de administración y CRUD para Empleados.
+ * Vista de administración y CRUD para Empleados con búsqueda en tiempo real y exportación.
  */
 public class EmpleadoView extends JPanel {
     private final EmpleadoService service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JComboBox<String> cbFilter;
+    private JTextField txtSearch;
+    private List<Empleado> cachedEmpleados;
 
     public EmpleadoView(EmpleadoService service) {
         this.service = service;
@@ -36,10 +41,31 @@ public class EmpleadoView extends JPanel {
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         filterPanel.setOpaque(false);
 
-        filterPanel.add(new JLabel("Filtro:"));
+        filterPanel.add(new JLabel("Rol / Cargo:"));
         cbFilter = new JComboBox<>(new String[]{"Todos los Empleados", "Solo Directores", "Solo Representantes de Ventas"});
-        cbFilter.addActionListener(e -> aplicarFiltro());
+        cbFilter.addActionListener(e -> filtrarEnTiempoReal());
         filterPanel.add(cbFilter);
+
+        filterPanel.add(new JLabel("🔍 Buscar:"));
+        txtSearch = new JTextField(14);
+        UiHelper.styleSearchField(txtSearch, "Nombre, puesto o correo...");
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
+        });
+        filterPanel.add(txtSearch);
 
         JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actionsPanel.setOpaque(false);
@@ -53,12 +79,16 @@ public class EmpleadoView extends JPanel {
         JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionado());
 
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "empleados_jardineria"));
+
         JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
         actionsPanel.add(btnEdit);
         actionsPanel.add(btnDelete);
+        actionsPanel.add(btnExport);
         actionsPanel.add(btnRefresh);
 
         toolbar.add(filterPanel, BorderLayout.WEST);
@@ -68,7 +98,7 @@ public class EmpleadoView extends JPanel {
     }
 
     private void initTable() {
-        String[] cols = {"Código", "Nombre", "Primer Apellido", "Segundo Apellido", "Puesto", "Ext.", "Email", "Oficina", "Cód. Jefe"};
+        String[] cols = {"Código", "Nombre", "Primer Apellido", "Segundo Apellido", "Puesto Laboral", "Extensión", "Correo Electrónico", "Oficina", "Código Jefe"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -82,53 +112,50 @@ public class EmpleadoView extends JPanel {
 
     public void refreshTable() {
         try {
-            tableModel.setRowCount(0);
-            List<Empleado> list = service.listarTodos();
-            for (Empleado emp : list) {
-                tableModel.addRow(new Object[]{
-                        emp.getCodigoEmpleado(),
-                        emp.getNombre(),
-                        emp.getApellido1(),
-                        emp.getApellido2() != null ? emp.getApellido2() : "",
-                        emp.getPuesto(),
-                        emp.getExtension(),
-                        emp.getEmail(),
-                        emp.getCodigoOficina(),
-                        emp.getCodigoJefe() != null ? emp.getCodigoJefe() : "Ninguno (Director)"
-                });
-            }
+            cachedEmpleados = service.listarTodos();
+            filtrarEnTiempoReal();
         } catch (Exception e) {
             UiHelper.showError(this, "Error al listar empleados: " + e.getMessage());
         }
     }
 
-    private void aplicarFiltro() {
-        int idx = cbFilter.getSelectedIndex();
-        try {
-            tableModel.setRowCount(0);
-            List<Empleado> list;
-            if (idx == 1) {
-                list = service.listarDirectores();
-            } else if (idx == 2) {
-                list = service.listarRepresentantesVentas();
-            } else {
-                list = service.listarTodos();
+    private void filtrarEnTiempoReal() {
+        if (cachedEmpleados == null) return;
+        int roleIdx = cbFilter.getSelectedIndex();
+        String query = txtSearch.getText().trim().toLowerCase();
+
+        tableModel.setRowCount(0);
+        for (Empleado emp : cachedEmpleados) {
+            // Filtro por rol
+            if (roleIdx == 1 && emp.getCodigoJefe() != null) {
+                continue; // Solo directores
             }
-            for (Empleado emp : list) {
-                tableModel.addRow(new Object[]{
-                        emp.getCodigoEmpleado(),
-                        emp.getNombre(),
-                        emp.getApellido1(),
-                        emp.getApellido2() != null ? emp.getApellido2() : "",
-                        emp.getPuesto(),
-                        emp.getExtension(),
-                        emp.getEmail(),
-                        emp.getCodigoOficina(),
-                        emp.getCodigoJefe() != null ? emp.getCodigoJefe() : "Ninguno"
-                });
+            if (roleIdx == 2 && (emp.getPuesto() == null || !emp.getPuesto().toLowerCase().contains("representante"))) {
+                continue; // Solo representantes
             }
-        } catch (Exception e) {
-            UiHelper.showError(this, "Error al aplicar filtro: " + e.getMessage());
+
+            // Filtro por texto
+            String full = emp.getNombreCompleto().toLowerCase();
+            String puesto = (emp.getPuesto() != null) ? emp.getPuesto().toLowerCase() : "";
+            String email = (emp.getEmail() != null) ? emp.getEmail().toLowerCase() : "";
+            String cod = String.valueOf(emp.getCodigoEmpleado());
+
+            if (!query.isEmpty() && !full.contains(query) && !puesto.contains(query) &&
+                    !email.contains(query) && !cod.contains(query)) {
+                continue;
+            }
+
+            tableModel.addRow(new Object[]{
+                    emp.getCodigoEmpleado(),
+                    emp.getNombre(),
+                    emp.getApellido1(),
+                    emp.getApellido2() != null ? emp.getApellido2() : "",
+                    emp.getPuesto(),
+                    emp.getExtension(),
+                    emp.getEmail(),
+                    emp.getCodigoOficina(),
+                    emp.getCodigoJefe() != null ? "#" + emp.getCodigoJefe() : "Director General"
+            });
         }
     }
 
@@ -154,10 +181,10 @@ public class EmpleadoView extends JPanel {
             return;
         }
         Integer id = (Integer) tableModel.getValueAt(row, 0);
-        if (UiHelper.showConfirm(this, "¿Está seguro de eliminar al empleado con código " + id + "?", "Confirmar Eliminación")) {
+        if (UiHelper.showConfirm(this, "¿Está seguro de eliminar al empleado con código #" + id + "?", "Confirmar Eliminación")) {
             try {
                 service.eliminarEmpleado(id);
-                UiHelper.showSuccess(this, "Empleado eliminado");
+                UiHelper.showSuccess(this, "Empleado eliminado exitosamente");
                 refreshTable();
             } catch (Exception e) {
                 UiHelper.showError(this, "Error al eliminar empleado: " + e.getMessage());
@@ -168,7 +195,7 @@ public class EmpleadoView extends JPanel {
     private void mostrarDialogoFormulario(Empleado empEdit) {
         boolean esEdicion = (empEdit != null);
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-                esEdicion ? "Editar Empleado" : "Nuevo Empleado", true);
+                esEdicion ? "Editar Datos del Empleado" : "Registrar Nuevo Empleado", true);
         dialog.setLayout(new BorderLayout(10, 10));
 
         JPanel form = new JPanel(new GridLayout(9, 2, 8, 8));
@@ -185,7 +212,7 @@ public class EmpleadoView extends JPanel {
         JTextField txtJefe = new JTextField(esEdicion && empEdit.getCodigoJefe() != null ? String.valueOf(empEdit.getCodigoJefe()) : "");
         JTextField txtPuesto = new JTextField(esEdicion && empEdit.getPuesto() != null ? empEdit.getPuesto() : "");
 
-        form.add(new JLabel("Código Empleado:"));
+        form.add(new JLabel("Código de Empleado:"));
         form.add(txtCodigo);
         form.add(new JLabel("Nombre:"));
         form.add(txtNombre);
@@ -197,15 +224,15 @@ public class EmpleadoView extends JPanel {
         form.add(txtExt);
         form.add(new JLabel("Correo Electrónico:"));
         form.add(txtEmail);
-        form.add(new JLabel("Código Oficina:"));
+        form.add(new JLabel("Código de Oficina:"));
         form.add(txtOficina);
-        form.add(new JLabel("Código Jefe (opcional):"));
+        form.add(new JLabel("Código Jefe Superior (opcional):"));
         form.add(txtJefe);
-        form.add(new JLabel("Puesto de Trabajo:"));
+        form.add(new JLabel("Puesto / Cargo Laboral:"));
         form.add(txtPuesto);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Guardar", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Guardar Empleado", "💾", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {

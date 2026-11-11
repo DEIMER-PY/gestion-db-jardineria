@@ -2,23 +2,27 @@ package com.jardineria.infrastructure.adapter.in.ui.views;
 
 import com.jardineria.application.service.ClienteService;
 import com.jardineria.domain.model.Cliente;
+import com.jardineria.infrastructure.adapter.in.ui.components.ExportHelper;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Vista de administración y CRUD para Clientes.
+ * Vista de administración y CRUD para Clientes con búsqueda en tiempo real y exportación.
  */
 public class ClienteView extends JPanel {
     private final ClienteService service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField txtSearch;
+    private List<Cliente> cachedClientes;
 
     public ClienteView(ClienteService service) {
         this.service = service;
@@ -37,20 +41,29 @@ public class ClienteView extends JPanel {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         searchPanel.setOpaque(false);
 
-        searchPanel.add(new JLabel("🔍 Buscar por País/Ciudad:"));
-        txtSearch = new JTextField(15);
-        JButton btnSearch = UiHelper.createButton("Filtrar", null, UiHelper.COLOR_SECONDARY);
-        btnSearch.addActionListener(e -> filtrar());
+        JLabel lblSearch = new JLabel("🔍 Buscar cliente:");
+        lblSearch.setFont(new Font("SansSerif", Font.BOLD, 12));
+        txtSearch = new JTextField(18);
+        UiHelper.styleSearchField(txtSearch, "Nombre, contacto, ciudad o país...");
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
 
-        JButton btnClear = UiHelper.createButton("Limpiar", null, Color.GRAY);
-        btnClear.addActionListener(e -> {
-            txtSearch.setText("");
-            refreshTable();
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filtrarEnTiempoReal();
+            }
         });
 
+        searchPanel.add(lblSearch);
         searchPanel.add(txtSearch);
-        searchPanel.add(btnSearch);
-        searchPanel.add(btnClear);
 
         JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actionsPanel.setOpaque(false);
@@ -64,12 +77,16 @@ public class ClienteView extends JPanel {
         JButton btnDelete = UiHelper.createButton("Eliminar", "🗑️", UiHelper.COLOR_DANGER);
         btnDelete.addActionListener(e -> eliminarSeleccionado());
 
+        JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_PURPLE);
+        btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, table, "clientes_jardineria"));
+
         JButton btnRefresh = UiHelper.createButton("Refrescar", "🔄", Color.DARK_GRAY);
         btnRefresh.addActionListener(e -> refreshTable());
 
         actionsPanel.add(btnNew);
         actionsPanel.add(btnEdit);
         actionsPanel.add(btnDelete);
+        actionsPanel.add(btnExport);
         actionsPanel.add(btnRefresh);
 
         toolbar.add(searchPanel, BorderLayout.WEST);
@@ -79,7 +96,7 @@ public class ClienteView extends JPanel {
     }
 
     private void initTable() {
-        String[] cols = {"Código", "Nombre Cliente", "Contacto", "Teléfono", "Ciudad", "País", "Límite Crédito", "Rep. Ventas"};
+        String[] cols = {"Código", "Razón Social / Nombre", "Contacto Principal", "Teléfono", "Ciudad", "País", "Límite de Crédito", "Rep. Ventas"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -93,38 +110,27 @@ public class ClienteView extends JPanel {
 
     public void refreshTable() {
         try {
-            tableModel.setRowCount(0);
-            List<Cliente> list = service.listarTodos();
-            for (Cliente c : list) {
-                tableModel.addRow(new Object[]{
-                        c.getCodigoCliente(),
-                        c.getNombreCliente(),
-                        c.getContactoCompleto(),
-                        c.getTelefono(),
-                        c.getCiudad(),
-                        c.getPais(),
-                        UiHelper.formatCurrency(c.getLimiteCredito()),
-                        c.getCodigoEmpleadoRepVentas() != null ? c.getCodigoEmpleadoRepVentas() : "Ninguno"
-                });
-            }
+            cachedClientes = service.listarTodos();
+            filtrarEnTiempoReal();
         } catch (Exception e) {
             UiHelper.showError(this, "Error al listar clientes: " + e.getMessage());
         }
     }
 
-    private void filtrar() {
-        String texto = txtSearch.getText().trim();
-        if (texto.isEmpty()) {
-            refreshTable();
-            return;
-        }
-        try {
-            tableModel.setRowCount(0);
-            List<Cliente> list = service.buscarPorPais(texto);
-            if (list.isEmpty()) {
-                list = service.buscarPorCiudad(texto);
-            }
-            for (Cliente c : list) {
+    private void filtrarEnTiempoReal() {
+        if (cachedClientes == null) return;
+        String query = txtSearch.getText().trim().toLowerCase();
+
+        tableModel.setRowCount(0);
+        for (Cliente c : cachedClientes) {
+            String nom = (c.getNombreCliente() != null) ? c.getNombreCliente().toLowerCase() : "";
+            String contacto = (c.getContactoCompleto() != null) ? c.getContactoCompleto().toLowerCase() : "";
+            String ciudad = (c.getCiudad() != null) ? c.getCiudad().toLowerCase() : "";
+            String pais = (c.getPais() != null) ? c.getPais().toLowerCase() : "";
+            String cod = String.valueOf(c.getCodigoCliente());
+
+            if (query.isEmpty() || nom.contains(query) || contacto.contains(query) ||
+                    ciudad.contains(query) || pais.contains(query) || cod.contains(query)) {
                 tableModel.addRow(new Object[]{
                         c.getCodigoCliente(),
                         c.getNombreCliente(),
@@ -133,18 +139,16 @@ public class ClienteView extends JPanel {
                         c.getCiudad(),
                         c.getPais(),
                         UiHelper.formatCurrency(c.getLimiteCredito()),
-                        c.getCodigoEmpleadoRepVentas()
+                        c.getCodigoEmpleadoRepVentas() != null ? "#" + c.getCodigoEmpleadoRepVentas() : "Sin asignar"
                 });
             }
-        } catch (Exception e) {
-            UiHelper.showError(this, "Error al filtrar clientes: " + e.getMessage());
         }
     }
 
     private void editarSeleccionado() {
         int row = table.getSelectedRow();
         if (row < 0) {
-            UiHelper.showError(this, "Seleccione un cliente de la tabla");
+            UiHelper.showError(this, "Seleccione un cliente de la tabla para editar");
             return;
         }
         Integer id = (Integer) tableModel.getValueAt(row, 0);
@@ -163,13 +167,13 @@ public class ClienteView extends JPanel {
             return;
         }
         Integer id = (Integer) tableModel.getValueAt(row, 0);
-        if (UiHelper.showConfirm(this, "¿Eliminar cliente con código " + id + "?", "Confirmar")) {
+        if (UiHelper.showConfirm(this, "¿Está seguro de eliminar al cliente con código #" + id + "?", "Confirmar Eliminación")) {
             try {
                 service.eliminarCliente(id);
-                UiHelper.showSuccess(this, "Cliente eliminado");
+                UiHelper.showSuccess(this, "Cliente eliminado exitosamente");
                 refreshTable();
             } catch (Exception e) {
-                UiHelper.showError(this, "Error: " + e.getMessage());
+                UiHelper.showError(this, "Error al eliminar cliente: " + e.getMessage());
             }
         }
     }
@@ -177,7 +181,7 @@ public class ClienteView extends JPanel {
     private void mostrarDialogoFormulario(Cliente cEdit) {
         boolean esEdicion = (cEdit != null);
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-                esEdicion ? "Editar Cliente" : "Nuevo Cliente", true);
+                esEdicion ? "Editar Datos del Cliente" : "Registrar Nuevo Cliente", true);
         dialog.setLayout(new BorderLayout(10, 10));
 
         JPanel form = new JPanel(new GridLayout(8, 2, 8, 8));
@@ -191,27 +195,27 @@ public class ClienteView extends JPanel {
         JTextField txtTel = new JTextField(esEdicion ? cEdit.getTelefono() : "");
         JTextField txtCiudad = new JTextField(esEdicion ? cEdit.getCiudad() : "");
         JTextField txtPais = new JTextField(esEdicion && cEdit.getPais() != null ? cEdit.getPais() : "España");
-        JTextField txtLimite = new JTextField(esEdicion && cEdit.getLimiteCredito() != null ? cEdit.getLimiteCredito().toString() : "5000.00");
+        JTextField txtLimite = new JTextField(esEdicion && cEdit.getLimiteCredito() != null ? cEdit.getLimiteCredito().toString() : "6000.00");
 
-        form.add(new JLabel("Código Cliente:"));
+        form.add(new JLabel("Código de Cliente:"));
         form.add(txtCodigo);
-        form.add(new JLabel("Razón Social / Nombre:"));
+        form.add(new JLabel("Razón Social / Nombre Comercial:"));
         form.add(txtNombre);
-        form.add(new JLabel("Nombre Contacto:"));
+        form.add(new JLabel("Nombre de Contacto:"));
         form.add(txtContactoNom);
-        form.add(new JLabel("Apellido Contacto:"));
+        form.add(new JLabel("Apellido de Contacto:"));
         form.add(txtContactoApe);
-        form.add(new JLabel("Teléfono:"));
+        form.add(new JLabel("Teléfono de Contacto:"));
         form.add(txtTel);
         form.add(new JLabel("Ciudad:"));
         form.add(txtCiudad);
         form.add(new JLabel("País:"));
         form.add(txtPais);
-        form.add(new JLabel("Límite de Crédito:"));
+        form.add(new JLabel("Límite de Crédito (€):"));
         form.add(txtLimite);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        JButton btnGuardar = UiHelper.createButton("Guardar", "💾", UiHelper.COLOR_PRIMARY);
+        JButton btnGuardar = UiHelper.createButton("Guardar Cliente", "💾", UiHelper.COLOR_PRIMARY);
         JButton btnCancelar = UiHelper.createButton("Cancelar", "❌", Color.GRAY);
 
         btnGuardar.addActionListener(e -> {
@@ -224,13 +228,13 @@ public class ClienteView extends JPanel {
                         txtContactoNom.getText().trim(),
                         txtContactoApe.getText().trim(),
                         txtTel.getText().trim(),
-                        txtTel.getText().trim(), // fax
+                        txtTel.getText().trim(),
                         "Dirección Principal",
                         null,
                         txtCiudad.getText().trim(),
                         null,
                         txtPais.getText().trim(),
-                        "00000",
+                        "28001",
                         null,
                         lim
                 );
@@ -239,11 +243,11 @@ public class ClienteView extends JPanel {
                 } else {
                     service.crearCliente(c);
                 }
-                UiHelper.showSuccess(dialog, "Cliente guardado con éxito");
+                UiHelper.showSuccess(dialog, "Cliente guardado exitosamente");
                 dialog.dispose();
                 refreshTable();
             } catch (Exception ex) {
-                UiHelper.showError(dialog, "Error: " + ex.getMessage());
+                UiHelper.showError(dialog, "Error de validación: " + ex.getMessage());
             }
         });
 
