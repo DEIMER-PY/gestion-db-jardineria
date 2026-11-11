@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 /**
@@ -37,15 +38,23 @@ public class JardineriaWebServer {
 
     public synchronized void start() {
         if (running) return;
-        this.port = DEFAULT_PORT;
-        try {
-            server = HttpServer.create(new InetSocketAddress(port), 0);
-        } catch (IOException e) {
+        int[] candidatePorts = {8080, 8081, 8082, 8083, 8084, 8085};
+        for (int p : candidatePorts) {
             try {
-                this.port = 8081;
-                server = HttpServer.create(new InetSocketAddress(port), 0);
-            } catch (IOException ex) {
-                log.error("No se pudo iniciar el servidor web embebido: {}", ex.getMessage());
+                server = HttpServer.create(new InetSocketAddress(p), 0);
+                this.port = p;
+                break;
+            } catch (IOException ignored) {
+            }
+        }
+
+        if (server == null) {
+            try {
+                // Fallback a cualquier puerto efímero disponible
+                server = HttpServer.create(new InetSocketAddress(0), 0);
+                this.port = server.getAddress().getPort();
+            } catch (IOException e) {
+                log.error("No se pudo iniciar el servidor web embebido: {}", e.getMessage());
                 return;
             }
         }
@@ -113,7 +122,7 @@ public class JardineriaWebServer {
                 double pPendientes = (totalPedidos > 0) ? (m.pedidosPendientes() * 100.0) / totalPedidos : 0.0;
                 double pRechazados = (totalPedidos > 0) ? (m.pedidosRechazados() * 100.0) / totalPedidos : 0.0;
 
-                String json = String.format("""
+                String json = String.format(Locale.US, """
                         {
                           "totalClientes": %d,
                           "totalPedidos": %d,
@@ -214,7 +223,7 @@ public class JardineriaWebServer {
             long misses = registry.getCachedProductProxy().getCacheMisses();
             double hitRatio = registry.getCachedProductProxy().getHitRatio();
 
-            String json = String.format("""
+            String json = String.format(Locale.US, """
                     {
                       "patterns": [
                         {"name": "Facade", "type": "Estructural", "status": "Activo", "description": "Orquestador unificado de checkout atómico transaccional."},

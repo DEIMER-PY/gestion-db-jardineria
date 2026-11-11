@@ -1,27 +1,28 @@
 package com.jardineria.domain.pattern.flyweight;
 
-import java.awt.Color;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Fábrica de Flyweights (GoF Flyweight Factory).
  * Gestiona y reutiliza la reserva de objetos GamaFlyweight compartidos.
+ *
+ * Arquitectura Hexagonal: Capa de dominio pura sin dependencias de frameworks.
  */
 public class GamaFlyweightFactory {
     private static final Map<String, GamaFlyweight> POOL = new ConcurrentHashMap<>();
 
     static {
         // Inicializar flyweights canónicos para las gamas de la base de datos
-        registrar("Aromáticas", "Plantas aromáticas culinarias y medicinales", new Color(16, 185, 129), "🌿", "aromaticas.jpg");
-        registrar("Frutales", "Árboles y arbustos de producción frutal de huerto", new Color(245, 158, 11), "🍎", "frutales.jpg");
-        registrar("Herbaceas", "Plantas herbáceas para jardín decorativo y tapizantes", new Color(59, 130, 246), "🌱", "herbaceas.jpg");
-        registrar("Herramientas", "Herramientas profesionales para poda, labranza y riego", new Color(107, 114, 128), "🛠️", "herramientas.jpg");
-        registrar("Ornamentales", "Flores vistosas y plantas de floración continua para decoración", new Color(236, 72, 153), "🌺", "ornamentales.jpg");
+        registrar("Aromáticas", "Plantas aromáticas culinarias y medicinales", "#10B981", "🌿", "aromaticas.jpg");
+        registrar("Frutales", "Árboles y arbustos de producción frutal de huerto", "#F59E0B", "🍎", "frutales.jpg");
+        registrar("Herbaceas", "Plantas herbáceas para jardín decorativo y tapizantes", "#3B82F6", "🌱", "herbaceas.jpg");
+        registrar("Herramientas", "Herramientas profesionales para poda, labranza y riego", "#6B7280", "🛠️", "herramientas.jpg");
+        registrar("Ornamentales", "Flores vistosas y plantas de floración continua para decoración", "#EC4899", "🌺", "ornamentales.jpg");
     }
 
-    private static void registrar(String gama, String desc, Color color, String emoji, String url) {
-        POOL.put(gama.toLowerCase(), new GamaFlyweight(gama, desc, color, emoji, url));
+    private static void registrar(String gama, String desc, String colorHex, String emoji, String url) {
+        POOL.put(gama.toLowerCase(), new GamaFlyweight(gama, desc, colorHex, emoji, url));
     }
 
     public static GamaFlyweight getFlyweight(String gamaName) {
@@ -34,7 +35,7 @@ public class GamaFlyweightFactory {
         if (key.contains("herbacea")) key = "herbaceas";
 
         return POOL.computeIfAbsent(key, k ->
-                new GamaFlyweight(gamaName, "Familia botánica de jardinería", new Color(79, 70, 229), "🌻", "default.jpg")
+                new GamaFlyweight(gamaName, "Familia botánica de jardinería", "#4F46E5", "🌻", "default.jpg")
         );
     }
 
