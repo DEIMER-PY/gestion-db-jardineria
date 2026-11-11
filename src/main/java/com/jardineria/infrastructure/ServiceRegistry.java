@@ -1,6 +1,8 @@
 package com.jardineria.infrastructure;
 
 import com.jardineria.application.service.*;
+import com.jardineria.domain.pattern.facade.JardineriaBusinessFacade;
+import com.jardineria.domain.pattern.proxy.CachedProductLookupProxy;
 import com.jardineria.domain.repository.*;
 import com.jardineria.infrastructure.adapter.out.persistence.jdbc.*;
 
@@ -19,6 +21,10 @@ public final class ServiceRegistry {
     private final ProductoRepository productoRepository;
     private final DetallePedidoRepository detallePedidoRepository;
     private final PagoRepository pagoRepository;
+
+    // Patrones y Proxies
+    private final CachedProductLookupProxy cachedProductProxy;
+    private final JardineriaBusinessFacade businessFacade;
 
     // Servicios
     private final OficinaService oficinaService;
@@ -42,6 +48,9 @@ public final class ServiceRegistry {
         this.detallePedidoRepository = new DetallePedidoJdbcRepository();
         this.pagoRepository = new PagoJdbcRepository();
 
+        // Patrón Proxy sobre ProductoRepository
+        this.cachedProductProxy = new CachedProductLookupProxy(productoRepository);
+
         // Inicialización de la capa de aplicación (Servicios)
         this.oficinaService = new OficinaService(oficinaRepository);
         this.empleadoService = new EmpleadoService(empleadoRepository, oficinaRepository);
@@ -55,6 +64,11 @@ public final class ServiceRegistry {
                 clienteRepository, pedidoRepository, productoRepository,
                 empleadoRepository, oficinaRepository, pagoRepository
         );
+
+        // Patrón Facade unificando los subsistemas
+        this.businessFacade = new JardineriaBusinessFacade(
+                clienteService, productoService, pedidoService, detallePedidoService, pagoService
+        );
     }
 
     public static ServiceRegistry getInstance() {
@@ -66,6 +80,14 @@ public final class ServiceRegistry {
             }
         }
         return instance;
+    }
+
+    public CachedProductLookupProxy getCachedProductProxy() {
+        return cachedProductProxy;
+    }
+
+    public JardineriaBusinessFacade getBusinessFacade() {
+        return businessFacade;
     }
 
     public OficinaService getOficinaService() {
