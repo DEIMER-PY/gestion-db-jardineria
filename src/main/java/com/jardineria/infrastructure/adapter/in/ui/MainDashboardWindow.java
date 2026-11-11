@@ -1,6 +1,7 @@
 package com.jardineria.infrastructure.adapter.in.ui;
 
 import com.jardineria.infrastructure.ServiceRegistry;
+import com.jardineria.infrastructure.adapter.in.ui.components.ElectronModeLauncher;
 import com.jardineria.infrastructure.adapter.in.ui.components.ThemeManager;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
 import com.jardineria.infrastructure.adapter.in.ui.views.*;
@@ -123,6 +124,13 @@ public class MainDashboardWindow extends JFrame {
         lblDbStatus.setFont(new Font("SansSerif", Font.BOLD, 12));
         lblDbStatus.setForeground(UiHelper.COLOR_PRIMARY);
 
+        JButton btnElectron = UiHelper.createButton("Modo Web / Electron", "🚀", UiHelper.COLOR_PURPLE);
+        btnElectron.setToolTipText("Abrir panel de control web moderno (SaaS/Electron) en http://localhost:8080/dashboard");
+        btnElectron.addActionListener(e -> {
+            String url = (registry.getWebServer() != null) ? registry.getWebServer().getDashboardUrl() : "http://localhost:8080/dashboard";
+            ElectronModeLauncher.openElectronMode(url);
+        });
+
         JButton btnTheme = UiHelper.createButton("Modo Visual", "🌓", Color.GRAY);
         btnTheme.addActionListener(e -> {
             ThemeManager.toggleTheme(this);
@@ -130,6 +138,7 @@ public class MainDashboardWindow extends JFrame {
         });
 
         rightPanel.add(lblDbStatus);
+        rightPanel.add(btnElectron);
         rightPanel.add(btnTheme);
 
         header.add(brandPanel, BorderLayout.WEST);

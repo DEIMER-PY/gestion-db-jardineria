@@ -4,6 +4,7 @@ import com.jardineria.application.service.*;
 import com.jardineria.domain.pattern.facade.JardineriaBusinessFacade;
 import com.jardineria.domain.pattern.proxy.CachedProductLookupProxy;
 import com.jardineria.domain.repository.*;
+import com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer;
 import com.jardineria.infrastructure.adapter.out.persistence.jdbc.*;
 
 /**
@@ -37,6 +38,9 @@ public final class ServiceRegistry {
     private final PagoService pagoService;
     private final DashboardService dashboardService;
 
+    // Servidor Web Embebido (Modo Web / Electron)
+    private final JardineriaWebServer webServer;
+
     private ServiceRegistry() {
         // Inicialización de adaptadores de persistencia (JDBC)
         this.oficinaRepository = new OficinaJdbcRepository();
@@ -69,6 +73,12 @@ public final class ServiceRegistry {
         this.businessFacade = new JardineriaBusinessFacade(
                 clienteService, productoService, pedidoService, detallePedidoService, pagoService
         );
+
+        // Servidor Web Embebido reactivo
+        this.webServer = new JardineriaWebServer(this);
+        this.webServer.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(webServer::stop));
     }
 
     public static ServiceRegistry getInstance() {
@@ -88,6 +98,10 @@ public final class ServiceRegistry {
 
     public JardineriaBusinessFacade getBusinessFacade() {
         return businessFacade;
+    }
+
+    public JardineriaWebServer getWebServer() {
+        return webServer;
     }
 
     public OficinaService getOficinaService() {

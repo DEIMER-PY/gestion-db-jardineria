@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌿 Jardinería Enterprise Suite — Command Center & Dashboard</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-light {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-200">
+
+  <!-- Header Superior -->
+  <header class="sticky top-0 z-50 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 text-xl">
+        🌿
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-lg font-bold text-white tracking-tight">Jardinería Enterprise Suite</h1>
+          <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            Arquitectura Hexagonal
+          </span>
+          <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            Modo Electron / SaaS
+          </span>
+        </div>
+        <p class="text-xs text-slate-400">Panel de Control Ejecutivo & Métricas de Dominio en Tiempo Real</p>
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas del Header -->
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center text-xs text-slate-400 bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-700/50">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
+        MySQL 8.0 Docker <span class="mx-1 text-slate-600">|</span> Puerto 3307
+      </div>
+
+      <button id="btnRefresh" onclick="cargarTodo()" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-sm transition active:scale-95">
+        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+        <span>Actualizar Datos</span>
+      </button>
+
+      <button onclick="toggleDarkMode()" class="p-2 text-slate-400 hover:text-white bg-slate-800/80 rounded-lg border border-slate-700 transition">
+        <i data-lucide="sun" id="themeIcon" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+    <!-- Fila 1: KPIs Ejecutivos -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <!-- Clientes -->
+      <div class="glass-card rounded-2xl p-5 hover:border-blue-500/50 transition">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Clientes Activos</span>
+          <span class="p-2 rounded-xl bg-blue-500/10 text-blue-400"><i data-lucide="users" class="w-4 h-4"></i></span>
+        </div>
+        <div id="kpiClientes" class="text-3xl font-extrabold text-white">--</div>
+        <div class="mt-2 text-xs text-emerald-400 flex items-center">
+          <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i> 100% Cobertura
+        </div>
+      </div>
+
+      <!-- Pedidos -->
+      <div class="glass-card rounded-2xl p-5 hover:border-emerald-500/50 transition">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Pedidos Totales</span>
+          <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400"><i data-lucide="package" class="w-4 h-4"></i></span>
+        </div>
+        <div id="kpiPedidos" class="text-3xl font-extrabold text-white">--</div>
+        <div id="kpiPedidosSub" class="mt-2 text-xs text-slate-400 truncate">
+          Calculando...
+        </div>
+      </div>
+
+      <!-- Ingresos -->
+      <div class="glass-card rounded-2xl p-5 hover:border-purple-500/50 transition">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Facturación</span>
+          <span class="p-2 rounded-xl bg-purple-500/10 text-purple-400"><i data-lucide="credit-card" class="w-4 h-4"></i></span>
+        </div>
+        <div id="kpiIngresos" class="text-2xl font-extrabold text-purple-400 truncate">-- €</div>
+        <div class="mt-2 text-xs text-slate-400 flex items-center">
+          <i data-lucide="check-circle" class="w-3 h-3 mr-1 text-emerald-400"></i> Pagos conciliados
+        </div>
+      </div>
+
+      <!-- Stock Crítico -->
+      <div class="glass-card rounded-2xl p-5 hover:border-rose-500/50 transition">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Stock Crítico (&lt; 10)</span>
+          <span class="p-2 rounded-xl bg-rose-500/10 text-rose-400"><i data-lucide="alert-triangle" class="w-4 h-4"></i></span>
+        </div>
+        <div id="kpiStockBajo" class="text-3xl font-extrabold text-rose-400">--</div>
+        <div class="mt-2 text-xs text-rose-400/80">
+          Requiere reposición
+        </div>
+      </div>
+
+      <!-- Empleados -->
+      <div class="glass-card rounded-2xl p-5 hover:border-amber-500/50 transition">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Personal Global</span>
+          <span class="p-2 rounded-xl bg-amber-500/10 text-amber-400"><i data-lucide="briefcase" class="w-4 h-4"></i></span>
+        </div>
+        <div id="kpiEmpleados" class="text-3xl font-extrabold text-white">--</div>
+        <div id="kpiOficinasSub" class="mt-2 text-xs text-slate-400">
+          En oficinas internacionales
+        </div>
+      </div>
+    </section>
+
+    <!-- Fila 2: Gráficos y Distribución -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Donut Chart: Distribución por Gama -->
+      <div class="glass-card rounded-2xl p-6 lg:col-span-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-bold text-white flex items-center space-x-2">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i>
+              <span>Catálogo por Familias</span>
+            </h2>
+            <span class="text-xs text-slate-400">Productos</span>
+          </div>
+          <div class="h-56 relative flex items-center justify-center">
+            <canvas id="chartGamas"></canvas>
+          </div>
+        </div>
+        <div class="pt-4 border-t border-slate-800 text-xs text-slate-400 flex justify-between">
+          <span>Aromáticas, Frutales, Herbáceas, etc.</span>
+          <span class="text-emerald-400 font-semibold">5 Familias</span>
+        </div>
+      </div>
+
+      <!-- Barra de Distribución y Métricas Operacionales -->
+      <div class="glass-card rounded-2xl p-6 lg:col-span-2 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-bold text-white flex items-center space-x-2">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-400"></i>
+              <span>Estado Operativo de los Pedidos</span>
+            </h2>
+            <span id="txtTotalPedidosLabel" class="text-xs text-slate-400">Total: 0</span>
+          </div>
+
+          <!-- Barra Segmentada -->
+          <div class="w-full h-5 bg-slate-800 rounded-full overflow-hidden flex my-4 p-0.5">
+            <div id="barEntregados" class="bg-emerald-500 h-full rounded-l-full transition-all duration-500" style="width: 0%"></div>
+            <div id="barPendientes" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
+            <div id="barRechazados" class="bg-rose-500 h-full rounded-r-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+
+          <!-- Leyenda con Porcentajes -->
+          <div class="grid grid-cols-3 gap-4 pt-2">
+            <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-center">
+              <div class="text-xs font-semibold text-emerald-400">● Entregados</div>
+              <div id="lblPctEntregados" class="text-lg font-bold text-white mt-1">0%</div>
+              <div id="lblCntEntregados" class="text-xs text-slate-400">0 pedidos</div>
+            </div>
+            <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
+              <div class="text-xs font-semibold text-amber-400">⏳ Pendientes</div>
+              <div id="lblPctPendientes" class="text-lg font-bold text-white mt-1">0%</div>
+              <div id="lblCntPendientes" class="text-xs text-slate-400">0 pedidos</div>
+            </div>
+            <div class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-center">
+              <div class="text-xs font-semibold text-rose-400">✖ Rechazados</div>
+              <div id="lblPctRechazados" class="text-lg font-bold text-white mt-1">0%</div>
+              <div id="lblCntRechazados" class="text-xs text-slate-400">0 pedidos</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner de Arquitectura Hexagonal y Patrones -->
+        <div class="mt-6 p-4 bg-slate-800/40 border border-slate-700/60 rounded-xl flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="text-2xl">🏛️</div>
+            <div>
+              <div class="text-xs font-bold text-white">Arquitectura Hexagonal (Ports & Adapters)</div>
+              <div class="text-xs text-slate-400">Dominio desacoplado de frameworks, persistencia JDBC Singleton con HikariCP.</div>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-500/20 text-emerald-300">SOLID Ready</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fila 3: Centro de Patrones de Diseño Estructurales (GoF) -->
+    <section class="glass-card rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-base font-bold text-white flex items-center space-x-2">
+            <i data-lucide="layers" class="w-5 h-5 text-purple-400"></i>
+            <span>Centro de Patrones de Diseño GoF (7 Patrones Estructurales Implementados)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Basados directamente en las infografías de referencia del proyecto</p>
+        </div>
+        <div id="proxyMetricPill" class="text-xs bg-purple-500/10 text-purple-300 border border-purple-500/20 px-3 py-1 rounded-full font-mono">
+          Proxy Cache: Cargando...
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="patternsGrid">
+        <!-- Renderizado dinámico -->
+      </div>
+    </section>
+
+    <!-- Fila 4: Matriz de Pedidos Recientes -->
+    <section class="glass-card rounded-2xl p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-base font-bold text-white flex items-center space-x-2">
+            <i data-lucide="clock" class="w-5 h-5 text-blue-400"></i>
+            <span>Actividad Reciente: Pedidos Registrados</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Visualización en vivo sincronizada con MySQL Container</p>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+            <input type="text" id="orderSearch" oninput="filtrarPedidos()" placeholder="Filtrar pedido o cliente..."
+                   class="bg-slate-800/80 border border-slate-700 text-xs text-white rounded-lg pl-9 pr-3 py-2 w-64 focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de Pedidos -->
+      <div class="overflow-x-auto rounded-xl border border-slate-800">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-900/90 text-slate-400 uppercase text-[11px] font-semibold border-b border-slate-800">
+            <tr>
+              <th class="px-4 py-3">Código</th>
+              <th class="px-4 py-3">Fecha Pedido</th>
+              <th class="px-4 py-3">Fecha Esperada</th>
+              <th class="px-4 py-3">Fecha Entrega</th>
+              <th class="px-4 py-3 text-center">Estado</th>
+              <th class="px-4 py-3">Cliente</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody" class="divide-y divide-slate-800/60 font-mono">
+            <tr>
+              <td colspan="6" class="px-4 py-8 text-center text-slate-500">Cargando registros...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+    🌿 Jardinería Enterprise Suite &copy; 2026 — Arquitectura Hexagonal, Patrones de Diseño GoF & Java 21 LTS
+  </footer>
+
+  <!-- Lógica JavaScript -->
+  <script>
+    let cachedOrders = [];
+    let gamasChartInstance = null;
+
+    async function cargarTodo() {
+      lucide.createIcons();
+      await Promise.all([cargarMetricas(), cargarPedidos(), cargarPatrones(), cargarProductosParaGrafico()]);
+      lucide.createIcons();
+    }
+
+    async function cargarMetricas() {
+      try {
+        const res = await fetch('/api/metrics');
+        const data = await res.json();
+
+        document.getElementById('kpiClientes').innerText = data.totalClientes;
+        document.getElementById('kpiPedidos').innerText = data.totalPedidos;
+        document.getElementById('kpiPedidosSub').innerText = `${data.pedidosEntregados} entregados | ${data.pedidosPendientes} pendientes`;
+        document.getElementById('kpiIngresos').innerText = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(data.totalIngresos);
+        document.getElementById('kpiStockBajo').innerText = data.totalBajoStock;
+        document.getElementById('kpiEmpleados').innerText = data.totalEmpleados;
+        document.getElementById('kpiOficinasSub').innerText = `En ${data.totalOficinas} oficinas activas`;
+
+        // Barras
+        document.getElementById('txtTotalPedidosLabel').innerText = `Total: ${data.totalPedidos} órdenes`;
+        document.getElementById('barEntregados').style.width = data.porcentajeEntregados + '%';
+        document.getElementById('barPendientes').style.width = data.porcentajePendientes + '%';
+        document.getElementById('barRechazados').style.width = data.porcentajeRechazados + '%';
+
+        document.getElementById('lblPctEntregados').innerText = data.porcentajeEntregados + '%';
+        document.getElementById('lblCntEntregados').innerText = `${data.pedidosEntregados} órdenes`;
+
+        document.getElementById('lblPctPendientes').innerText = data.porcentajePendientes + '%';
+        document.getElementById('lblCntPendientes').innerText = `${data.pedidosPendientes} órdenes`;
+
+        document.getElementById('lblPctRechazados').innerText = data.porcentajeRechazados + '%';
+        document.getElementById('lblCntRechazados').innerText = `${data.pedidosRechazados} órdenes`;
+
+      } catch (err) {
+        console.error('Error al cargar métricas:', err);
+      }
+    }
+
+    async function cargarPedidos() {
+      try {
+        const res = await fetch('/api/orders');
+        cachedOrders = await res.json();
+        renderTablaPedidos(cachedOrders);
+      } catch (err) {
+        console.error('Error al cargar pedidos:', err);
+      }
+    }
+
+    function renderTablaPedidos(pedidos) {
+      const tbody = document.getElementById('ordersTableBody');
+      if (!pedidos || pedidos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-slate-500">No se encontraron pedidos.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = pedidos.map(p => {
+        let badgeClass = 'bg-slate-700 text-slate-300';
+        let icon = '●';
+        const st = (p.estado || '').toUpperCase();
+        if (st.includes('ENTREGADO')) {
+          badgeClass = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+          icon = '✔';
+        } else if (st.includes('PENDIENTE')) {
+          badgeClass = 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+          icon = '⏳';
+        } else if (st.includes('RECHAZADO')) {
+          badgeClass = 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+          icon = '✖';
+        }
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="px-4 py-3 font-bold text-white">#${p.codigoPedido}</td>
+            <td class="px-4 py-3 text-slate-300">${p.fechaPedido}</td>
+            <td class="px-4 py-3 text-slate-400">${p.fechaEsperada}</td>
+            <td class="px-4 py-3 text-slate-400">${p.fechaEntrega}</td>
+            <td class="px-4 py-3 text-center">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${badgeClass}">
+                ${icon} ${p.estado}
+              </span>
+            </td>
+            <td class="px-4 py-3 text-slate-300">Cliente #${p.codigoCliente}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filtrarPedidos() {
+      const query = document.getElementById('orderSearch').value.toLowerCase().trim();
+      const filtrados = cachedOrders.filter(p =>
+        String(p.codigoPedido).includes(query) ||
+        String(p.codigoCliente).includes(query) ||
+        (p.estado && p.estado.toLowerCase().includes(query))
+      );
+      renderTablaPedidos(filtrados);
+    }
+
+    async function cargarPatrones() {
+      try {
+        const res = await fetch('/api/patterns');
+        const data = await res.json();
+
+        const grid = document.getElementById('patternsGrid');
+        grid.innerHTML = data.patterns.map(pat => {
+          let emoji = '⚙️';
+          if (pat.name === 'Facade') emoji = '🍽️';
+          if (pat.name === 'Adapter') emoji = '🔌';
+          if (pat.name === 'Decorator') emoji = '🫓';
+          if (pat.name === 'Composite') emoji = '📦';
+          if (pat.name === 'Proxy') emoji = '🛡️';
+          if (pat.name === 'Flyweight') emoji = '🌲';
+          if (pat.name === 'Bridge') emoji = '🌉';
+
+          return `
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 transition">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xl">${emoji}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${pat.status}</span>
+              </div>
+              <h3 class="text-sm font-bold text-white">${pat.name}</h3>
+              <p class="text-[11px] text-slate-400 mt-1">${pat.description}</p>
+            </div>
+          `;
+        }).join('');
+
+        if (data.proxyMetrics) {
+          document.getElementById('proxyMetricPill').innerText =
+            `Proxy Cache: Hits ${data.proxyMetrics.cacheHits} | Misses ${data.proxyMetrics.cacheMisses} (${data.proxyMetrics.hitRatio}% Hit Ratio)`;
+        }
+      } catch (err) {
+        console.error('Error al cargar patrones:', err);
+      }
+    }
+
+    async function cargarProductosParaGrafico() {
+      try {
+        const res = await fetch('/api/products');
+        const prods = await res.json();
+
+        const countGamas = {};
+        prods.forEach(p => {
+          const g = p.gama || 'Otras';
+          countGamas[g] = (countGamas[g] || 0) + 1;
+        });
+
+        const labels = Object.keys(countGamas);
+        const data = Object.values(countGamas);
+
+        const ctx = document.getElementById('chartGamas').getContext('2d');
+        if (gamasChartInstance) gamasChartInstance.destroy();
+
+        gamasChartInstance = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#6b7280'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: {
+                  color: '#94a3b8',
+                  font: { size: 10 }
+                }
+              }
+            },
+            cutout: '70%'
+          }
+        });
+      } catch (err) {
+        console.error('Error al cargar productos para gráfico:', err);
+      }
+    }
+
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      html.classList.toggle('dark');
+      const icon = document.getElementById('themeIcon');
+      if (html.classList.contains('dark')) {
+        icon.setAttribute('data-lucide', 'sun');
+      } else {
+        icon.setAttribute('data-lucide', 'moon');
+      }
+      lucide.createIcons();
+    }
+
+    // Inicializar al cargar ventana
+    window.addEventListener('DOMContentLoaded', cargarTodo);
+  </script>
+</body>
+</html>

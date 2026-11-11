@@ -3,6 +3,7 @@ package com.jardineria.infrastructure.adapter.in.ui.views;
 import com.jardineria.application.service.DashboardService;
 import com.jardineria.domain.model.Pedido;
 import com.jardineria.infrastructure.adapter.in.ui.components.DistributionBar;
+import com.jardineria.infrastructure.adapter.in.ui.components.ElectronModeLauncher;
 import com.jardineria.infrastructure.adapter.in.ui.components.ExportHelper;
 import com.jardineria.infrastructure.adapter.in.ui.components.KpiCard;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
@@ -72,12 +73,17 @@ public class DashboardView extends JPanel {
         JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         actionsPanel.setOpaque(false);
 
+        JButton btnElectron = UiHelper.createButton("Modo Web / Electron", "🚀", UiHelper.COLOR_PURPLE);
+        btnElectron.setToolTipText("Abrir panel web interactivo en Google Chrome (Modo App)");
+        btnElectron.addActionListener(e -> ElectronModeLauncher.openElectronMode("http://localhost:8080/dashboard"));
+
         JButton btnExport = UiHelper.createButton("Exportar CSV", "📥", UiHelper.COLOR_SECONDARY);
         btnExport.addActionListener(e -> ExportHelper.exportTableToCsv(this, ordersTable, "pedidos_recientes"));
 
         JButton btnRefresh = UiHelper.createButton("Actualizar Datos", "🔄", UiHelper.COLOR_PRIMARY);
         btnRefresh.addActionListener(e -> refreshData());
 
+        actionsPanel.add(btnElectron);
         actionsPanel.add(btnExport);
         actionsPanel.add(btnRefresh);
 
