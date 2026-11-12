@@ -390,7 +390,7 @@ public class FormDialog {
     }
 
     /** Interpreta "1.250,50", "1250,5" o "1250.50"; {@code null} si no es un número. */
-    static BigDecimal parseDecimal(String text) {
+    public static BigDecimal parseDecimal(String text) {
         if (text == null || text.isBlank()) {
             return null;
         }

@@ -946,3 +946,287 @@
 .form-banner .ikonli-font-icon { -fx-icon-color: -color-danger-fg; }
 .mono-input { -fx-font-family: "JetBrains Mono"; }
 .danger-item .label { -fx-text-fill: -color-danger-fg; }
+
+/* =====================================================================
+ * Laboratorio de patrones GoF
+ * ===================================================================== */
+.pattern-chip {
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 999;
+    -fx-border-color: -jd-card-border;
+    -fx-border-radius: 999;
+    -fx-padding: 0.4em 1.05em 0.4em 0.45em;
+    -fx-graphic-text-gap: 0.6em;
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+.pattern-chip:hover {
+    -fx-background-color: -jd-card-hover;
+    -fx-text-fill: -color-fg-default;
+}
+.pattern-chip:selected {
+    -fx-background-color: -jd-tone-soft;
+    -fx-border-color: -jd-tone;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.pattern-chip:focused {
+    -fx-border-color: -color-accent-fg;
+}
+.pattern-chip-badge {
+    -fx-background-color: -jd-tone-soft;
+    -fx-background-radius: 999;
+    -fx-min-width: 2em;
+    -fx-min-height: 2em;
+}
+.pattern-chip-badge .ikonli-font-icon { -fx-icon-color: -jd-tone; }
+.pattern-chip:selected .pattern-chip-badge { -fx-background-color: -jd-tone; }
+.pattern-chip:selected .pattern-chip-badge .ikonli-font-icon { -fx-icon-color: -color-bg-default; }
+
+.pattern-hero {
+    -fx-background-color: linear-gradient(to bottom right, -jd-tone-soft 0%, -jd-card 55%);
+    -fx-background-radius: 22;
+    -fx-border-color: -jd-card-border;
+    -fx-border-radius: 22;
+    -fx-padding: 1.6em 1.8em 1.6em 1.8em;
+    -fx-effect: dropshadow(gaussian, -jd-shadow, 28, 0.0, 0, 10);
+}
+.pattern-hero-badge {
+    -fx-background-color: -jd-tone;
+    -fx-background-radius: 16;
+    -fx-min-width: 3.4em;
+    -fx-min-height: 3.4em;
+    -fx-max-width: 3.4em;
+    -fx-max-height: 3.4em;
+}
+.pattern-hero-badge .ikonli-font-icon { -fx-icon-color: -color-bg-default; }
+.pattern-eyebrow {
+    -fx-text-fill: -jd-tone;
+    -fx-font-size: 0.74em;
+    -fx-font-weight: 700;
+}
+.pattern-name {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-size: 2.1em;
+    -fx-font-weight: 800;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.pattern-tagline {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 1.02em;
+}
+.pattern-intent {
+    -fx-text-fill: -color-fg-default;
+    -fx-font-size: 0.98em;
+    -fx-line-spacing: 0.25em;
+}
+.pattern-thumb {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-background-radius: 14;
+    -fx-border-color: -jd-card-border;
+    -fx-border-radius: 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, -jd-shadow, 18, 0.0, 0, 6);
+}
+.pattern-thumb:hover, .pattern-thumb:focused { -fx-border-color: -jd-tone; }
+.pattern-thumb-hint {
+    -fx-background-color: rgba(7, 14, 12, 0.78);
+    -fx-background-radius: 999;
+    -fx-text-fill: #E6F1EB;
+    -fx-font-size: 0.78em;
+    -fx-padding: 0.3em 0.7em 0.3em 0.6em;
+    -fx-translate-x: -8;
+    -fx-translate-y: -8;
+    -fx-opacity: 0.0;
+}
+.pattern-thumb-hint .ikonli-font-icon { -fx-icon-color: #E6F1EB; }
+.pattern-thumb:hover .pattern-thumb-hint, .pattern-thumb:focused .pattern-thumb-hint { -fx-opacity: 1.0; }
+.pattern-zoom { -fx-padding: 1.2em 1.4em 1.4em 1.4em; }
+
+.code-chip {
+    -fx-background-color: -color-bg-inset;
+    -fx-background-radius: 8;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 8;
+    -fx-padding: 0.25em 0.6em 0.25em 0.6em;
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-size: 0.84em;
+}
+
+/* Piezas comunes de las demos */
+.demo-label {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.8em;
+    -fx-font-weight: 700;
+}
+.demo-section {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 0.78em;
+    -fx-font-weight: 700;
+}
+.demo-note {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 0.88em;
+    -fx-graphic-text-gap: 0.55em;
+}
+.demo-note .ikonli-font-icon { -fx-icon-color: -color-fg-subtle; }
+.demo-output {
+    -fx-background-color: -color-bg-inset;
+    -fx-background-radius: 14;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 14;
+    -fx-padding: 1.1em 1.2em 1.1em 1.2em;
+}
+.demo-code {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 0.84em;
+}
+.demo-tag {
+    -fx-background-color: -jd-tone-soft;
+    -fx-background-radius: 6;
+    -fx-text-fill: -jd-tone;
+    -fx-font-size: 0.74em;
+    -fx-font-weight: 700;
+    -fx-padding: 0.2em 0.55em 0.2em 0.55em;
+}
+.demo-total {
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 1.9em;
+    -fx-font-weight: 700;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.demo-metric-value {
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 1.5em;
+    -fx-font-weight: 700;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.demo-metric-label {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.82em;
+}
+.demo-error { -fx-text-fill: -color-danger-fg; }
+.demo-row { -fx-padding: 0.15em 0 0.15em 0; }
+.demo-row-label { -fx-text-fill: -color-fg-muted; }
+.demo-row-value { -fx-text-fill: -color-fg-default; }
+.demo-row-strong { -fx-text-fill: -color-fg-emphasis; -fx-font-weight: 700; }
+
+/* Decorator: pila de capas */
+.layer-row {
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 12;
+    -fx-border-color: -jd-card-border;
+    -fx-border-radius: 12;
+}
+.layer-depth-0 { -fx-border-color: -color-border-default; }
+.layer-depth-1 { -fx-background-color: linear-gradient(to right, -color-chart-2-alpha20, -jd-card 45%); }
+.layer-depth-2 { -fx-background-color: linear-gradient(to right, -color-chart-3-alpha20, -jd-card 45%); }
+.layer-depth-3 { -fx-background-color: linear-gradient(to right, -color-chart-4-alpha20, -jd-card 45%); }
+.layer-name { -fx-font-weight: 700; -fx-text-fill: -color-fg-default; }
+.layer-class { -fx-text-fill: -color-accent-fg; -fx-font-size: 0.8em; }
+.layer-detail { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.84em; }
+.layer-subtotal { -fx-font-weight: 700; -fx-text-fill: -color-fg-emphasis; }
+.layer-delta { -fx-font-size: 0.82em; }
+.delta-up { -fx-text-fill: -color-warning-fg; }
+.delta-down { -fx-text-fill: -color-success-fg; }
+.delta-flat { -fx-text-fill: -color-fg-subtle; }
+
+/* Adapter: recorrido */
+.adapter-step {
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 12;
+    -fx-border-color: -jd-card-border;
+    -fx-border-radius: 12;
+    -fx-padding: 0.9em 1em 0.9em 1em;
+}
+.adapter-class { -fx-font-weight: 700; -fx-text-fill: -color-fg-default; }
+.adapter-call { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.82em; }
+.adapter-arrow { -fx-icon-color: -color-fg-subtle; }
+
+/* Composite */
+.composite-tree {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+.composite-tree .tree-cell { -fx-padding: 0.45em 0.6em 0.45em 0.4em; }
+.tree-kit { -fx-font-weight: 700; -fx-text-fill: -color-fg-emphasis; }
+.tree-leaf { -fx-text-fill: -color-fg-default; }
+.tree-figure { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.85em; }
+.tree-price { -fx-text-fill: -color-fg-default; -fx-font-weight: 700; }
+.composite-summary {
+    -fx-padding: 1.6em 0 0 0.4em;
+}
+
+/* Bridge */
+.bridge-output {
+    -fx-font-size: 0.82em;
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 10;
+}
+.bridge-output .content { -fx-background-color: -jd-card; }
+
+/* Flyweight */
+.flyweight-card {
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 14;
+    -fx-border-color: -jd-card-border;
+    -fx-border-radius: 14;
+    -fx-padding: 1em 1.1em 1em 1.1em;
+}
+.flyweight-badge {
+    -fx-background-radius: 12;
+    -fx-min-width: 2.6em;
+    -fx-min-height: 2.6em;
+}
+.flyweight-name { -fx-font-weight: 700; -fx-text-fill: -color-fg-emphasis; }
+.flyweight-id { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.78em; }
+.flyweight-desc { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.86em; }
+.flyweight-bar {
+    -fx-background-color: -color-bg-inset;
+    -fx-background-radius: 999;
+    -fx-min-height: 6;
+    -fx-pref-height: 6;
+    -fx-max-height: 6;
+}
+.flyweight-bar-fill { -fx-background-radius: 999; }
+.flyweight-uses { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.82em; }
+
+/* Proxy */
+.proxy-row {
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 10;
+    -fx-padding: 0.5em 0.8em 0.5em 0.6em;
+}
+.proxy-code { -fx-text-fill: -color-fg-default; -fx-font-weight: 700; }
+.proxy-name { -fx-text-fill: -color-fg-muted; }
+.proxy-missing { -fx-text-fill: -color-danger-fg; }
+.proxy-time { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.85em; }
+
+/* Facade */
+.facade-step {
+    -fx-background-radius: 10;
+    -fx-padding: 0.45em 0.7em 0.45em 0.6em;
+}
+.facade-step-num { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.8em; -fx-min-width: 1.2em; }
+.facade-step-text { -fx-text-fill: -color-fg-default; }
+.step-idle .ikonli-font-icon { -fx-icon-color: -color-fg-subtle; }
+.step-running .ikonli-font-icon { -fx-icon-color: -color-warning-fg; }
+.step-done { -fx-background-color: -color-success-subtle; }
+.step-done .ikonli-font-icon { -fx-icon-color: -color-success-fg; }
+.step-skipped .ikonli-font-icon { -fx-icon-color: -color-danger-fg; }
+.step-skipped .facade-step-text { -fx-text-fill: -color-fg-subtle; }
+.facade-message { -fx-text-fill: -color-fg-default; }
+.facade-breakdown { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.8em; }
+.facade-confirm-badge {
+    -fx-background-color: -color-accent-subtle;
+    -fx-background-radius: 999;
+    -fx-min-width: 3em;
+    -fx-min-height: 3em;
+    -fx-max-width: 3em;
+    -fx-max-height: 3em;
+}
+.facade-confirm-badge .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }

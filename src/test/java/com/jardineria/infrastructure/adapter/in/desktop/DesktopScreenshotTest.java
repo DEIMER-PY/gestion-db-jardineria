@@ -164,4 +164,28 @@ class DesktopScreenshotTest {
                 .map(n -> ((javafx.scene.control.Label) n).getText()))
                 .contains("Meses con actividad en 2009");
     }
+
+    @Test
+    @DisplayName("Laboratorio de patrones: cada demo se construye con datos reales sin colapsar")
+    void capturaPatrones() throws Exception {
+        resize(1440, 900);
+        WaitForAsyncUtils.asyncFx(() -> ThemeManager.setMode(ThemeManager.Mode.DARK)).get();
+        WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(Route.PATRONES)).get();
+        FxTestSupport.settle(1600);
+        java.util.List<javafx.scene.control.ToggleButton> chips = scene.getRoot().lookupAll(".pattern-chip").stream()
+                .map(n -> (javafx.scene.control.ToggleButton) n).toList();
+        assertThat(chips).hasSize(7);
+        for (javafx.scene.control.ToggleButton chip : chips) {
+            WaitForAsyncUtils.asyncFx(chip::fire).get();
+            FxTestSupport.settle(900);
+            FxTestSupport.scrollCurrentViewToBottom(scene);
+            FxTestSupport.settle(300);
+            FxTestSupport.snapshot(scene, "pattern-" + chip.getText().toLowerCase());
+        }
+        resize(1100, 720);
+        FxTestSupport.settle(600);
+        FxTestSupport.scrollCurrentViewToTop(scene);
+        FxTestSupport.settle(300);
+        FxTestSupport.snapshot(scene, "narrow-patrones");
+    }
 }
