@@ -3,6 +3,7 @@ package com.jardineria.infrastructure.adapter.in.desktop.views;
 import com.jardineria.infrastructure.adapter.in.desktop.DesktopServices;
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Navigator;
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
+import com.jardineria.infrastructure.adapter.in.desktop.views.analytics.AnalyticsView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.dashboard.DashboardView;
 
 /**
@@ -17,5 +18,6 @@ public final class DesktopViews {
             navigator.register(route, () -> new PlaceholderView(route));
         }
         navigator.register(Route.DASHBOARD, () -> new DashboardView(services, navigator::navigate));
+        navigator.register(Route.ANALYTICS, () -> new AnalyticsView(services.analytics()));
     }
 }
