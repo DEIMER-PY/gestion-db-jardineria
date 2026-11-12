@@ -36,3 +36,7 @@ Thumbs.db
 dependency-reduced-pom.xml
 Base-de-datos-JARDINER-A*/
 
+### Herramientas locales ###
+.claude/
+logs/
+*.log
