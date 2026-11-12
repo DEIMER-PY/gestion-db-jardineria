@@ -95,3 +95,4 @@ UPDATE pago SET id_transaccion = CONVERT(CAST(CONVERT(id_transaccion USING latin
 
 SET FOREIGN_KEY_CHECKS = 1;
 UPDATE cliente SET nombre_contacto = 'François' WHERE nombre_contacto = 'Fraçois';
+UPDATE gama_producto SET descripcion_texto = 'Plantas para jardín decorativas' WHERE gama = 'Herbaceas' AND descripcion_texto = 'Plantas para jardin decorativas';
