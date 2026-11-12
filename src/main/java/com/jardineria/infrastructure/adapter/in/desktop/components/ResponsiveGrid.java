@@ -1,6 +1,7 @@
 package com.jardineria.infrastructure.adapter.in.desktop.components;
 
 import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -73,6 +74,17 @@ public class ResponsiveGrid extends Pane {
             w = minCellWidth * maxColumns;
         }
         return layoutRows(w - snappedLeftInset() - snappedRightInset(), false) + snappedTopInset() + snappedBottomInset();
+    }
+
+    /** La altura depende del ancho disponible (las celdas bajan de fila al estrechar). */
+    @Override
+    public Orientation getContentBias() {
+        return Orientation.HORIZONTAL;
+    }
+
+    @Override
+    protected double computeMinHeight(double width) {
+        return computePrefHeight(width);
     }
 
     @Override

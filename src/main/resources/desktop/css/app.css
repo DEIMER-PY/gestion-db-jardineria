@@ -708,3 +708,241 @@
     -fx-text-fill: -color-accent-fg;
 }
 .health-text { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.86em; }
+
+/* =====================================================================
+ * Módulos CRUD: barra de herramientas, tabla, indicadores y fichas
+ * ===================================================================== */
+.crud-body { -fx-padding: 0.2em 2.3em 1.6em 2.3em; }
+.crud-toolbar { -fx-padding: 0.1em 0 0 0; }
+.crud-search { -fx-pref-height: 2.5em; -fx-background-radius: 10; -fx-border-radius: 10; }
+.crud-search .ikonli-font-icon { -fx-icon-color: -color-fg-subtle; }
+.search-clear { -fx-padding: 0.2em; -fx-background-radius: 99; }
+.crud-count {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 0.82em;
+    -fx-padding: 0 0.4em 0 0;
+}
+.button.danger-outline { -fx-text-fill: -color-danger-fg; }
+.button.danger-outline .ikonli-font-icon { -fx-icon-color: -color-danger-fg; }
+.button.danger-outline:hover { -fx-background-color: -color-danger-subtle; -fx-border-color: -color-danger-muted; }
+.icon-button { -fx-padding: 0.4em; -fx-background-radius: 8; }
+.icon-button .ikonli-font-icon { -fx-icon-color: -color-fg-muted; }
+.icon-button:hover .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }
+.line-delete:hover .ikonli-font-icon { -fx-icon-color: -color-danger-fg; }
+
+/* Control segmentado (filtro por estado) */
+.segmented {
+    -fx-background-color: -color-bg-inset;
+    -fx-background-radius: 10;
+    -fx-padding: 3;
+    -fx-spacing: 2;
+}
+.segmented > .toggle-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+    -fx-text-fill: -color-fg-muted;
+    -fx-padding: 0.35em 0.85em 0.35em 0.85em;
+}
+.segmented > .toggle-button:hover { -fx-text-fill: -color-fg-default; }
+.segmented > .toggle-button:selected {
+    -fx-background-color: -jd-card;
+    -fx-text-fill: -color-fg-emphasis;
+    -fx-effect: dropshadow(gaussian, -jd-shadow, 6, 0, 0, 1);
+}
+
+/* Tira de indicadores */
+.stat-tile {
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 14;
+    -fx-border-color: -jd-card-border;
+    -fx-border-radius: 14;
+    -fx-padding: 0.8em 1em 0.8em 0.9em;
+}
+.stat-badge {
+    -fx-background-color: -jd-tone-soft;
+    -fx-background-radius: 10;
+    -fx-min-width: 34; -fx-min-height: 34; -fx-max-width: 34; -fx-max-height: 34;
+}
+.stat-badge .ikonli-font-icon { -fx-icon-color: -jd-tone; }
+.stat-value {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 1.3em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.stat-label { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.8em; }
+
+/* Tabla */
+.table-card { -fx-padding: 0; }
+.crud-table {
+    -fx-background-color: transparent;
+    -fx-background-radius: 18;
+    -fx-border-width: 0;
+    -fx-padding: 0.4em 0.4em 0.2em 0.4em;
+}
+.crud-table .column-header-background { -fx-background-color: transparent; }
+.crud-table .column-header-background > .filler { -fx-background-color: transparent; }
+.crud-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -color-border-default transparent;
+    -fx-pref-height: 2.6em;
+}
+.crud-table .column-header .label {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.78em;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+.crud-table .col-number .label { -fx-alignment: center-right; }
+.crud-table .table-row-cell {
+    -fx-cell-size: 2.9em;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -color-border-muted transparent;
+}
+.crud-table .table-row-cell:hover { -fx-background-color: -color-bg-subtle; }
+.crud-table .table-row-cell:selected {
+    -fx-background-color: -color-accent-subtle;
+    -fx-border-color: transparent transparent -color-accent-muted transparent;
+}
+.crud-table .table-row-cell:selected .table-cell { -fx-text-fill: -color-fg-emphasis; }
+.crud-table .table-cell { -fx-padding: 0 0.75em 0 0.75em; -fx-text-fill: -color-fg-default; }
+.crud-table .col-code.table-cell {
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 0.86em;
+    -fx-text-fill: -color-fg-muted;
+}
+.crud-table .col-number.table-cell { -fx-alignment: center-right; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.9em; }
+.crud-table .col-strong.table-cell { -fx-font-weight: bold; }
+.crud-table .table-cell.cell-muted { -fx-text-fill: -color-fg-subtle; }
+.crud-table .table-cell.stock-low { -fx-text-fill: -color-warning-fg; -fx-font-weight: bold; }
+.crud-table .table-cell.stock-critical { -fx-text-fill: -color-danger-fg; -fx-font-weight: bold; }
+.cell-icon {
+    -fx-background-color: -color-accent-subtle;
+    -fx-background-radius: 8;
+    -fx-min-width: 28; -fx-min-height: 28; -fx-max-width: 28; -fx-max-height: 28;
+}
+.cell-icon .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }
+.cell-strong { -fx-font-weight: bold; -fx-text-fill: -color-fg-default; }
+.crud-table .placeholder { -fx-background-color: transparent; }
+
+/* Panel de detalle (maestro-detalle) */
+.detail-pane { -fx-padding: 0; }
+.detail-scroll, .detail-scroll > .viewport { -fx-background-color: transparent; }
+.detail-content { -fx-padding: 1.3em 1.35em 1.3em 1.35em; }
+.detail-title {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 1.35em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.detail-subtitle { -fx-text-fill: -color-fg-muted; }
+.detail-subtitle .ikonli-font-icon { -fx-icon-color: -color-fg-subtle; }
+.detail-code { -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.78em; -fx-text-fill: -color-fg-subtle; }
+.detail-section {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.74em;
+    -fx-font-weight: bold;
+    -fx-padding: 0.4em 0 0 0;
+}
+.detail-note { -fx-font-size: 0.86em; -fx-padding: 0.55em 0.75em 0.55em 0.75em; -fx-background-radius: 10; }
+.note-warning { -fx-background-color: -color-warning-subtle; -fx-text-fill: -color-warning-fg; }
+.note-warning .ikonli-font-icon { -fx-icon-color: -color-warning-fg; }
+.detail-quote {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-style: italic;
+    -fx-border-color: transparent transparent transparent -color-border-default;
+    -fx-border-width: 0 0 0 3;
+    -fx-padding: 0.2em 0 0.2em 0.8em;
+}
+
+.steps { -fx-padding: 0.2em 0 0.2em 0; }
+.step { -fx-padding: 0.45em 0 0.45em 0; }
+.step-dot { -fx-min-width: 10; -fx-min-height: 10; -fx-max-width: 10; -fx-max-height: 10; -fx-background-radius: 99; }
+.step-done { -fx-background-color: -color-accent-fg; }
+.step-todo { -fx-background-color: transparent; -fx-border-color: -color-border-default; -fx-border-radius: 99; -fx-border-width: 2; }
+.step-label { -fx-text-fill: -color-fg-default; }
+.step-date { -fx-text-fill: -color-fg-muted; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.85em; }
+
+.line-name { -fx-text-fill: -color-fg-default; -fx-font-weight: bold; }
+.line-meta { -fx-text-fill: -color-fg-subtle; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.8em; }
+.line-amount { -fx-text-fill: -color-fg-default; -fx-font-family: "JetBrains Mono"; -fx-font-weight: bold; -fx-font-size: 0.9em; }
+.lines-total-row {
+    -fx-border-color: -color-border-default transparent transparent transparent;
+    -fx-padding: 0.7em 0 0 0;
+}
+.lines-total-label { -fx-text-fill: -color-fg-muted; -fx-font-weight: bold; }
+.lines-total {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 1.25em;
+    -fx-text-fill: -color-accent-fg;
+}
+
+/* Ficha de cliente */
+.avatar {
+    -fx-background-color: linear-gradient(to bottom right, -jd-tone 0%, -jd-tone-soft 140%);
+    -fx-background-radius: 16;
+    -fx-min-width: 56; -fx-min-height: 56; -fx-max-width: 56; -fx-max-height: 56;
+}
+.avatar-text {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 1.35em;
+    -fx-text-fill: -jd-on-accent;
+}
+.info-label { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.86em; -fx-graphic-text-gap: 8; }
+.info-label .ikonli-font-icon { -fx-icon-color: -color-fg-subtle; }
+.info-value { -fx-text-fill: -color-fg-default; }
+.credit-value {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 1.9em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.credit-caption { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.85em; }
+.credit-bar { -fx-pref-height: 10; }
+.credit-bar > .track { -fx-background-color: -jd-track; -fx-background-radius: 99; }
+.credit-bar > .bar { -fx-background-radius: 99; -fx-background-insets: 0; -fx-padding: 5; }
+.credit-ok > .bar { -fx-background-color: linear-gradient(to right, -color-accent-emphasis, -color-accent-fg); }
+.credit-warning > .bar { -fx-background-color: linear-gradient(to right, -color-warning-emphasis, -color-warning-fg); }
+.credit-danger > .bar { -fx-background-color: linear-gradient(to right, -color-danger-emphasis, -color-danger-fg); }
+.figure {
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 12;
+    -fx-padding: 0.65em 0.8em 0.65em 0.8em;
+}
+.figure-value { -fx-font-family: "JetBrains Mono"; -fx-font-weight: bold; -fx-text-fill: -color-fg-default; }
+.figure-label { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.78em; }
+
+/* Formularios */
+.form-dialog { -fx-padding: 1.6em 1.7em 1.4em 1.7em; }
+.form-badge {
+    -fx-background-color: -color-accent-subtle;
+    -fx-background-radius: 14;
+    -fx-min-width: 46; -fx-min-height: 46; -fx-max-width: 46; -fx-max-height: 46;
+}
+.form-badge .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }
+.form-scroll, .form-scroll > .viewport { -fx-background-color: transparent; }
+.form-section {
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-size: 0.72em;
+    -fx-font-weight: bold;
+    -fx-padding: 0.6em 0 0 0;
+}
+.form-label { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.86em; -fx-font-weight: bold; }
+.form-error { -fx-text-fill: -color-danger-fg; -fx-font-size: 0.8em; }
+.form-field .text-field:danger, .form-field .combo-box-base:danger, .form-field .text-area:danger {
+    -fx-border-color: -color-danger-emphasis;
+}
+.form-banner {
+    -fx-background-color: -color-danger-subtle;
+    -fx-text-fill: -color-danger-fg;
+    -fx-background-radius: 10;
+    -fx-padding: 0.65em 0.85em 0.65em 0.85em;
+    -fx-graphic-text-gap: 10;
+}
+.form-banner .ikonli-font-icon { -fx-icon-color: -color-danger-fg; }
+.mono-input { -fx-font-family: "JetBrains Mono"; }
+.danger-item .label { -fx-text-fill: -color-danger-fg; }
