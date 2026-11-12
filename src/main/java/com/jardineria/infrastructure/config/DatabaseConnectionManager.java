@@ -73,6 +73,25 @@ public final class DatabaseConnectionManager implements AutoCloseable {
     }
 
     /**
+     * Comprueba si MySQL es alcanzable con una conexión directa de corta duración,
+     * sin inicializar el pool (no bloquea más de {@code timeoutSeconds}).
+     *
+     * @param timeoutSeconds tiempo máximo de espera en segundos
+     * @return {@code true} si la base de datos responde
+     */
+    public static boolean isAvailable(int timeoutSeconds) {
+        java.sql.DriverManager.setLoginTimeout(Math.max(1, timeoutSeconds));
+        try (Connection c = java.sql.DriverManager.getConnection(
+                DatabaseConfig.getJdbcUrl() + "&connectTimeout=" + (timeoutSeconds * 1000),
+                DatabaseConfig.getUser(), DatabaseConfig.getPassword())) {
+            return c.isValid(Math.max(1, timeoutSeconds));
+        } catch (SQLException e) {
+            log.debug("Base de datos no disponible: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Retorna el DataSource subyacente.
      *
      * @return DataSource
