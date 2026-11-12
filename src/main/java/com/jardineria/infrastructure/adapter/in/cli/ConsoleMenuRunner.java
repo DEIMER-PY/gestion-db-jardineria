@@ -1,9 +1,9 @@
 package com.jardineria.infrastructure.adapter.in.cli;
 
-import com.jardineria.application.service.*;
+import com.jardineria.application.port.in.*;
 import com.jardineria.domain.model.*;
 import com.jardineria.infrastructure.config.ApplicationContext;
-import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
+import com.jardineria.infrastructure.adapter.in.common.Formatters;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,16 +25,16 @@ public class ConsoleMenuRunner {
     public void run() {
         boolean salir = false;
         while (!salir) {
-            printHeader("🌿 SISTEMA DE GESTIÓN DE JARDINERÍA — MENÚ PRINCIPAL");
-            System.out.println("  [1] 📊 Ver Métricas del Dashboard Ejecutivo");
-            System.out.println("  [2] 🏢 Gestión de Oficinas");
-            System.out.println("  [3] 👥 Gestión de Empleados");
-            System.out.println("  [4] 🛍️ Gestión de Clientes");
-            System.out.println("  [5] 📦 Catálogo de Productos y Stock");
-            System.out.println("  [6] 📑 Pedidos y Líneas de Detalle");
-            System.out.println("  [7] 💳 Pagos y Finanzas");
-            System.out.println("  [8] 🌿 Gamas de Producto");
-            System.out.println("  [0] 🚪 Salir");
+            printHeader("SISTEMA DE GESTIÓN DE JARDINERÍA — MENÚ PRINCIPAL");
+            System.out.println("  [1] Ver Métricas del Dashboard Ejecutivo");
+            System.out.println("  [2] Gestión de Oficinas");
+            System.out.println("  [3] Gestión de Empleados");
+            System.out.println("  [4] Gestión de Clientes");
+            System.out.println("  [5] Catálogo de Productos y Stock");
+            System.out.println("  [6] Pedidos y Líneas de Detalle");
+            System.out.println("  [7] Pagos y Finanzas");
+            System.out.println("  [8] Gamas de Producto");
+            System.out.println("  [0] Salir");
             System.out.print("\nSeleccione una opción: ");
 
             String opcion = scanner.nextLine().trim();
@@ -51,13 +51,13 @@ public class ConsoleMenuRunner {
                     System.out.println("\n¡Gracias por utilizar el sistema Jardinería! Hasta pronto.\n");
                     salir = true;
                 }
-                default -> System.out.println("\n❌ Opción no válida. Intente nuevamente.");
+                default -> System.out.println("\n[x] Opción no válida. Intente nuevamente.");
             }
         }
     }
 
     private void mostrarDashboard() {
-        printHeader("📊 DASHBOARD EJECUTIVO Y OPERACIONAL");
+        printHeader("DASHBOARD EJECUTIVO Y OPERACIONAL");
         try {
             com.jardineria.application.dto.DashboardMetrics m = registry.getDashboardService().obtenerMetricas();
             System.out.printf("  • Clientes Registrados:        %d%n", m.totalClientes());
@@ -65,13 +65,13 @@ public class ConsoleMenuRunner {
             System.out.printf("    - Pedidos Entregados:         %d%n", m.pedidosEntregados());
             System.out.printf("    - Pedidos Pendientes:         %d%n", m.pedidosPendientes());
             System.out.printf("    - Pedidos Rechazados:         %d%n", m.pedidosRechazados());
-            System.out.printf("  • Facturación Total Recaudada:  %s%n", UiHelper.formatCurrency(m.totalIngresos()));
+            System.out.printf("  • Facturación Total Recaudada:  %s%n", Formatters.currency(m.totalIngresos()));
             System.out.printf("  • Productos en Catálogo:        %d%n", m.totalProductos());
             System.out.printf("  • Alertas de Stock Bajo (< 10): %d productos%n", m.totalBajoStock());
             System.out.printf("  • Empleados Activos:            %d%n", m.totalEmpleados());
             System.out.printf("  • Oficinas Globales:            %d%n", m.totalOficinas());
         } catch (Exception e) {
-            System.out.println("❌ Error al obtener métricas: " + e.getMessage());
+            System.out.println("[x] Error al obtener métricas: " + e.getMessage());
         }
         pausar();
     }
@@ -80,7 +80,7 @@ public class ConsoleMenuRunner {
         boolean volver = false;
         com.jardineria.application.port.in.OficinaUseCase service = registry.getOficinaService();
         while (!volver) {
-            printHeader("🏢 SUBMENÚ: GESTIÓN DE OFICINAS");
+            printHeader("SUBMENÚ: GESTIÓN DE OFICINAS");
             System.out.println("  [1] Listar todas las oficinas");
             System.out.println("  [2] Buscar oficina por código");
             System.out.println("  [3] Filtrar oficinas por país");
@@ -108,7 +108,7 @@ public class ConsoleMenuRunner {
                         Oficina o = service.obtenerPorId(cod);
                         System.out.println("Encontrada: " + o);
                     } catch (Exception e) {
-                        System.out.println("❌ " + e.getMessage());
+                        System.out.println("[x] " + e.getMessage());
                     }
                     pausar();
                 }
@@ -138,9 +138,9 @@ public class ConsoleMenuRunner {
 
                         Oficina of = new Oficina(cod, ciudad, pais, null, cp, tel, dir, null);
                         service.crearOficina(of);
-                        System.out.println("✔ Oficina creada con éxito.");
+                        System.out.println("[ok] Oficina creada con éxito.");
                     } catch (Exception e) {
-                        System.out.println("❌ Error: " + e.getMessage());
+                        System.out.println("[x] Error: " + e.getMessage());
                     }
                     pausar();
                 }
@@ -149,9 +149,9 @@ public class ConsoleMenuRunner {
                     String cod = scanner.nextLine().trim();
                     try {
                         service.eliminarOficina(cod);
-                        System.out.println("✔ Oficina eliminada.");
+                        System.out.println("[ok] Oficina eliminada.");
                     } catch (Exception e) {
-                        System.out.println("❌ Error: " + e.getMessage());
+                        System.out.println("[x] Error: " + e.getMessage());
                     }
                     pausar();
                 }
@@ -165,7 +165,7 @@ public class ConsoleMenuRunner {
         boolean volver = false;
         com.jardineria.application.port.in.EmpleadoUseCase service = registry.getEmpleadoService();
         while (!volver) {
-            printHeader("👥 SUBMENÚ: GESTIÓN DE EMPLEADOS");
+            printHeader("SUBMENÚ: GESTIÓN DE EMPLEADOS");
             System.out.println("  [1] Listar todos los empleados");
             System.out.println("  [2] Listar Directores Generales");
             System.out.println("  [3] Listar Representantes de Ventas");
@@ -208,7 +208,7 @@ public class ConsoleMenuRunner {
                         Empleado e = service.obtenerPorId(cod);
                         System.out.println("Empleado: " + e);
                     } catch (Exception ex) {
-                        System.out.println("❌ " + ex.getMessage());
+                        System.out.println("[x] " + ex.getMessage());
                     }
                     pausar();
                 }
@@ -222,7 +222,7 @@ public class ConsoleMenuRunner {
         boolean volver = false;
         com.jardineria.application.port.in.ClienteUseCase service = registry.getClienteService();
         while (!volver) {
-            printHeader("🛍️ SUBMENÚ: GESTIÓN DE CLIENTES");
+            printHeader("SUBMENÚ: GESTIÓN DE CLIENTES");
             System.out.println("  [1] Listar todos los clientes");
             System.out.println("  [2] Buscar cliente por código");
             System.out.println("  [3] Filtrar clientes por país");
@@ -239,7 +239,7 @@ public class ConsoleMenuRunner {
                         System.out.printf("%-5d | %-25s | %-15s | %-12s | %-12s%n",
                                 c.getCodigoCliente(),
                                 c.getNombreCliente().length() > 25 ? c.getNombreCliente().substring(0, 22) + "..." : c.getNombreCliente(),
-                                c.getCiudad(), c.getPais(), UiHelper.formatCurrency(c.getLimiteCredito()));
+                                c.getCiudad(), c.getPais(), Formatters.currency(c.getLimiteCredito()));
                     }
                     pausar();
                 }
@@ -250,7 +250,7 @@ public class ConsoleMenuRunner {
                         Cliente c = service.obtenerPorId(id);
                         System.out.println("Cliente: " + c);
                     } catch (Exception ex) {
-                        System.out.println("❌ " + ex.getMessage());
+                        System.out.println("[x] " + ex.getMessage());
                     }
                     pausar();
                 }
@@ -273,7 +273,7 @@ public class ConsoleMenuRunner {
         boolean volver = false;
         com.jardineria.application.port.in.ProductoUseCase service = registry.getProductoService();
         while (!volver) {
-            printHeader("📦 SUBMENÚ: CATÁLOGO DE PRODUCTOS");
+            printHeader("SUBMENÚ: CATÁLOGO DE PRODUCTOS");
             System.out.println("  [1] Listar todos los productos");
             System.out.println("  [2] Filtrar por gama");
             System.out.println("  [3] Ver alertas de bajo stock (< 10 uds)");
@@ -297,7 +297,7 @@ public class ConsoleMenuRunner {
                 }
                 case "3" -> {
                     List<Producto> list = service.buscarBajoStock(10);
-                    System.out.println("\n⚠️ PRODUCTOS CON STOCK CRÍTICO:");
+                    System.out.println("\n[!] PRODUCTOS CON STOCK CRÍTICO:");
                     imprimirProductos(list);
                     pausar();
                 }
@@ -321,7 +321,7 @@ public class ConsoleMenuRunner {
             System.out.printf("%-10s | %-25s | %-15s | %-6d | %-10s%n",
                     p.getCodigoProducto(),
                     p.getNombre().length() > 25 ? p.getNombre().substring(0, 22) + "..." : p.getNombre(),
-                    p.getGama(), p.getCantidadEnStock(), UiHelper.formatCurrency(p.getPrecioVenta()));
+                    p.getGama(), p.getCantidadEnStock(), Formatters.currency(p.getPrecioVenta()));
         }
     }
 
@@ -330,7 +330,7 @@ public class ConsoleMenuRunner {
         com.jardineria.application.port.in.PedidoUseCase pedidoService = registry.getPedidoService();
         com.jardineria.application.port.in.DetallePedidoUseCase detalleService = registry.getDetallePedidoService();
         while (!volver) {
-            printHeader("📑 SUBMENÚ: PEDIDOS Y LÍNEAS DE DETALLE");
+            printHeader("SUBMENÚ: PEDIDOS Y LÍNEAS DE DETALLE");
             System.out.println("  [1] Listar pedidos recientes");
             System.out.println("  [2] Ver líneas de detalle de un pedido");
             System.out.println("  [3] Cambiar estado de un pedido");
@@ -363,11 +363,11 @@ public class ConsoleMenuRunner {
                             for (DetallePedido d : detalles) {
                                 System.out.printf("%-5d | %-12s | %-6d | %-12s | %-12s%n",
                                         d.getNumeroLinea(), d.getCodigoProducto(), d.getCantidad(),
-                                        UiHelper.formatCurrency(d.getPrecioUnidad()), UiHelper.formatCurrency(d.getSubtotal()));
+                                        Formatters.currency(d.getPrecioUnidad()), Formatters.currency(d.getSubtotal()));
                             }
                         }
                     } catch (Exception ex) {
-                        System.out.println("❌ " + ex.getMessage());
+                        System.out.println("[x] " + ex.getMessage());
                     }
                     pausar();
                 }
@@ -378,9 +378,9 @@ public class ConsoleMenuRunner {
                         System.out.print("Nuevo estado (Pendiente, Entregado, Rechazado): ");
                         String est = scanner.nextLine().trim();
                         pedidoService.cambiarEstado(id, est, LocalDate.now());
-                        System.out.println("✔ Estado actualizado correctamente.");
+                        System.out.println("[ok] Estado actualizado correctamente.");
                     } catch (Exception ex) {
-                        System.out.println("❌ Error: " + ex.getMessage());
+                        System.out.println("[x] Error: " + ex.getMessage());
                     }
                     pausar();
                 }
@@ -394,7 +394,7 @@ public class ConsoleMenuRunner {
         boolean volver = false;
         com.jardineria.application.port.in.PagoUseCase service = registry.getPagoService();
         while (!volver) {
-            printHeader("💳 SUBMENÚ: PAGOS Y FINANZAS");
+            printHeader("SUBMENÚ: PAGOS Y FINANZAS");
             System.out.println("  [1] Listar todos los pagos");
             System.out.println("  [2] Consultar recaudación total");
             System.out.println("  [3] Registrar nuevo pago");
@@ -409,13 +409,13 @@ public class ConsoleMenuRunner {
                     System.out.println("-".repeat(75));
                     for (Pago p : list) {
                         System.out.printf("%-8d | %-15s | %-20s | %-12s | %-12s%n",
-                                p.getCodigoCliente(), p.getFormaPago(), p.getIdTransaccion(), p.getFechaPago(), UiHelper.formatCurrency(p.getTotal()));
+                                p.getCodigoCliente(), p.getFormaPago(), p.getIdTransaccion(), p.getFechaPago(), Formatters.currency(p.getTotal()));
                     }
                     pausar();
                 }
                 case "2" -> {
                     BigDecimal total = service.calcularTotalIngresos();
-                    System.out.println("\n💰 Facturación total acumulada: " + UiHelper.formatCurrency(total));
+                    System.out.println("\nFacturación total acumulada: " + Formatters.currency(total));
                     pausar();
                 }
                 case "3" -> {
@@ -431,9 +431,9 @@ public class ConsoleMenuRunner {
 
                         Pago p = new Pago(cli, forma, tx, LocalDate.now(), imp);
                         service.registrarPago(p);
-                        System.out.println("✔ Pago registrado.");
+                        System.out.println("[ok] Pago registrado.");
                     } catch (Exception ex) {
-                        System.out.println("❌ Error: " + ex.getMessage());
+                        System.out.println("[x] Error: " + ex.getMessage());
                     }
                     pausar();
                 }
@@ -447,7 +447,7 @@ public class ConsoleMenuRunner {
         boolean volver = false;
         com.jardineria.application.port.in.GamaProductoUseCase service = registry.getGamaProductoService();
         while (!volver) {
-            printHeader("🌿 SUBMENÚ: GAMAS DE PRODUCTO");
+            printHeader("SUBMENÚ: GAMAS DE PRODUCTO");
             System.out.println("  [1] Listar gamas de productos");
             System.out.println("  [2] Registrar nueva gama");
             System.out.println("  [0] << Volver");
@@ -469,9 +469,9 @@ public class ConsoleMenuRunner {
                         System.out.print("Descripción: ");
                         String desc = scanner.nextLine().trim();
                         service.crearGama(new GamaProducto(nombre, desc, null, null));
-                        System.out.println("✔ Gama creada.");
+                        System.out.println("[ok] Gama creada.");
                     } catch (Exception ex) {
-                        System.out.println("❌ Error: " + ex.getMessage());
+                        System.out.println("[x] Error: " + ex.getMessage());
                     }
                     pausar();
                 }
