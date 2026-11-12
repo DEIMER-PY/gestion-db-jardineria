@@ -29,6 +29,9 @@ public interface AnalyticsUseCase {
 
     List<CategoryMetric> topClientes(int limite);
 
+    /** Clientes ordenados por número de pedidos (actividad comercial). */
+    List<CategoryMetric> clientesMasActivos(int limite);
+
     Optional<ClienteFinancialSummary> resumenCliente(int codigoCliente);
 
     /** Años con actividad comercial (pedidos), en orden ascendente. */
@@ -39,4 +42,7 @@ public interface AnalyticsUseCase {
      * Útil para microtendencias (sparklines) de las tarjetas KPI.
      */
     double[] tendenciaVentas(int puntos);
+
+    /** Igual que {@link #tendenciaVentas(int)} pero sobre los pagos cobrados. */
+    double[] tendenciaCobros(int puntos);
 }

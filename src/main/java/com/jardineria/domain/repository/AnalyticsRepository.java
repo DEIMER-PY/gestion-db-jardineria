@@ -37,6 +37,12 @@ public interface AnalyticsRepository {
     /** Clientes con mayor volumen comprado (label = nombre del cliente, count = pedidos). */
     List<CategoryMetric> topClientesPorCompras(int limite);
 
+    /**
+     * Clientes con más pedidos registrados (label = nombre, count = pedidos,
+     * amount = importe de sus líneas de pedido, cero si no tienen líneas).
+     */
+    List<CategoryMetric> clientesMasActivos(int limite);
+
     /** Resumen financiero de un cliente concreto. */
     Optional<ClienteFinancialSummary> resumenCliente(int codigoCliente);
 }

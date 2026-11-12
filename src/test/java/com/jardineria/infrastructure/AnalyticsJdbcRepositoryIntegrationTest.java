@@ -52,6 +52,8 @@ class AnalyticsJdbcRepositoryIntegrationTest {
     void gamasYTopClientes() {
         assertThat(repository.ventasPorGama()).isNotEmpty();
         assertThat(repository.topClientesPorCompras(3)).hasSizeLessThanOrEqualTo(3);
+        assertThat(repository.clientesMasActivos(5)).hasSize(5)
+                .isSortedAccordingTo((a, b) -> Long.compare(b.count(), a.count()));
         assertThat(repository.pagosPorFormaPago()).isNotEmpty();
         assertThat(repository.pedidosPorMesYEstado()).isNotEmpty();
     }

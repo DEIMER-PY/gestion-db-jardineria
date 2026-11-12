@@ -124,6 +124,21 @@ public class AnalyticsJdbcRepository implements AnalyticsRepository {
     }
 
     @Override
+    public List<CategoryMetric> clientesMasActivos(int limite) {
+        String sql = """
+                SELECT c.nombre_cliente AS etiqueta,
+                       COUNT(DISTINCT p.codigo_pedido) AS registros,
+                       COALESCE(SUM(d.cantidad * d.precio_unidad), 0) AS importe
+                FROM cliente c
+                JOIN pedido p ON p.codigo_cliente = c.codigo_cliente
+                LEFT JOIN detalle_pedido d ON d.codigo_pedido = p.codigo_pedido
+                GROUP BY c.codigo_cliente, c.nombre_cliente
+                ORDER BY registros DESC, importe DESC, c.nombre_cliente
+                LIMIT ?""";
+        return query(sql, CATEGORY, Math.max(1, limite));
+    }
+
+    @Override
     public Optional<ClienteFinancialSummary> resumenCliente(int codigoCliente) {
         String sql = """
                 SELECT c.codigo_cliente, c.limite_credito,
