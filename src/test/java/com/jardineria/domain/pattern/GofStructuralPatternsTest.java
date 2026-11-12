@@ -162,4 +162,14 @@ class GofStructuralPatternsTest {
         assertTrue(jsonOut.contains("\"totalRegistros\": 2"));
         assertTrue(jsonOut.contains("\"Producto\": \"Rosal\""));
     }
+
+    @Test
+    @DisplayName("Bridge CSV: entrecomilla los valores con comas decimales o comillas (RFC 4180)")
+    void csvEntrecomillaValoresConComas() {
+        ReportBridge csv = new ExecutiveReport(new CsvOutputImplementor(), "Precios", null, List.of("Producto", "Precio"));
+        String out = csv.generarReporte(List.of(List.of("Rosal \"Iceberg\"", "3,50"), List.of("Pala", "15")));
+        String nl = String.valueOf((char) 10);
+        assertTrue(out.contains("\"Rosal \"\"Iceberg\"\"\",\"3,50\"" + nl));
+        assertTrue(out.contains("Pala,15" + nl));
+    }
 }
