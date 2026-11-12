@@ -2,12 +2,14 @@ package com.jardineria.infrastructure.adapter.in.desktop;
 
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
 import com.jardineria.infrastructure.adapter.in.desktop.shell.AppShell;
+import com.jardineria.infrastructure.adapter.in.desktop.support.ModalHost;
 import com.jardineria.infrastructure.adapter.in.desktop.theme.ThemeManager;
 import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.config.DatabaseConfig;
 import com.jardineria.infrastructure.config.DatabaseConnectionManager;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -77,6 +79,7 @@ class DesktopScreenshotTest {
     @Test
     @DisplayName("Captura cada ruta en tema oscuro y claro")
     void capturaTodasLasRutas() throws Exception {
+        resize(1440, 900);
         for (ThemeManager.Mode mode : ThemeManager.Mode.values()) {
             WaitForAsyncUtils.asyncFx(() -> ThemeManager.setMode(mode)).get();
             for (Route route : Route.values()) {
@@ -98,6 +101,30 @@ class DesktopScreenshotTest {
     }
 
     @Test
+    @DisplayName("Maestro-detalle y formularios: selección de fila y alta abierta en Clientes y Pedidos")
+    @SuppressWarnings("unchecked")
+    void capturaDetalleYFormulario() throws Exception {
+        resize(1440, 900);
+        WaitForAsyncUtils.asyncFx(() -> ThemeManager.setMode(ThemeManager.Mode.DARK)).get();
+        for (Route route : new Route[]{Route.CLIENTES, Route.PEDIDOS}) {
+            WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(route)).get();
+            FxTestSupport.settle(1600);
+            TableView<Object> table = (TableView<Object>) scene.getRoot().lookupAll(".crud-table").stream()
+                    .filter(n -> n.getScene() != null && n.isVisible() && n.getParent().isVisible())
+                    .reduce((a, b) -> b).orElseThrow();
+            assertThat(table.getItems()).isNotEmpty();
+            WaitForAsyncUtils.asyncFx(() -> table.getSelectionModel().select(0)).get();
+            FxTestSupport.settle(1500);
+            FxTestSupport.snapshot(scene, "detail-" + route.name().toLowerCase());
+            WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().currentView().createNew()).get();
+            FxTestSupport.settle(1200);
+            FxTestSupport.snapshot(scene, "form-" + route.name().toLowerCase());
+            WaitForAsyncUtils.asyncFx(ModalHost::hide).get();
+            FxTestSupport.settle(400);
+        }
+    }
+
+    @Test
     @DisplayName("En la ventana mínima (1100x720) los paneles se reorganizan sin recortarse")
     void capturaVentanaMinima() throws Exception {
         WaitForAsyncUtils.asyncFx(() -> {
@@ -105,13 +132,21 @@ class DesktopScreenshotTest {
             stage.setWidth(1100);
             stage.setHeight(720);
         }).get();
-        for (Route route : new Route[]{Route.DASHBOARD, Route.ANALYTICS}) {
+        for (Route route : new Route[]{Route.DASHBOARD, Route.ANALYTICS, Route.PRODUCTOS, Route.PEDIDOS}) {
             WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(route)).get();
             FxTestSupport.settle(1600);
             FxTestSupport.scrollCurrentViewToTop(scene);
             FxTestSupport.settle(200);
             FxTestSupport.snapshot(scene, "narrow-" + route.name().toLowerCase());
         }
+    }
+
+    private void resize(double w, double h) throws Exception {
+        WaitForAsyncUtils.asyncFx(() -> {
+            stage.setWidth(w);
+            stage.setHeight(h);
+        }).get();
+        FxTestSupport.settle(300);
     }
 
     @Test
