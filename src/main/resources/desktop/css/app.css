@@ -1,0 +1,532 @@
+/* =====================================================================
+ * Jardinería Suite — hoja de estilos de componentes
+ * Las medidas tipográficas usan "em" relativos a la fuente raíz para que
+ * el escalado de accesibilidad (Ctrl + / Ctrl -) afecte a toda la interfaz.
+ * ===================================================================== */
+
+.root {
+    -fx-font-family: "Manrope", "Segoe UI", sans-serif;
+}
+
+/* ---------- Tipografía utilitaria ---------- */
+.display {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 800;
+}
+.mono {
+    -fx-font-family: "JetBrains Mono", "Consolas", monospace;
+}
+.text-muted {
+    -fx-text-fill: -color-fg-muted;
+}
+.text-subtle {
+    -fx-text-fill: -color-fg-subtle;
+}
+
+/* ---------- Estructura del shell ---------- */
+.app-shell {
+    -fx-background-color: -jd-canvas;
+}
+.main-area {
+    -fx-background-color: -jd-canvas;
+}
+.content-host {
+    -fx-background-color: -jd-canvas, -jd-ambient;
+}
+
+/* ---------- Menú lateral ---------- */
+.sidebar {
+    -fx-background-color: -jd-sidebar;
+    -fx-border-color: transparent -color-border-muted transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-padding: 1.4em 0.85em 1.1em 0.85em;
+    -fx-spacing: 1.2em;
+}
+.brand {
+    -fx-padding: 0 0.4em 0.2em 0.4em;
+}
+.brand-logo {
+    -fx-background-color: -jd-brand;
+    -fx-background-radius: 11;
+    -fx-min-width: 2.6em;
+    -fx-min-height: 2.6em;
+    -fx-max-width: 2.6em;
+    -fx-max-height: 2.6em;
+    -fx-effect: dropshadow(gaussian, rgba(29, 182, 114, 0.45), 16, 0.15, 0, 4);
+}
+.brand-logo .ikonli-font-icon {
+    -fx-icon-color: -jd-on-accent;
+}
+.brand-name {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 800;
+    -fx-font-size: 1.22em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.brand-tagline {
+    -fx-font-size: 0.78em;
+    -fx-text-fill: -color-fg-subtle;
+}
+.sidebar-scroll, .sidebar-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.sidebar-section {
+    -fx-font-size: 0.68em;
+    -fx-font-weight: 800;
+    -fx-text-fill: -color-fg-subtle;
+    -fx-padding: 1.15em 1.2em 0.4em 1.2em;
+}
+.nav-item {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-width: 0;
+    -fx-padding: 0.6em 12px 0.6em 12px;
+    -fx-min-height: 0;
+    -fx-cursor: hand;
+    -fx-effect: null;
+}
+.nav-item .nav-text {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-weight: 600;
+}
+.nav-item .ikonli-font-icon {
+    -fx-icon-color: -color-fg-subtle;
+}
+.nav-item:hover {
+    -fx-background-color: -color-bg-subtle;
+}
+.nav-item:hover .nav-text {
+    -fx-text-fill: -color-fg-default;
+}
+.nav-item:hover .ikonli-font-icon {
+    -fx-icon-color: -color-fg-default;
+}
+.nav-item:focused {
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-insets: 0;
+}
+.nav-item.active {
+    /* Franja de acento a la izquierda + relleno suave (capas de fondo, sin alterar la altura) */
+    -fx-background-color: -color-accent-fg, -jd-sidebar, -color-accent-subtle;
+    -fx-background-insets: 0, 0 0 0 3, 0 0 0 3;
+    -fx-background-radius: 10, 0 10 10 0, 0 10 10 0;
+}
+.nav-item.active .nav-text {
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-weight: 700;
+}
+.nav-item.active .ikonli-font-icon {
+    -fx-icon-color: -color-accent-fg;
+}
+.nav-kbd {
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 0.68em;
+    -fx-text-fill: -color-fg-subtle;
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 5;
+    -fx-padding: 0.1em 0.5em 0.1em 0.5em;
+}
+.nav-item.active .nav-kbd {
+    -fx-text-fill: -color-accent-fg;
+    -fx-background-color: -color-accent-subtle;
+}
+.sidebar-footer {
+    -fx-padding: 0.9em 0.3em 0 0.3em;
+    -fx-border-color: -color-border-muted transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+.sidebar-toggle .ikonli-font-icon {
+    -fx-icon-color: -color-fg-subtle;
+}
+.sidebar:collapsed .sidebar-footer {
+    -fx-alignment: center;
+}
+
+/* ---------- Indicador de conexión ---------- */
+.connection {
+    -fx-padding: 0.55em 0.7em 0.55em 0.55em;
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 12;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 12;
+}
+.connection-dot {
+    -fx-fill: -color-success-fg;
+}
+.connection-halo {
+    -fx-fill: -color-success-muted;
+}
+.connection:offline .connection-dot {
+    -fx-fill: -color-danger-fg;
+}
+.connection:offline .connection-halo {
+    -fx-fill: -color-danger-muted;
+}
+.connection-status {
+    -fx-font-weight: 700;
+    -fx-font-size: 0.86em;
+    -fx-text-fill: -color-fg-default;
+}
+.connection:offline .connection-status {
+    -fx-text-fill: -color-danger-fg;
+}
+.connection-target {
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 0.7em;
+    -fx-text-fill: -color-fg-subtle;
+}
+
+/* ---------- Barra superior ---------- */
+.topbar {
+    -fx-padding: 0.85em 2em 0.85em 2.3em;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -color-border-muted transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.crumb {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.9em;
+}
+.crumb-current {
+    -fx-text-fill: -color-fg-default;
+    -fx-font-weight: 700;
+}
+.crumb-sep {
+    -fx-text-fill: -color-border-default;
+}
+.search-pill {
+    -fx-pref-width: 25em;
+    -fx-min-width: 12em;
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 999;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 999;
+    -fx-padding: 0.5em 14px 0.5em 14px;
+    -fx-cursor: hand;
+    -fx-effect: null;
+}
+.search-pill:hover {
+    -fx-border-color: -color-accent-muted;
+}
+.search-pill .ikonli-font-icon {
+    -fx-icon-color: -color-fg-subtle;
+}
+.search-pill-text {
+    -fx-text-fill: -color-fg-subtle;
+}
+.kbd {
+    -fx-font-family: "JetBrains Mono", monospace;
+    -fx-font-size: 0.72em;
+    -fx-text-fill: -color-fg-muted;
+    -fx-background-color: -color-bg-default;
+    -fx-background-radius: 6;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 6;
+    -fx-padding: 0.12em 0.5em 0.12em 0.5em;
+}
+.topbar-icon {
+    -fx-background-radius: 10;
+    -fx-padding: 0.5em;
+    -fx-cursor: hand;
+}
+.topbar-icon .ikonli-font-icon {
+    -fx-icon-color: -color-fg-muted;
+}
+.topbar-icon:hover .ikonli-font-icon {
+    -fx-icon-color: -color-accent-fg;
+}
+.no-arrow > .arrow-button {
+    -fx-padding: 0;
+}
+.no-arrow > .arrow-button > .arrow {
+    -fx-shape: null;
+    -fx-padding: 0;
+}
+
+/* ---------- Página de vista ---------- */
+.view {
+    -fx-background-color: transparent;
+}
+.view-page {
+    -fx-padding: 1.7em 0 0 0;
+}
+.view-header {
+    -fx-padding: 0 2.3em 1.25em 2.3em;
+}
+.view-eyebrow {
+    -fx-font-size: 0.72em;
+    -fx-font-weight: 800;
+    -fx-text-fill: -color-accent-fg;
+}
+.view-title {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 800;
+    -fx-font-size: 2.15em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.view-subtitle {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 0.98em;
+}
+.view-scroll, .view-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.view-body {
+    -fx-padding: 0.2em 2.3em 2.4em 2.3em;
+}
+.view-overlay-loading {
+    -fx-background-color: transparent;
+}
+.view-overlay-error {
+    -fx-background-color: -jd-canvas;
+}
+.view-loader {
+    -fx-ring-width: 4;
+    -fx-min-width: 3.4em;
+    -fx-min-height: 3.4em;
+}
+.view-loader-text {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-weight: 600;
+}
+
+/* ---------- Tarjetas (superficies) ---------- */
+.panel {
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 18;
+    -fx-border-color: -jd-card-border;
+    -fx-border-radius: 18;
+    -fx-padding: 1.25em 1.35em 1.25em 1.35em;
+    -fx-effect: dropshadow(gaussian, -jd-shadow, 24, 0.0, 0, 8);
+}
+.panel-title {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 700;
+    -fx-font-size: 1.12em;
+    -fx-text-fill: -color-fg-default;
+}
+.panel-caption {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.84em;
+}
+.interactive {
+    -fx-cursor: hand;
+}
+.interactive:hover {
+    -fx-background-color: -jd-card-hover;
+    -fx-border-color: -jd-card-border-hover;
+}
+.interactive:focused {
+    -fx-border-color: -color-accent-fg;
+}
+
+/* ---------- Estado vacío / error ---------- */
+.empty-state {
+    -fx-padding: 2.4em;
+}
+.empty-state-badge {
+    -fx-background-color: -color-accent-subtle;
+    -fx-background-radius: 999;
+    -fx-min-width: 4.2em;
+    -fx-min-height: 4.2em;
+    -fx-max-width: 4.2em;
+    -fx-max-height: 4.2em;
+}
+.empty-state-badge .ikonli-font-icon {
+    -fx-icon-color: -color-accent-fg;
+}
+.empty-state-error .empty-state-badge {
+    -fx-background-color: -color-danger-subtle;
+}
+.empty-state-error .empty-state-badge .ikonli-font-icon {
+    -fx-icon-color: -color-danger-fg;
+}
+.empty-state-title {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 700;
+    -fx-font-size: 1.3em;
+    -fx-text-fill: -color-fg-default;
+}
+.empty-state-message {
+    -fx-text-fill: -color-fg-muted;
+    -fx-text-alignment: center;
+}
+
+/* ---------- Toasts ---------- */
+.toast-host {
+    -fx-padding: 4.6em 1.6em 0 0;
+}
+.toast {
+    -fx-background-color: -color-bg-overlay;
+    -fx-background-radius: 14;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 14;
+    -fx-padding: 0.85em 0.6em 0.85em 0.85em;
+    -fx-effect: dropshadow(gaussian, -color-shadow-default, 28, 0.1, 0, 10);
+}
+.toast-badge {
+    -fx-background-radius: 999;
+    -fx-min-width: 2.2em;
+    -fx-min-height: 2.2em;
+    -fx-max-width: 2.2em;
+    -fx-max-height: 2.2em;
+}
+.toast-title {
+    -fx-font-weight: 800;
+    -fx-text-fill: -color-fg-default;
+}
+.toast-message {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 0.9em;
+}
+.toast-close .ikonli-font-icon {
+    -fx-icon-color: -color-fg-subtle;
+}
+.toast-success .toast-badge { -fx-background-color: -color-success-subtle; }
+.toast-success .toast-badge .ikonli-font-icon { -fx-icon-color: -color-success-fg; }
+.toast-success { -fx-border-color: -color-success-muted -color-border-default -color-border-default -color-border-default; }
+.toast-info .toast-badge { -fx-background-color: -color-chart-4-alpha20; }
+.toast-info .toast-badge .ikonli-font-icon { -fx-icon-color: -color-chart-4; }
+.toast-warning .toast-badge { -fx-background-color: -color-warning-subtle; }
+.toast-warning .toast-badge .ikonli-font-icon { -fx-icon-color: -color-warning-fg; }
+.toast-error .toast-badge { -fx-background-color: -color-danger-subtle; }
+.toast-error .toast-badge .ikonli-font-icon { -fx-icon-color: -color-danger-fg; }
+.toast-error { -fx-border-color: -color-danger-muted -color-border-default -color-border-default -color-border-default; }
+
+/* ---------- Paleta de comandos ---------- */
+.palette {
+    -fx-background-color: -color-bg-overlay;
+    -fx-background-radius: 18;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 50, 0.1, 0, 18);
+    -fx-padding: 0.6em;
+}
+.palette-input {
+    -fx-font-size: 1.08em;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -color-border-muted transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0.75em 0.6em 0.85em 0.6em;
+}
+.palette-input .ikonli-font-icon {
+    -fx-icon-color: -color-accent-fg;
+}
+.palette-list {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0.45em 0 0.3em 0;
+}
+.palette-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-padding: 0.55em 0.7em 0.55em 0.7em;
+}
+.palette-list .list-cell:filled:hover {
+    -fx-background-color: -color-bg-subtle;
+}
+.palette-list .list-cell:filled:selected {
+    -fx-background-color: -color-accent-subtle;
+}
+.palette-icon {
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 9;
+    -fx-min-width: 2.2em;
+    -fx-min-height: 2.2em;
+}
+.palette-icon .ikonli-font-icon {
+    -fx-icon-color: -color-fg-muted;
+}
+.palette-list .list-cell:filled:selected .palette-icon .ikonli-font-icon {
+    -fx-icon-color: -color-accent-fg;
+}
+.palette-title {
+    -fx-font-weight: 700;
+    -fx-text-fill: -color-fg-default;
+}
+.palette-hint {
+    -fx-font-size: 0.82em;
+    -fx-text-fill: -color-fg-subtle;
+}
+.palette-footer {
+    -fx-font-size: 0.78em;
+    -fx-text-fill: -color-fg-subtle;
+    -fx-padding: 0.6em 0.7em 0.2em 0.7em;
+}
+
+/* ---------- Diálogos y formularios modales ---------- */
+.dialog {
+    -fx-background-color: -color-bg-overlay;
+    -fx-background-radius: 20;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 20;
+    -fx-padding: 1.6em;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.45), 50, 0.1, 0, 18);
+}
+.dialog-title {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 800;
+    -fx-font-size: 1.4em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.dialog-message {
+    -fx-text-fill: -color-fg-muted;
+}
+.confirm-badge {
+    -fx-background-color: -color-danger-subtle;
+    -fx-background-radius: 999;
+    -fx-min-width: 3em;
+    -fx-min-height: 3em;
+    -fx-max-width: 3em;
+    -fx-max-height: 3em;
+}
+.confirm-badge .ikonli-font-icon {
+    -fx-icon-color: -color-danger-fg;
+}
+
+/* ---------- Botones ---------- */
+.button, .menu-button, .toggle-button {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-weight: 600;
+}
+.button.accent {
+    -fx-text-fill: -jd-on-accent;
+}
+.button.accent .ikonli-font-icon {
+    -fx-icon-color: -jd-on-accent;
+}
+.button.danger .ikonli-font-icon {
+    -fx-icon-color: white;
+}
+
+/* ---------- Barras de desplazamiento finas ---------- */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+.scroll-bar > .thumb {
+    -fx-background-color: -color-border-default;
+    -fx-background-radius: 999;
+}
+.scroll-bar > .thumb:hover {
+    -fx-background-color: -color-fg-subtle;
+}
+.scroll-bar:vertical {
+    -fx-pref-width: 10;
+    -fx-padding: 2;
+}
+.scroll-bar:horizontal {
+    -fx-pref-height: 10;
+    -fx-padding: 2;
+}
+
+/* ---------- Tooltips ---------- */
+.tooltip {
+    -fx-background-color: -color-bg-overlay;
+    -fx-text-fill: -color-fg-default;
+    -fx-background-radius: 8;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 8;
+    -fx-font-size: 0.86em;
+    -fx-padding: 0.4em 0.65em 0.4em 0.65em;
+}

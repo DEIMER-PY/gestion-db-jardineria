@@ -1,0 +1,93 @@
+/*
+ * Paleta "Invernadero nocturno" (tema oscuro).
+ * Sobrescribe las variables semánticas de AtlantaFX/Primer: todos los controles
+ * (botones, tablas, campos, menús, gráficas) heredan esta identidad sin CSS adicional.
+ */
+.root {
+    /* Superficies */
+    -color-bg-default: #0C1513;
+    -color-bg-subtle: #111D19;
+    -color-bg-overlay: #13211D;
+    -color-bg-inset: #070E0C;
+
+    /* Texto (contraste AA verificado sobre #0C1513: 14.9:1 / 7.6:1 / 4.6:1) */
+    -color-fg-default: #E6F1EB;
+    -color-fg-muted: #9EB4AA;
+    -color-fg-subtle: #75907F;
+    -color-fg-emphasis: #FFFFFF;
+
+    /* Bordes */
+    -color-border-default: #24362F;
+    -color-border-muted: #1B2B26;
+    -color-border-subtle: #16241F;
+
+    /* Acento jade */
+    -color-accent-fg: #5BE3A0;
+    -color-accent-emphasis: #1DB672;
+    -color-accent-muted: rgba(52, 211, 153, 0.40);
+    -color-accent-subtle: rgba(52, 211, 153, 0.12);
+
+    -color-success-fg: #5BE3A0;
+    -color-success-emphasis: #1DB672;
+    -color-success-muted: rgba(52, 211, 153, 0.40);
+    -color-success-subtle: rgba(52, 211, 153, 0.12);
+
+    -color-warning-fg: #F7C35C;
+    -color-warning-emphasis: #C98A12;
+    -color-warning-muted: rgba(247, 195, 92, 0.40);
+    -color-warning-subtle: rgba(247, 195, 92, 0.12);
+
+    -color-danger-fg: #FF8C7C;
+    -color-danger-emphasis: #DC4A37;
+    -color-danger-muted: rgba(255, 122, 107, 0.40);
+    -color-danger-subtle: rgba(255, 122, 107, 0.12);
+
+    /* Series de gráficas: jade, lima, ámbar, cielo, coral, lila, menta, rosa */
+    -color-chart-1: #34D399;
+    -color-chart-2: #B6F36A;
+    -color-chart-3: #F7C35C;
+    -color-chart-4: #5CC8FF;
+    -color-chart-5: #FF8C7C;
+    -color-chart-6: #B79CFF;
+    -color-chart-7: #6EE7D8;
+    -color-chart-8: #F0A6CA;
+    -color-chart-1-alpha20: rgba(52, 211, 153, 0.20);
+    -color-chart-2-alpha20: rgba(182, 243, 106, 0.20);
+    -color-chart-3-alpha20: rgba(247, 195, 92, 0.20);
+    -color-chart-4-alpha20: rgba(92, 200, 255, 0.20);
+    -color-chart-5-alpha20: rgba(255, 140, 124, 0.20);
+    -color-chart-6-alpha20: rgba(183, 156, 255, 0.20);
+    -color-chart-1-alpha70: rgba(52, 211, 153, 0.70);
+    -color-chart-2-alpha70: rgba(182, 243, 106, 0.70);
+    -color-chart-3-alpha70: rgba(247, 195, 92, 0.70);
+    -color-chart-4-alpha70: rgba(92, 200, 255, 0.70);
+    -color-chart-5-alpha70: rgba(255, 140, 124, 0.70);
+    -color-chart-6-alpha70: rgba(183, 156, 255, 0.70);
+
+    /* Controles */
+    -color-button-bg: #15231F;
+    -color-button-border: #273B34;
+    -color-button-bg-hover: #1A2B26;
+    -color-button-border-hover: #31493F;
+    -color-input-bg: #0E1916;
+    -color-input-border: #273B34;
+    -color-cell-bg: transparent;
+    -color-cell-bg-odd: rgba(255, 255, 255, 0.018);
+    -color-modal-pane-overlay: rgba(2, 7, 5, 0.66);
+    -color-shadow-default: rgba(0, 0, 0, 0.55);
+
+    /* Tokens propios de Jardinería Suite */
+    -jd-canvas: #09110F;
+    -jd-sidebar: #08100E;
+    -jd-card: #0F1A17;
+    -jd-card-hover: #12201C;
+    -jd-card-border: rgba(150, 230, 190, 0.085);
+    -jd-card-border-hover: rgba(91, 227, 160, 0.38);
+    -jd-on-accent: #04140C;
+    -jd-ambient: radial-gradient(center 88% -10%, radius 62%, rgba(52, 211, 153, 0.13) 0%, rgba(52, 211, 153, 0.00) 100%),
+                 radial-gradient(center 4% 108%, radius 48%, rgba(182, 243, 106, 0.05) 0%, rgba(182, 243, 106, 0.00) 100%);
+    -jd-brand: linear-gradient(to bottom right, #6EF0B0 0%, #1DB672 55%, #0B7A4A 100%);
+    -jd-hero: linear-gradient(to right, #10231C 0%, #0F1A17 55%, #121D19 100%);
+    -jd-track: rgba(255, 255, 255, 0.06);
+    -jd-shadow: rgba(0, 0, 0, 0.45);
+}
