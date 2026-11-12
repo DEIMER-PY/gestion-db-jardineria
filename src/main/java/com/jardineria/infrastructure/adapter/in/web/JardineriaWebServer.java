@@ -5,7 +5,7 @@ import com.jardineria.domain.model.Cliente;
 import com.jardineria.domain.model.Oficina;
 import com.jardineria.domain.model.Pedido;
 import com.jardineria.domain.model.Producto;
-import com.jardineria.infrastructure.ServiceRegistry;
+import com.jardineria.infrastructure.config.ApplicationContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -28,12 +28,12 @@ import java.util.concurrent.Executors;
 public class JardineriaWebServer {
     private static final Logger log = LoggerFactory.getLogger(JardineriaWebServer.class);
 
-    private final ServiceRegistry registry;
+    private final ApplicationContext registry;
     private HttpServer server;
     private int port;
     private boolean running = false;
 
-    public JardineriaWebServer(ServiceRegistry registry) {
+    public JardineriaWebServer(ApplicationContext registry) {
         this.registry = registry;
     }
 
@@ -80,6 +80,18 @@ public class JardineriaWebServer {
         log.info("🚀 Servidor Web Embebido de Jardinería activo en http://localhost:{}/dashboard", port);
     }
 
+    private static volatile JardineriaWebServer shared;
+
+    /** Devuelve el servidor compartido, arrancándolo bajo demanda (sin efectos al construir el contexto). */
+    public static synchronized JardineriaWebServer shared(ApplicationContext context) {
+        if (shared == null) {
+            shared = new JardineriaWebServer(context);
+            shared.start();
+            Runtime.getRuntime().addShutdownHook(new Thread(shared::stop));
+        }
+        return shared;
+    }
+
     public synchronized void stop() {
         if (server != null && running) {
             server.stop(1);
@@ -118,7 +130,7 @@ public class JardineriaWebServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                DashboardService.DashboardMetrics m = registry.getDashboardService().obtenerMetricas();
+                com.jardineria.application.dto.DashboardMetrics m = registry.getDashboardService().obtenerMetricas();
                 long totalPedidos = m.totalPedidos();
                 double pEntregados = (totalPedidos > 0) ? (m.pedidosEntregados() * 100.0) / totalPedidos : 0.0;
                 double pPendientes = (totalPedidos > 0) ? (m.pedidosPendientes() * 100.0) / totalPedidos : 0.0;
@@ -165,7 +177,7 @@ public class JardineriaWebServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                List<Pedido> pedidos = registry.getDashboardService().obtenerUltimosPedidos();
+                List<Pedido> pedidos = registry.getDashboardService().obtenerUltimosPedidos(10);
                 StringBuilder json = new StringBuilder("[\n");
                 for (int i = 0; i < pedidos.size(); i++) {
                     Pedido p = pedidos.get(i);
@@ -273,7 +285,7 @@ public class JardineriaWebServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                DashboardService.DashboardMetrics m = registry.getDashboardService().obtenerMetricas();
+                com.jardineria.application.dto.DashboardMetrics m = registry.getDashboardService().obtenerMetricas();
                 double total = m.totalIngresos() != null ? m.totalIngresos().doubleValue() : 0.0;
                 // Proyecciones mensuales realistas calculadas proporcionalmente
                 double[] monthlyWeights = {0.06, 0.07, 0.09, 0.11, 0.12, 0.10, 0.08, 0.07, 0.09, 0.10, 0.08, 0.03};

@@ -1,5 +1,6 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.port.in.EmpleadoUseCase;
 import com.jardineria.domain.exception.BusinessValidationException;
 import com.jardineria.domain.exception.DuplicateEntityException;
 import com.jardineria.domain.exception.EntityNotFoundException;
@@ -13,7 +14,7 @@ import java.util.Objects;
 /**
  * Servicio de aplicación para la gestión del ciclo de vida y reglas de negocio de Empleados.
  */
-public class EmpleadoService {
+public class EmpleadoService implements EmpleadoUseCase {
     private final EmpleadoRepository empleadoRepository;
     private final OficinaRepository oficinaRepository;
 
@@ -22,6 +23,7 @@ public class EmpleadoService {
         this.oficinaRepository = oficinaRepository;
     }
 
+    @Override
     public Empleado crearEmpleado(Empleado emp) {
         validarEmpleado(emp);
         if (empleadoRepository.existsById(emp.getCodigoEmpleado())) {
@@ -36,6 +38,7 @@ public class EmpleadoService {
         return empleadoRepository.save(emp);
     }
 
+    @Override
     public Empleado actualizarEmpleado(Empleado emp) {
         validarEmpleado(emp);
         if (!empleadoRepository.existsById(emp.getCodigoEmpleado())) {
@@ -55,6 +58,7 @@ public class EmpleadoService {
         return empleadoRepository.update(emp);
     }
 
+    @Override
     public Empleado obtenerPorId(Integer codigoEmpleado) {
         if (codigoEmpleado == null || codigoEmpleado <= 0) {
             throw new BusinessValidationException("El código de empleado debe ser un entero positivo");
@@ -63,10 +67,12 @@ public class EmpleadoService {
                 .orElseThrow(() -> new EntityNotFoundException("Empleado", codigoEmpleado));
     }
 
+    @Override
     public List<Empleado> listarTodos() {
         return empleadoRepository.findAll();
     }
 
+    @Override
     public boolean eliminarEmpleado(Integer codigoEmpleado) {
         if (!empleadoRepository.existsById(codigoEmpleado)) {
             throw new EntityNotFoundException("Empleado", codigoEmpleado);
@@ -78,6 +84,7 @@ public class EmpleadoService {
         return empleadoRepository.deleteById(codigoEmpleado);
     }
 
+    @Override
     public List<Empleado> buscarPorOficina(String codigoOficina) {
         if (codigoOficina == null || codigoOficina.isBlank()) {
             return listarTodos();
@@ -85,6 +92,7 @@ public class EmpleadoService {
         return empleadoRepository.findByOficina(codigoOficina.trim());
     }
 
+    @Override
     public List<Empleado> buscarPorJefe(Integer codigoJefe) {
         if (codigoJefe == null) {
             return listarDirectores();
@@ -92,14 +100,17 @@ public class EmpleadoService {
         return empleadoRepository.findByJefe(codigoJefe);
     }
 
+    @Override
     public List<Empleado> listarDirectores() {
         return empleadoRepository.findDirectores();
     }
 
+    @Override
     public List<Empleado> listarRepresentantesVentas() {
         return empleadoRepository.findRepresentantesVentas();
     }
 
+    @Override
     public long contarEmpleados() {
         return empleadoRepository.count();
     }

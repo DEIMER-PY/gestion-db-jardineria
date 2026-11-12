@@ -34,7 +34,7 @@ public class ProductLeaf implements CatalogComponent {
     @Override
     public void renderEstructura(StringBuilder sb, String indent) {
         sb.append(indent)
-          .append("🍃 [Producto Individual] ")
+          .append("[PRODUCTO] ")
           .append(producto.getCodigoProducto())
           .append(" - ")
           .append(producto.getNombre())

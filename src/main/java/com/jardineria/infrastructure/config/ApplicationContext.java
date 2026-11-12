@@ -1,61 +1,54 @@
-package com.jardineria.infrastructure;
+package com.jardineria.infrastructure.config;
 
+import com.jardineria.application.facade.JardineriaBusinessFacade;
+import com.jardineria.application.port.in.*;
 import com.jardineria.application.service.*;
-import com.jardineria.domain.pattern.facade.JardineriaBusinessFacade;
 import com.jardineria.domain.pattern.proxy.CachedProductLookupProxy;
 import com.jardineria.domain.repository.*;
-import com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer;
 import com.jardineria.infrastructure.adapter.out.persistence.jdbc.*;
 
 /**
- * Registro y contenedor de inyección de dependencias para los repositorios y servicios de la aplicación.
+ * Composition Root de la aplicación (inyección de dependencias manual).
+ * <p>
+ * Es el único punto que conoce las implementaciones concretas: instancia los adaptadores
+ * de salida (JDBC), los inyecta en los servicios de aplicación y expone a los adaptadores
+ * de entrada (GUI y CLI) únicamente los <b>puertos de entrada</b> ({@code *UseCase}).
+ * Construirlo no abre conexiones ni arranca hilos: el pool de HikariCP se crea de forma
+ * perezosa en la primera consulta.
  */
-public final class ServiceRegistry {
-    private static volatile ServiceRegistry instance;
+public final class ApplicationContext {
+    private static volatile ApplicationContext instance;
 
-    // Repositorios
-    private final OficinaRepository oficinaRepository;
-    private final EmpleadoRepository empleadoRepository;
-    private final GamaProductoRepository gamaProductoRepository;
-    private final ClienteRepository clienteRepository;
-    private final PedidoRepository pedidoRepository;
-    private final ProductoRepository productoRepository;
-    private final DetallePedidoRepository detallePedidoRepository;
-    private final PagoRepository pagoRepository;
+    private final OficinaUseCase oficinaService;
+    private final EmpleadoUseCase empleadoService;
+    private final GamaProductoUseCase gamaProductoService;
+    private final ClienteUseCase clienteService;
+    private final PedidoUseCase pedidoService;
+    private final ProductoUseCase productoService;
+    private final DetallePedidoUseCase detallePedidoService;
+    private final PagoUseCase pagoService;
+    private final DashboardUseCase dashboardService;
+    private final AnalyticsUseCase analyticsService;
 
-    // Patrones y Proxies
     private final CachedProductLookupProxy cachedProductProxy;
     private final JardineriaBusinessFacade businessFacade;
 
-    // Servicios
-    private final OficinaService oficinaService;
-    private final EmpleadoService empleadoService;
-    private final GamaProductoService gamaProductoService;
-    private final ClienteService clienteService;
-    private final PedidoService pedidoService;
-    private final ProductoService productoService;
-    private final DetallePedidoService detallePedidoService;
-    private final PagoService pagoService;
-    private final DashboardService dashboardService;
+    private ApplicationContext() {
+        // Adaptadores de salida (persistencia JDBC sobre MySQL)
+        OficinaRepository oficinaRepository = new OficinaJdbcRepository();
+        EmpleadoRepository empleadoRepository = new EmpleadoJdbcRepository();
+        GamaProductoRepository gamaProductoRepository = new GamaProductoJdbcRepository();
+        ClienteRepository clienteRepository = new ClienteJdbcRepository();
+        PedidoRepository pedidoRepository = new PedidoJdbcRepository();
+        ProductoRepository productoRepository = new ProductoJdbcRepository();
+        DetallePedidoRepository detallePedidoRepository = new DetallePedidoJdbcRepository();
+        PagoRepository pagoRepository = new PagoJdbcRepository();
+        AnalyticsRepository analyticsRepository = new AnalyticsJdbcRepository();
 
-    // Servidor Web Embebido (Modo Web / Electron)
-    private final JardineriaWebServer webServer;
-
-    private ServiceRegistry() {
-        // Inicialización de adaptadores de persistencia (JDBC)
-        this.oficinaRepository = new OficinaJdbcRepository();
-        this.empleadoRepository = new EmpleadoJdbcRepository();
-        this.gamaProductoRepository = new GamaProductoJdbcRepository();
-        this.clienteRepository = new ClienteJdbcRepository();
-        this.pedidoRepository = new PedidoJdbcRepository();
-        this.productoRepository = new ProductoJdbcRepository();
-        this.detallePedidoRepository = new DetallePedidoJdbcRepository();
-        this.pagoRepository = new PagoJdbcRepository();
-
-        // Patrón Proxy sobre ProductoRepository
+        // Patrón Proxy sobre el repositorio de productos
         this.cachedProductProxy = new CachedProductLookupProxy(productoRepository);
 
-        // Inicialización de la capa de aplicación (Servicios)
+        // Capa de aplicación
         this.oficinaService = new OficinaService(oficinaRepository);
         this.empleadoService = new EmpleadoService(empleadoRepository, oficinaRepository);
         this.gamaProductoService = new GamaProductoService(gamaProductoRepository);
@@ -66,26 +59,20 @@ public final class ServiceRegistry {
         this.pagoService = new PagoService(pagoRepository, clienteRepository);
         this.dashboardService = new DashboardService(
                 clienteRepository, pedidoRepository, productoRepository,
-                empleadoRepository, oficinaRepository, pagoRepository
-        );
+                empleadoRepository, oficinaRepository, pagoRepository);
+        this.analyticsService = new AnalyticsService(analyticsRepository);
 
-        // Patrón Facade unificando los subsistemas
+        // Patrón Facade sobre los casos de uso
         this.businessFacade = new JardineriaBusinessFacade(
-                clienteService, productoService, pedidoService, detallePedidoService, pagoService
-        );
-
-        // Servidor Web Embebido reactivo
-        this.webServer = new JardineriaWebServer(this);
-        this.webServer.start();
-
-        Runtime.getRuntime().addShutdownHook(new Thread(webServer::stop));
+                clienteService, productoService, pedidoService, detallePedidoService, pagoService);
     }
 
-    public static ServiceRegistry getInstance() {
+    /** Devuelve el contexto único de la aplicación (Singleton con doble verificación). */
+    public static ApplicationContext getInstance() {
         if (instance == null) {
-            synchronized (ServiceRegistry.class) {
+            synchronized (ApplicationContext.class) {
                 if (instance == null) {
-                    instance = new ServiceRegistry();
+                    instance = new ApplicationContext();
                 }
             }
         }
@@ -100,43 +87,43 @@ public final class ServiceRegistry {
         return businessFacade;
     }
 
-    public JardineriaWebServer getWebServer() {
-        return webServer;
-    }
-
-    public OficinaService getOficinaService() {
+    public OficinaUseCase getOficinaService() {
         return oficinaService;
     }
 
-    public EmpleadoService getEmpleadoService() {
+    public EmpleadoUseCase getEmpleadoService() {
         return empleadoService;
     }
 
-    public GamaProductoService getGamaProductoService() {
+    public GamaProductoUseCase getGamaProductoService() {
         return gamaProductoService;
     }
 
-    public ClienteService getClienteService() {
+    public ClienteUseCase getClienteService() {
         return clienteService;
     }
 
-    public PedidoService getPedidoService() {
+    public PedidoUseCase getPedidoService() {
         return pedidoService;
     }
 
-    public ProductoService getProductoService() {
+    public ProductoUseCase getProductoService() {
         return productoService;
     }
 
-    public DetallePedidoService getDetallePedidoService() {
+    public DetallePedidoUseCase getDetallePedidoService() {
         return detallePedidoService;
     }
 
-    public PagoService getPagoService() {
+    public PagoUseCase getPagoService() {
         return pagoService;
     }
 
-    public DashboardService getDashboardService() {
+    public DashboardUseCase getDashboardService() {
         return dashboardService;
+    }
+
+    public AnalyticsUseCase getAnalyticsService() {
+        return analyticsService;
     }
 }

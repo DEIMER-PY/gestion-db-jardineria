@@ -130,8 +130,8 @@ class GofStructuralPatternsTest {
 
         assertSame(g1, g2, "Las instancias para Aromáticas deben ser exactamente el mismo objeto en memoria");
         assertNotSame(g1, g3);
-        assertEquals("🌿", g1.emojiVisual());
-        assertEquals("🍎", g3.emojiVisual());
+        assertEquals("leaf", g1.iconKey());
+        assertEquals("apple", g3.iconKey());
     }
 
     @Test

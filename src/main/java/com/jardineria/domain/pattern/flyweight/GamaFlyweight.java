@@ -11,11 +11,11 @@ public record GamaFlyweight(
         String nombreGama,
         String descripcionGenerica,
         String colorHex,
-        String emojiVisual,
+        String iconKey,
         String bannerUrl
 ) {
     public String formatearDetalleExtrinseco(String codigoProducto, int stock, String precioVenta) {
-        return String.format("%s [%s] %s | Stock: %d uds | PVP: %s € | Color: %s",
-                emojiVisual, nombreGama, codigoProducto, stock, precioVenta, colorHex);
+        return String.format("[%s:%s] %s | Stock: %d uds | PVP: %s € | Color: %s",
+                iconKey, nombreGama, codigoProducto, stock, precioVenta, colorHex);
     }
 }

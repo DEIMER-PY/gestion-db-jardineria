@@ -1,5 +1,6 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.port.in.GamaProductoUseCase;
 import com.jardineria.domain.exception.BusinessValidationException;
 import com.jardineria.domain.exception.DuplicateEntityException;
 import com.jardineria.domain.exception.EntityNotFoundException;
@@ -12,13 +13,14 @@ import java.util.Objects;
 /**
  * Servicio de aplicación para la gestión de Gamas de Productos.
  */
-public class GamaProductoService {
+public class GamaProductoService implements GamaProductoUseCase {
     private final GamaProductoRepository repository;
 
     public GamaProductoService(GamaProductoRepository repository) {
         this.repository = Objects.requireNonNull(repository, "El repositorio de gamas no puede ser nulo");
     }
 
+    @Override
     public GamaProducto crearGama(GamaProducto gama) {
         validarGama(gama);
         if (repository.existsById(gama.getGama())) {
@@ -27,6 +29,7 @@ public class GamaProductoService {
         return repository.save(gama);
     }
 
+    @Override
     public GamaProducto actualizarGama(GamaProducto gama) {
         validarGama(gama);
         if (!repository.existsById(gama.getGama())) {
@@ -35,6 +38,7 @@ public class GamaProductoService {
         return repository.update(gama);
     }
 
+    @Override
     public GamaProducto obtenerPorId(String gama) {
         if (gama == null || gama.isBlank()) {
             throw new BusinessValidationException("El identificador de gama es obligatorio");
@@ -43,10 +47,12 @@ public class GamaProductoService {
                 .orElseThrow(() -> new EntityNotFoundException("Gama de Producto", gama));
     }
 
+    @Override
     public List<GamaProducto> listarTodas() {
         return repository.findAll();
     }
 
+    @Override
     public boolean eliminarGama(String gama) {
         if (!repository.existsById(gama)) {
             throw new EntityNotFoundException("Gama de Producto", gama);
@@ -54,6 +60,7 @@ public class GamaProductoService {
         return repository.deleteById(gama);
     }
 
+    @Override
     public long contarGamas() {
         return repository.count();
     }

@@ -1,6 +1,6 @@
-package com.jardineria.domain.pattern.facade;
+package com.jardineria.application.facade;
 
-import com.jardineria.application.service.*;
+import com.jardineria.application.port.in.*;
 import com.jardineria.domain.model.Cliente;
 import com.jardineria.domain.model.DetallePedido;
 import com.jardineria.domain.model.Pago;
@@ -23,17 +23,17 @@ import java.util.List;
  * cálculos de precios con decoradores y adaptadores de pago.
  */
 public class JardineriaBusinessFacade {
-    private final ClienteService clienteService;
-    private final ProductoService productoService;
-    private final PedidoService pedidoService;
-    private final DetallePedidoService detalleService;
-    private final PagoService pagoService;
+    private final ClienteUseCase clienteService;
+    private final ProductoUseCase productoService;
+    private final PedidoUseCase pedidoService;
+    private final DetallePedidoUseCase detalleService;
+    private final PagoUseCase pagoService;
 
-    public JardineriaBusinessFacade(ClienteService clienteService,
-                                   ProductoService productoService,
-                                   PedidoService pedidoService,
-                                   DetallePedidoService detalleService,
-                                   PagoService pagoService) {
+    public JardineriaBusinessFacade(ClienteUseCase clienteService,
+                                   ProductoUseCase productoService,
+                                   PedidoUseCase pedidoService,
+                                   DetallePedidoUseCase detalleService,
+                                   PagoUseCase pagoService) {
         this.clienteService = clienteService;
         this.productoService = productoService;
         this.pedidoService = pedidoService;

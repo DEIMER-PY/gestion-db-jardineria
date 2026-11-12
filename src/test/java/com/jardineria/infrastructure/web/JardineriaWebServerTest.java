@@ -1,6 +1,6 @@
 package com.jardineria.infrastructure.web;
 
-import com.jardineria.infrastructure.ServiceRegistry;
+import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,8 @@ class JardineriaWebServerTest {
     @Test
     @DisplayName("Servidor Web Embebido: Responde a endpoints REST y sirve index.html")
     void testWebServerEndpoints() throws Exception {
-        ServiceRegistry registry = ServiceRegistry.getInstance();
-        JardineriaWebServer server = registry.getWebServer();
+        ApplicationContext registry = ApplicationContext.getInstance();
+        JardineriaWebServer server = com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance());
         assertNotNull(server);
         assertTrue(server.isRunning());
 

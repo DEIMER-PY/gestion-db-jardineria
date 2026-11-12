@@ -1,6 +1,6 @@
 package com.jardineria.infrastructure.adapter.in.ui;
 
-import com.jardineria.infrastructure.ServiceRegistry;
+import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.adapter.in.ui.components.*;
 import com.jardineria.infrastructure.adapter.in.ui.views.*;
 import com.jardineria.infrastructure.config.DatabaseConfig;
@@ -19,7 +19,7 @@ import java.util.Map;
  * Iconografía Vectorial Java2D, Sistema Toast no bloqueante y Navegación Avanzada.
  */
 public class MainDashboardWindow extends JFrame {
-    private final ServiceRegistry registry;
+    private final ApplicationContext registry;
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
@@ -41,7 +41,7 @@ public class MainDashboardWindow extends JFrame {
     private JLabel lblStatusView;
     private String currentCard = "DASHBOARD";
 
-    public MainDashboardWindow(ServiceRegistry registry) {
+    public MainDashboardWindow(ApplicationContext registry) {
         this.registry = registry;
 
         setTitle("Jardinería Enterprise Suite — Hexagonal Architecture & Management");
@@ -143,7 +143,7 @@ public class MainDashboardWindow extends JFrame {
         JButton btnElectron = UiHelper.createIconButton("Modo Escritorio Web", VectorIcons.IconType.EXTERNAL_LINK, UiHelper.COLOR_PURPLE);
         btnElectron.setToolTipText("Abrir panel interactivo web nativo en Google Chrome (Modo App)");
         btnElectron.addActionListener(e -> {
-            String url = (registry.getWebServer() != null) ? registry.getWebServer().getDashboardUrl() : "http://localhost:8080/dashboard";
+            String url = (com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()) != null) ? com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()).getDashboardUrl() : "http://localhost:8080/dashboard";
             ElectronModeLauncher.openElectronMode(url);
             ToastNotificationManager.showInfo("Modo Escritorio", "Abriendo aplicación web en ventana independiente.");
         });
@@ -397,7 +397,7 @@ public class MainDashboardWindow extends JFrame {
         // Atajo Ctrl+W para abrir modo Web App
         getRootPane().registerKeyboardAction(
                 e -> {
-                    String url = (registry.getWebServer() != null) ? registry.getWebServer().getDashboardUrl() : "http://localhost:8080/dashboard";
+                    String url = (com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()) != null) ? com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()).getDashboardUrl() : "http://localhost:8080/dashboard";
                     ElectronModeLauncher.openElectronMode(url);
                 },
                 KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK),

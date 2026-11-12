@@ -6,13 +6,13 @@ import com.jardineria.domain.pattern.bridge.*;
 import com.jardineria.domain.pattern.composite.ProductBundleComposite;
 import com.jardineria.domain.pattern.composite.ProductLeaf;
 import com.jardineria.domain.pattern.decorator.*;
-import com.jardineria.domain.pattern.facade.CheckoutRequest;
-import com.jardineria.domain.pattern.facade.CheckoutResult;
-import com.jardineria.domain.pattern.facade.JardineriaBusinessFacade;
+import com.jardineria.application.facade.CheckoutRequest;
+import com.jardineria.application.facade.CheckoutResult;
+import com.jardineria.application.facade.JardineriaBusinessFacade;
 import com.jardineria.domain.pattern.flyweight.GamaFlyweight;
 import com.jardineria.domain.pattern.flyweight.GamaFlyweightFactory;
 import com.jardineria.domain.pattern.proxy.CachedProductLookupProxy;
-import com.jardineria.infrastructure.ServiceRegistry;
+import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.adapter.in.ui.components.ImageHelper;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
 
@@ -27,11 +27,11 @@ import java.util.List;
  * Permite explorar los diagramas de referencia y ejecutar demostraciones interactivas en vivo.
  */
 public class PatternsHubView extends JPanel {
-    private final ServiceRegistry registry;
+    private final ApplicationContext registry;
     private final JTextArea txtConsole;
     private final JLabel lblProxyStats;
 
-    public PatternsHubView(ServiceRegistry registry) {
+    public PatternsHubView(ApplicationContext registry) {
         this.registry = registry;
         setLayout(new BorderLayout(14, 14));
         setBorder(new EmptyBorder(16, 16, 16, 16));

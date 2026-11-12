@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * microtendencias Sparkline y filtrado reactivo de pedidos estilo JavaTMP.
  */
 public class DashboardView extends JPanel {
-    private final DashboardService dashboardService;
+    private final com.jardineria.application.port.in.DashboardUseCase dashboardService;
     private final Consumer<String> navigationConsumer;
 
     private KpiCard cardClientes;
@@ -35,7 +35,7 @@ public class DashboardView extends JPanel {
     private SearchFilterBar searchFilterBar;
     private List<Pedido> cachedOrders;
 
-    public DashboardView(DashboardService dashboardService, Consumer<String> navigationConsumer) {
+    public DashboardView(com.jardineria.application.port.in.DashboardUseCase dashboardService, Consumer<String> navigationConsumer) {
         this.dashboardService = dashboardService;
         this.navigationConsumer = navigationConsumer;
 
@@ -80,8 +80,8 @@ public class DashboardView extends JPanel {
         JButton btnElectron = UiHelper.createIconButton("Modo Escritorio Web", VectorIcons.IconType.EXTERNAL_LINK, UiHelper.COLOR_PURPLE);
         btnElectron.setToolTipText("Abrir experiencia web nativa en Google Chrome (Modo App)");
         btnElectron.addActionListener(e -> {
-            String url = (com.jardineria.infrastructure.ServiceRegistry.getInstance().getWebServer() != null)
-                    ? com.jardineria.infrastructure.ServiceRegistry.getInstance().getWebServer().getDashboardUrl()
+            String url = (com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()) != null)
+                    ? com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()).getDashboardUrl()
                     : "http://localhost:8080/dashboard";
             ElectronModeLauncher.openElectronMode(url);
             ToastNotificationManager.showInfo("Modo Escritorio", "Iniciando panel web interactivo en ventana independiente.");
@@ -259,7 +259,7 @@ public class DashboardView extends JPanel {
 
     public void refreshData() {
         try {
-            DashboardService.DashboardMetrics m = dashboardService.obtenerMetricas();
+            com.jardineria.application.dto.DashboardMetrics m = dashboardService.obtenerMetricas();
             cardClientes.setValue(String.valueOf(m.totalClientes()));
             cardPedidos.setValue(String.valueOf(m.totalPedidos()));
             cardPedidos.setSubtitle(String.format("✔ %d Entregados | ⏳ %d Pendientes", m.pedidosEntregados(), m.pedidosPendientes()));
@@ -280,7 +280,7 @@ public class DashboardView extends JPanel {
                 lblBreakdownRechazados.setText(String.format("● Rechazados: %.1f%% (%d)", pRec, m.pedidosRechazados()));
             }
 
-            cachedOrders = dashboardService.obtenerUltimosPedidos();
+            cachedOrders = dashboardService.obtenerUltimosPedidos(10);
             filtrarTablaLocal();
 
             ToastNotificationManager.showSuccess("Datos Sincronizados", "Panel ejecutivo actualizado correctamente.");
