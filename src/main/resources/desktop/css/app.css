@@ -530,3 +530,181 @@
     -fx-font-size: 0.86em;
     -fx-padding: 0.4em 0.65em 0.4em 0.65em;
 }
+
+/* =====================================================================
+ * Tonos semánticos: cada .tone-* define -jd-tone / -jd-tone-soft, que
+ * heredan KPIs, barras, leyendas, insignias y segmentos de gráficas.
+ * ===================================================================== */
+.tone-jade  { -jd-tone: -color-chart-1; -jd-tone-soft: -color-chart-1-alpha20; }
+.tone-lime  { -jd-tone: -color-chart-2; -jd-tone-soft: -color-chart-2-alpha20; }
+.tone-amber { -jd-tone: -color-chart-3; -jd-tone-soft: -color-chart-3-alpha20; }
+.tone-sky   { -jd-tone: -color-chart-4; -jd-tone-soft: -color-chart-4-alpha20; }
+.tone-coral { -jd-tone: -color-chart-5; -jd-tone-soft: -color-chart-5-alpha20; }
+.tone-lilac { -jd-tone: -color-chart-6; -jd-tone-soft: -color-chart-6-alpha20; }
+.tone-neutral { -jd-tone: -color-fg-muted; -jd-tone-soft: -color-bg-subtle; }
+
+.legend-swatch {
+    -fx-background-color: -jd-tone;
+    -fx-background-radius: 3;
+    -fx-min-width: 10; -fx-min-height: 10; -fx-max-width: 10; -fx-max-height: 10;
+}
+.legend-label { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.92em; }
+.legend-value { -fx-text-fill: -color-fg-default; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.9em; -fx-font-weight: bold; }
+.legend-percent { -fx-text-fill: -color-fg-subtle; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.85em; -fx-min-width: 4.4em; -fx-alignment: center-right; }
+
+/* ---------- Hero ---------- */
+.hero {
+    -fx-background-color: -jd-hero;
+    -fx-padding: 1.7em 2em 1.7em 2em;
+}
+.hero-date {
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-size: 0.8em;
+    -fx-font-weight: bold;
+}
+.hero-title {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 2.15em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.hero-summary { -fx-text-fill: -color-fg-muted; -fx-font-size: 1.04em; }
+.hero-ring {
+    -color-progress-indicator-track: -jd-track;
+    -color-progress-indicator-fill: -color-accent-fg;
+}
+.hero-ring > .container > .track { -fx-stroke-width: 10px; }
+.hero-ring > .container > .ring { -fx-stroke-width: 10px; -fx-stroke-line-cap: round; }
+.hero-ring-value {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 1.55em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.hero-ring-caption { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.78em; }
+
+/* ---------- KPI ---------- */
+.kpi {
+    -fx-min-height: 196;
+    -fx-background-color: -jd-card, linear-gradient(to bottom, -jd-tone-soft 0%, transparent 70%);
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 18, 17;
+}
+.kpi-badge {
+    -fx-background-color: -jd-tone-soft;
+    -fx-background-radius: 10;
+    -fx-min-width: 34; -fx-min-height: 34; -fx-max-width: 34; -fx-max-height: 34;
+}
+.kpi-badge .ikonli-font-icon { -fx-icon-color: -jd-tone; }
+.kpi-title { -fx-text-fill: -color-fg-muted; -fx-font-weight: bold; -fx-font-size: 0.92em; }
+.kpi-value {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 2.05em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.kpi-caption { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.84em; }
+.kpi-chip {
+    -fx-padding: 0.18em 0.6em 0.18em 0.5em;
+    -fx-background-radius: 999;
+    -fx-font-size: 0.78em;
+    -fx-font-weight: bold;
+    -fx-graphic-text-gap: 4;
+}
+.kpi-chip-up { -fx-background-color: -color-success-subtle; -fx-text-fill: -color-success-fg; }
+.kpi-chip-up .ikonli-font-icon { -fx-icon-color: -color-success-fg; }
+.kpi-chip-down { -fx-background-color: -color-danger-subtle; -fx-text-fill: -color-danger-fg; }
+.kpi-chip-down .ikonli-font-icon { -fx-icon-color: -color-danger-fg; }
+.kpi-footer { -fx-min-height: 34; -fx-padding: 4 0 0 0; }
+.kpi-progress { -fx-pref-height: 8; }
+.kpi-progress > .track { -fx-background-color: -jd-track; -fx-background-radius: 99; -fx-pref-height: 8; }
+.kpi-progress > .bar { -fx-background-color: -jd-tone; -fx-background-radius: 99; -fx-background-insets: 0; -fx-padding: 4; }
+
+.sparkline-line { -fx-stroke: -jd-tone; -fx-stroke-width: 2.2; -fx-fill: transparent; -fx-stroke-line-join: round; -fx-stroke-line-cap: round; }
+.sparkline-area { -fx-fill: linear-gradient(to bottom, -jd-tone-soft 0%, transparent 100%); -fx-stroke: transparent; }
+.sparkline-dot { -fx-fill: -jd-tone; -fx-stroke: -jd-card; -fx-stroke-width: 2; }
+
+.segments { -fx-min-height: 8; -fx-pref-height: 8; -fx-max-height: 8; }
+.segment { -fx-background-color: -jd-tone; -fx-background-radius: 99; }
+
+/* ---------- Listas de barras ---------- */
+.bar-label { -fx-text-fill: -color-fg-default; -fx-font-weight: bold; }
+.bar-detail { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.82em; }
+.bar-value { -fx-text-fill: -color-fg-default; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.9em; -fx-font-weight: bold; }
+.bar-track { -fx-background-color: -jd-track; -fx-background-radius: 99; -fx-min-height: 7; -fx-pref-height: 7; -fx-max-height: 7; }
+.bar-fill {
+    -fx-background-color: linear-gradient(to right, -color-accent-emphasis 0%, -color-chart-2 100%);
+    -fx-background-radius: 99;
+}
+.bar-fill.tone-jade, .bar-fill.tone-lime, .bar-fill.tone-amber,
+.bar-fill.tone-sky, .bar-fill.tone-coral, .bar-fill.tone-lilac {
+    -fx-background-color: -jd-tone;
+}
+.bar-fill.bar-warning { -fx-background-color: linear-gradient(to right, -color-warning-emphasis 0%, -color-warning-fg 100%); }
+.bar-fill.bar-danger { -fx-background-color: linear-gradient(to right, -color-danger-emphasis 0%, -color-danger-fg 100%); }
+
+/* ---------- Dona ---------- */
+.donut-pie { -fx-padding: 0; }
+.donut-slice { -fx-pie-color: -jd-tone; -fx-background-color: -jd-tone; -fx-border-color: -jd-card; -fx-border-width: 2.5; }
+.donut-hole { -fx-fill: -jd-card; }
+.donut-value {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 1.7em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.donut-caption { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.8em; }
+.donut-legend { -fx-padding: 0 0.4em 0 0.4em; }
+
+/* ---------- Gráficas XY ---------- */
+.jd-chart { -fx-padding: 0; }
+.jd-chart .chart-plot-background { -fx-background-color: transparent; }
+.jd-chart .chart-horizontal-grid-lines { -fx-stroke: -color-border-default; -fx-stroke-dash-array: 3 5; }
+.jd-chart .chart-vertical-grid-lines { -fx-stroke: transparent; }
+.jd-chart .axis { -fx-tick-label-fill: -color-fg-subtle; -fx-tick-label-font-size: 0.82em; }
+.jd-chart .axis:bottom { -fx-border-color: -color-border-default transparent transparent transparent; }
+.jd-chart .axis:left { -fx-border-color: transparent; }
+.jd-chart .chart-alternative-row-fill, .jd-chart .chart-alternative-column-fill { -fx-fill: transparent; -fx-stroke: transparent; }
+.jd-chart .chart-bar.status-bar { -fx-bar-fill: -jd-tone; -fx-background-color: -jd-tone; -fx-background-radius: 0; }
+.jd-chart .chart-bar.status-bar:hover { -fx-opacity: 0.8; }
+
+/* ---------- Insignias y línea de tiempo ---------- */
+.badge {
+    -fx-background-color: -jd-tone-soft;
+    -fx-text-fill: -jd-tone;
+    -fx-background-radius: 999;
+    -fx-padding: 0.2em 0.7em 0.2em 0.55em;
+    -fx-font-size: 0.78em;
+    -fx-font-weight: bold;
+    -fx-graphic-text-gap: 6;
+}
+.badge-dot { -fx-fill: -jd-tone; }
+.timeline-row {
+    -fx-padding: 0.6em 0.7em 0.6em 0.7em;
+    -fx-background-radius: 12;
+}
+.timeline-row:hover { -fx-background-color: -color-bg-subtle; }
+.timeline-dot {
+    -fx-background-color: -jd-tone, -jd-card, -jd-tone;
+    -fx-background-insets: 0, 2, 4;
+    -fx-background-radius: 99;
+    -fx-min-width: 14; -fx-min-height: 14; -fx-max-width: 14; -fx-max-height: 14;
+}
+.timeline-title { -fx-text-fill: -color-fg-default; -fx-font-weight: bold; }
+.timeline-detail { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.84em; }
+
+.link-button { -fx-text-fill: -color-accent-fg; -fx-font-size: 0.86em; -fx-padding: 0.25em 0.5em 0.25em 0.5em; }
+.link-button .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }
+
+.health {
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 14;
+    -fx-padding: 0.9em 1em 0.9em 1em;
+}
+.health-value {
+    -fx-font-family: "Bricolage Grotesque";
+    -fx-font-weight: 800;
+    -fx-font-size: 1.6em;
+    -fx-text-fill: -color-accent-fg;
+}
+.health-text { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.86em; }

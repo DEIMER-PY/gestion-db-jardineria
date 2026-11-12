@@ -7,6 +7,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Formateo de presentación compartido por los adaptadores de entrada (GUI JavaFX y CLI).
@@ -72,6 +73,30 @@ public final class Formatters {
     public static String month(YearMonth ym) {
         return ym.getMonth().getDisplayName(TextStyle.SHORT, ES).replace(".", "")
                 + " " + String.valueOf(ym.getYear()).substring(2);
+    }
+
+    /**
+     * Nombres para mostrar de valores que la base de datos guarda como clave (en inglés
+     * o sin tilde). Los datos originales no se alteran porque se usan en consultas y
+     * claves foráneas: solo cambia cómo se presentan.
+     */
+    private static final Map<String, String> DISPLAY = Map.ofEntries(
+            Map.entry("spain", "España"),
+            Map.entry("usa", "Estados Unidos"),
+            Map.entry("eeuu", "Estados Unidos"),
+            Map.entry("france", "Francia"),
+            Map.entry("united kingdom", "Reino Unido"),
+            Map.entry("inglaterra", "Reino Unido"),
+            Map.entry("australia", "Australia"),
+            Map.entry("japan", "Japón"),
+            Map.entry("herbaceas", "Herbáceas"));
+
+    /** Nombre legible en español de un país o gama almacenado como clave. */
+    public static String display(String value) {
+        if (value == null || value.isBlank()) {
+            return "—";
+        }
+        return DISPLAY.getOrDefault(value.trim().toLowerCase(ES), value.trim());
     }
 
     /** Devuelve el texto o un guion largo si está vacío. */
