@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="256" height="256" role="img" aria-label="Jardinería">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0E3B2A"/>
+      <stop offset="1" stop-color="#1F7A4D"/>
+    </linearGradient>
+    <clipPath id="c"><rect width="64" height="64" rx="15"/></clipPath>
+  </defs>
+  <g clip-path="url(#c)">
+    <rect width="64" height="64" fill="url(#bg)"/>
+    <circle cx="46" cy="17" r="11" fill="#FFC857" opacity="0.22"/>
+    <circle cx="46" cy="17" r="6.5" fill="#FFC857"/>
+    <path d="M0 44 C 12 37 24 36 36 41 C 46 45 56 44 64 38 L64 64 L0 64 Z" fill="#2E9A63" opacity="0.55"/>
+    <path d="M0 52 C 14 46 30 46 44 51 C 52 54 58 54 64 51 L64 64 L0 64 Z" fill="#0A2E20" opacity="0.6"/>
+    <path d="M31 51 C 31 44 31.5 38 33.5 31" fill="none" stroke="#F3FFF6" stroke-width="3" stroke-linecap="round"/>
+    <path d="M31.5 40 C 23 40 17.5 34.5 17 26.5 C 25.5 26.5 31 31.5 31.5 40 Z" fill="#F3FFF6"/>
+    <path d="M33.5 32 C 34.5 23 41 17.5 49.5 18 C 49 26.5 42.5 31.5 33.5 32 Z" fill="#B8F2C9"/>
+    <path d="M35.5 30 C 39 25.5 42.5 22.5 46 20.5" fill="none" stroke="#1F7A4D" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+  </g>
+</svg>

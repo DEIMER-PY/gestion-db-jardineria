@@ -1,3 +1,5 @@
+<img src="docs/img/logo.svg" width="96" alt="Logo de Jardinería: brote de dos hojas con sol y colinas">
+
 # Jardinería · Suite de gestión
 
 Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de datos `jardineria` (MySQL 8 en Docker) con persistencia **JDBC pura** sobre un pool **HikariCP**. Incluye un CRUD completo de las 8 tablas, un panel general, analítica con filtro por año y un laboratorio interactivo de los **7 patrones estructurales GoF**, todo organizado en **arquitectura hexagonal** (puertos y adaptadores) cuyas fronteras se verifican con **ArchUnit**.

@@ -51,17 +51,18 @@
     -fx-padding: 0 0.4em 0.2em 0.4em;
 }
 .brand-logo {
-    -fx-background-color: -jd-brand;
-    -fx-background-radius: 11;
-    -fx-min-width: 2.6em;
-    -fx-min-height: 2.6em;
-    -fx-max-width: 2.6em;
-    -fx-max-height: 2.6em;
-    -fx-effect: dropshadow(gaussian, rgba(29, 182, 114, 0.45), 16, 0.15, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(14, 59, 42, 0.45), 14, 0.12, 0, 4);
 }
-.brand-logo .ikonli-font-icon {
-    -fx-icon-color: -jd-on-accent;
-}
+/* Logo (BrandMark): colores propios de la marca, iguales en todos los temas (ver docs/img/logo.svg) */
+.brand-mark-bg { -fx-fill: linear-gradient(to bottom right, #0E3B2A, #1F7A4D); }
+.brand-mark-glow { -fx-fill: rgba(255, 200, 87, 0.22); }
+.brand-mark-sun { -fx-fill: #FFC857; }
+.brand-mark-hill-back { -fx-fill: rgba(46, 154, 99, 0.55); }
+.brand-mark-hill-front { -fx-fill: rgba(10, 46, 32, 0.6); }
+.brand-mark-stem { -fx-fill: transparent; -fx-stroke: #F3FFF6; -fx-stroke-width: 3; }
+.brand-mark-leaf { -fx-fill: #F3FFF6; }
+.brand-mark-leaf-light { -fx-fill: #B8F2C9; }
+.brand-mark-vein { -fx-fill: transparent; -fx-stroke: rgba(31, 122, 77, 0.7); -fx-stroke-width: 1.2; }
 .brand-name {
     -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
     -fx-font-weight: 800;

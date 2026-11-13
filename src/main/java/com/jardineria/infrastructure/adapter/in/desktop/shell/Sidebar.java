@@ -1,5 +1,7 @@
 package com.jardineria.infrastructure.adapter.in.desktop.shell;
 
+import com.jardineria.infrastructure.adapter.in.desktop.components.BrandMark;
+
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Navigator;
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Icons;
@@ -22,7 +24,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.kordamp.ikonli.feather.Feather;
-import org.kordamp.ikonli.material2.Material2AL;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class Sidebar extends VBox {
         setMaxWidth(EXPANDED_WIDTH);
 
         // Marca
-        StackPane logo = new StackPane(Icons.of(Material2AL.ECO, 20));
+        StackPane logo = new StackPane(new BrandMark(38));
         logo.getStyleClass().add("brand-logo");
         Label name = new Label("Jardinería");
         name.getStyleClass().add("brand-name");
