@@ -4,6 +4,10 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 
 ![Panel general](docs/img/dashboard-dark.png)
 
+> Documentación técnica y visual completa en [`docs/`](docs/README.md): [arquitectura](docs/ARQUITECTURA.md), [tecnologías](docs/TECNOLOGIAS.md), [panel general](docs/DASHBOARD.md), [apariencia y perfiles](docs/APARIENCIA.md) y [capturas](docs/CAPTURAS.md).
+
+![Seis temas con acento propio](docs/img/temas.png)
+
 | Métricas | Ficha de cliente |
 |---|---|
 | ![Métricas](docs/img/analytics-dark.png) | ![Ficha de cliente](docs/img/clientes-detalle.png) |
@@ -54,12 +58,13 @@ docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=
 
 | Módulo | Qué ofrece |
 |---|---|
-| **Panel general** | Saludo, estado de la BD, 5 indicadores con tendencia real, ingresos mensuales, pedidos por estado, clientes más activos, salud del catálogo y actividad reciente. Las tarjetas llevan a su módulo. |
+| **Panel general** | Saludo con hora de actualización, 5 indicadores con variación trimestral honesta y sparklines interactivas, ventas frente a cobros (cursor y teclado), estado logístico, pedidos por mes, treemap de ventas por gama, mapa de calor de actividad con totales anuales, **lecturas clave** calculadas automáticamente, clientes más activos, stock crítico y actividad reciente. Ver [docs/DASHBOARD.md](docs/DASHBOARD.md). |
 | **Métricas** | Filtro por año, ventas frente a cobros, pedidos por mes y estado, ticket medio, tasa de rechazo, distribución por gama, país y forma de pago, ranking de clientes y exportación CSV. |
 | **Clientes** | Búsqueda sin tildes, filtro por país y ficha lateral con contacto, representante, crédito usado frente al límite y últimos pedidos y pagos. |
 | **Pedidos** | Filtro por estado, cronología con aviso de retraso, cambio rápido de estado y gestión de líneas (el alta descuenta stock). |
 | **Pagos, Productos, Gamas, Oficinas, Empleados** | CRUD con validación inline, filtros propios (forma de pago, gama, oficina, stock crítico) y resumen superior. |
 | **Patrones GoF** | Una demo en vivo por patrón que ejecuta las clases del dominio con datos de MySQL (ver más abajo). |
+| **Ajustes** | Perfiles de apariencia al estilo de la terminal de Ubuntu: 6 temas (4 oscuros, 2 claros), 7 acentos, tamaño de texto, densidad, esquinas, movimiento reducido, vista de inicio; exportar e importar perfiles. Ver [docs/APARIENCIA.md](docs/APARIENCIA.md). |
 
 Todas las tablas permiten ordenar, buscar, copiar filas, exportar a CSV (UTF-8 con BOM y `;`, apto para Excel) y abrir el menú contextual. Las consultas se ejecutan en hilos virtuales, así que la interfaz nunca se congela; los errores de MySQL (clave duplicada, clave foránea, longitud) se traducen a mensajes comprensibles junto al campo afectado.
 
@@ -74,8 +79,10 @@ Todas las tablas permiten ordenar, buscar, copiar filas, exportar a CSV (UTF-8 c
 | `F5` | Recargar datos |
 | `Ctrl+T` | Alternar tema oscuro / claro |
 | `Ctrl+B` | Contraer la barra lateral |
+| `Ctrl+,` | Ajustes y perfiles de apariencia |
+| `F1` / `Ctrl+/` | Chuleta de atajos de teclado |
 | `Ctrl++` / `Ctrl+-` / `Ctrl+0` | Ampliar / reducir / restablecer el tamaño de letra |
-| `Alt+←` | Volver a la vista anterior |
+| `Alt+←` / `Alt+→` | Vista anterior / siguiente |
 | `Esc` | Cerrar el diálogo abierto |
 
 Todos los botones de icono tienen texto accesible y tooltip, el foco es visible y la opción de reducir movimiento desactiva las animaciones.
@@ -165,7 +172,9 @@ mvn test -Dtest=DesktopScreenshotTest -Dui.screenshots=true   # capturas en targ
 | `HexagonalArchitectureTest` | Fronteras entre capas (ArchUnit) |
 | `DesktopSmokeTest` | La GUI completa sin base de datos: todas las rutas en ambos temas y los 7 formularios, sin errores |
 | `FormattersTest`, `SeriesTest`, `CsvExportTest` | Formato es-ES, series temporales y CSV RFC 4180 |
-| `DesktopScreenshotTest` | Capturas de cada vista, tema, detalle, formulario y ventana mínima (opcional) |
+| `AppearanceProfileTest` | Perfiles de apariencia: límites, serialización tolerante y predefinidos |
+| `DashboardInsightsTest`, `TreemapTest`, `ActivityHeatmapTest` | Lecturas clave, algoritmo squarified y niveles del mapa de calor |
+| `DesktopScreenshotTest`, `DesktopGalleryTest` | Capturas de cada vista, tema, detalle, formulario, Ajustes y ventana mínima (opcional) |
 
 ---
 
