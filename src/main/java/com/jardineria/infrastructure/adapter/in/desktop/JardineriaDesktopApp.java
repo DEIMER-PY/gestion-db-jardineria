@@ -1,9 +1,9 @@
 package com.jardineria.infrastructure.adapter.in.desktop;
 
-import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
 import com.jardineria.infrastructure.adapter.in.desktop.shell.AppShell;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Icons;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Notifier;
+import com.jardineria.infrastructure.adapter.in.desktop.theme.ProfileStore;
 import com.jardineria.infrastructure.adapter.in.desktop.theme.ThemeManager;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -45,6 +45,7 @@ public class JardineriaDesktopApp extends Application {
         });
 
         ThemeManager.loadFonts();
+        ThemeManager.useStore(ProfileStore.preferences());
         AppShell shell = new AppShell(services);
 
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -61,7 +62,7 @@ public class JardineriaDesktopApp extends Application {
         stage.getIcons().add(renderAppIcon());
         stage.show();
 
-        shell.start(Route.DASHBOARD);
+        shell.start(AppShell.startRoute());
         log.info("GUI JavaFX iniciada ({}x{})", (int) width, (int) height);
     }
 
@@ -73,7 +74,7 @@ public class JardineriaDesktopApp extends Application {
     /** Genera el ícono de la ventana a partir del glifo vectorial de la marca. */
     private static Image renderAppIcon() {
         StackPane badge = new StackPane(Icons.of(Material2AL.ECO, 40));
-        badge.setStyle("-fx-background-color: linear-gradient(to bottom right, #34D399, #0E7A4B);"
+        badge.setStyle("-fx-background-color: linear-gradient(to bottom right, #A5ACFF, #4F46E5);"
                 + "-fx-background-radius: 14; -fx-min-width: 64; -fx-min-height: 64;");
         badge.getChildren().get(0).setStyle("-fx-icon-color: #F2FFF7;");
         new Scene(badge, Color.TRANSPARENT);

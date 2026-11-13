@@ -1,0 +1,76 @@
+/*
+ * Tema "Alto contraste" (oscuro, accesibilidad).
+ * Negro puro, texto blanco y bordes visibles en todas las superficies.
+ * Contraste del texto: 21:1 / 15,9:1 / 11,5:1 (nivel AAA). Sin sombras ni degradados.
+ */
+.root {
+    -color-bg-default: #000000;
+    -color-bg-subtle: #121212;
+    -color-bg-overlay: #0A0A0A;
+    -color-bg-inset: #000000;
+
+    -color-fg-default: #FFFFFF;
+    -color-fg-muted: #E6E6E6;
+    -color-fg-subtle: #C8C8C8;
+    -color-fg-emphasis: #FFFFFF;
+
+    -color-border-default: #9A9A9A;
+    -color-border-muted: #6B6B6B;
+    -color-border-subtle: #474747;
+
+    -color-success-fg: #5CFFAE;
+    -color-success-emphasis: #00C76A;
+    -color-success-muted: rgba(92, 255, 174, 0.55);
+    -color-success-subtle: rgba(92, 255, 174, 0.18);
+
+    -color-warning-fg: #FFD866;
+    -color-warning-emphasis: #E0A800;
+    -color-warning-muted: rgba(255, 216, 102, 0.55);
+    -color-warning-subtle: rgba(255, 216, 102, 0.18);
+
+    -color-danger-fg: #FF9C8F;
+    -color-danger-emphasis: #FF5A44;
+    -color-danger-muted: rgba(255, 156, 143, 0.55);
+    -color-danger-subtle: rgba(255, 156, 143, 0.18);
+
+    -color-chart-1: #5CFFAE;
+    -color-chart-2: #D4FF6E;
+    -color-chart-3: #FFD866;
+    -color-chart-4: #6CD0FF;
+    -color-chart-5: #FF9C8F;
+    -color-chart-6: #CDB8FF;
+    -color-chart-7: #6FFFF0;
+    -color-chart-8: #FFB3DA;
+    -color-chart-1-alpha20: rgba(92, 255, 174, 0.24);
+    -color-chart-2-alpha20: rgba(212, 255, 110, 0.24);
+    -color-chart-3-alpha20: rgba(255, 216, 102, 0.24);
+    -color-chart-4-alpha20: rgba(108, 208, 255, 0.24);
+    -color-chart-5-alpha20: rgba(255, 156, 143, 0.24);
+    -color-chart-6-alpha20: rgba(205, 184, 255, 0.24);
+    -color-chart-1-alpha70: rgba(92, 255, 174, 0.80);
+    -color-chart-2-alpha70: rgba(212, 255, 110, 0.80);
+    -color-chart-3-alpha70: rgba(255, 216, 102, 0.80);
+    -color-chart-4-alpha70: rgba(108, 208, 255, 0.80);
+    -color-chart-5-alpha70: rgba(255, 156, 143, 0.80);
+    -color-chart-6-alpha70: rgba(205, 184, 255, 0.80);
+
+    -color-button-bg: #000000;
+    -color-button-border: #BDBDBD;
+    -color-button-bg-hover: #1C1C1C;
+    -color-button-border-hover: #FFFFFF;
+    -color-input-bg: #000000;
+    -color-input-border: #BDBDBD;
+    -color-cell-bg: transparent;
+    -color-cell-bg-odd: rgba(255, 255, 255, 0.05);
+    -color-modal-pane-overlay: rgba(0, 0, 0, 0.82);
+    -color-shadow-default: transparent;
+
+    -jd-canvas: #000000;
+    -jd-sidebar: #000000;
+    -jd-card: #050505;
+    -jd-card-hover: #141414;
+    -jd-card-border: rgba(255, 255, 255, 0.42);
+    -jd-track: rgba(255, 255, 255, 0.22);
+    -jd-shadow: transparent;
+    -jd-glass: rgba(0, 0, 0, 0.94);
+}

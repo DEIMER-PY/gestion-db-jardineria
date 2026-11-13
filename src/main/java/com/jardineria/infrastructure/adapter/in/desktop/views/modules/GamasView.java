@@ -80,7 +80,7 @@ public class GamasView extends CrudModuleView<GamaProducto> {
                 .map(e -> Formatters.display(e.getKey())).orElse("—");
         long vacias = all.stream().filter(g -> !productosPorGama.containsKey(g.getGama())).count();
         return new StatStrip()
-                .stat(Material2AL.ECO, Formatters.integer(all.size()), "gamas en el catálogo", KpiCard.Tone.JADE)
+                .stat(Material2AL.ECO, Formatters.integer(all.size()), "gamas en el catálogo", KpiCard.Tone.ACCENT)
                 .stat(Feather.PACKAGE, Formatters.integer(total), "productos clasificados", KpiCard.Tone.SKY)
                 .stat(Feather.STAR, principal, "gama con más productos", KpiCard.Tone.AMBER)
                 .stat(Feather.ALERT_CIRCLE, Formatters.integer(vacias), "gamas sin productos", KpiCard.Tone.CORAL);

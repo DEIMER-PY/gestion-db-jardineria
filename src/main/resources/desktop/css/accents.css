@@ -1,0 +1,176 @@
+/*
+ * Colores de acento. Cada acento define una variante para temas oscuros (.theme-dark)
+ * y otra para temas claros (.theme-light), ambas con contraste AA del texto de acento
+ * sobre las tarjetas y del texto sobre el botón principal (-jd-on-accent).
+ *
+ *   -color-accent-fg        texto, iconos activos y enlaces
+ *   -color-accent-emphasis  relleno de botones principales e indicadores
+ *   -color-accent-muted     bordes de foco y selección
+ *   -color-accent-subtle    fondos tenues (fila seleccionada, insignias)
+ *   -jd-on-accent           texto sobre -color-accent-emphasis
+ *   -jd-glow                resplandor ambiental del lienzo y del saludo
+ *   -jd-brand               degradado del logotipo
+ */
+
+/* ------------------------------------------------------------- Índigo */
+.theme-dark.accent-indigo {
+    -color-accent-fg: #9BA3FF;
+    -color-accent-emphasis: #5F67F2;
+    -color-accent-muted: rgba(130, 140, 255, 0.45);
+    -color-accent-subtle: rgba(130, 140, 255, 0.14);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(110, 120, 255, 0.16);
+    -jd-brand: linear-gradient(to bottom right, #A5ACFF 0%, #6168F0 55%, #3F3FC2 100%);
+    -jd-card-border-hover: rgba(155, 163, 255, 0.45);
+}
+.theme-light.accent-indigo {
+    -color-accent-fg: #4338CA;
+    -color-accent-emphasis: #4F46E5;
+    -color-accent-muted: rgba(79, 70, 229, 0.36);
+    -color-accent-subtle: rgba(79, 70, 229, 0.09);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(79, 70, 229, 0.07);
+    -jd-brand: linear-gradient(to bottom right, #818CF8 0%, #4F46E5 60%, #3730A3 100%);
+    -jd-card-border-hover: rgba(79, 70, 229, 0.40);
+}
+
+/* ------------------------------------------------------------- Cobalto */
+.theme-dark.accent-cobalto {
+    -color-accent-fg: #7DBDFF;
+    -color-accent-emphasis: #2F7FE0;
+    -color-accent-muted: rgba(110, 175, 255, 0.45);
+    -color-accent-subtle: rgba(110, 175, 255, 0.14);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(70, 150, 255, 0.15);
+    -jd-brand: linear-gradient(to bottom right, #8CC8FF 0%, #2F7FE0 55%, #1D4F9E 100%);
+    -jd-card-border-hover: rgba(125, 189, 255, 0.45);
+}
+.theme-light.accent-cobalto {
+    -color-accent-fg: #1D5FB8;
+    -color-accent-emphasis: #2563EB;
+    -color-accent-muted: rgba(37, 99, 235, 0.36);
+    -color-accent-subtle: rgba(37, 99, 235, 0.09);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(37, 99, 235, 0.07);
+    -jd-brand: linear-gradient(to bottom right, #60A5FA 0%, #2563EB 60%, #1E40AF 100%);
+    -jd-card-border-hover: rgba(37, 99, 235, 0.40);
+}
+
+/* ------------------------------------------------------------- Violeta */
+.theme-dark.accent-violeta {
+    -color-accent-fg: #C6A4FF;
+    -color-accent-emphasis: #8B5CF6;
+    -color-accent-muted: rgba(190, 150, 255, 0.45);
+    -color-accent-subtle: rgba(190, 150, 255, 0.14);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(160, 110, 255, 0.15);
+    -jd-brand: linear-gradient(to bottom right, #D3B6FF 0%, #8B5CF6 55%, #5B2DB8 100%);
+    -jd-card-border-hover: rgba(198, 164, 255, 0.45);
+}
+.theme-light.accent-violeta {
+    -color-accent-fg: #6D28D9;
+    -color-accent-emphasis: #7C3AED;
+    -color-accent-muted: rgba(124, 58, 237, 0.34);
+    -color-accent-subtle: rgba(124, 58, 237, 0.08);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(124, 58, 237, 0.06);
+    -jd-brand: linear-gradient(to bottom right, #A78BFA 0%, #7C3AED 60%, #5B21B6 100%);
+    -jd-card-border-hover: rgba(124, 58, 237, 0.40);
+}
+
+/* ------------------------------------------------------------- Turquesa */
+.theme-dark.accent-turquesa {
+    -color-accent-fg: #5EE0E2;
+    -color-accent-emphasis: #17AEB3;
+    -color-accent-muted: rgba(94, 224, 226, 0.42);
+    -color-accent-subtle: rgba(94, 224, 226, 0.13);
+    -jd-on-accent: #021617;
+    -jd-glow: rgba(40, 200, 205, 0.14);
+    -jd-brand: linear-gradient(to bottom right, #7FF0F0 0%, #17AEB3 55%, #0B6E72 100%);
+    -jd-card-border-hover: rgba(94, 224, 226, 0.42);
+}
+.theme-light.accent-turquesa {
+    -color-accent-fg: #0B6E73;
+    -color-accent-emphasis: #0B7F84;
+    -color-accent-muted: rgba(11, 127, 132, 0.34);
+    -color-accent-subtle: rgba(11, 127, 132, 0.09);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(11, 127, 132, 0.07);
+    -jd-brand: linear-gradient(to bottom right, #2DD4D9 0%, #0B7F84 60%, #075E62 100%);
+    -jd-card-border-hover: rgba(11, 127, 132, 0.40);
+}
+
+/* ------------------------------------------------------------- Esmeralda (identidad original) */
+.theme-dark.accent-esmeralda {
+    -color-accent-fg: #5BE3A0;
+    -color-accent-emphasis: #1DB672;
+    -color-accent-muted: rgba(52, 211, 153, 0.40);
+    -color-accent-subtle: rgba(52, 211, 153, 0.12);
+    -jd-on-accent: #04140C;
+    -jd-glow: rgba(52, 211, 153, 0.13);
+    -jd-brand: linear-gradient(to bottom right, #6EF0B0 0%, #1DB672 55%, #0B7A4A 100%);
+    -jd-card-border-hover: rgba(91, 227, 160, 0.38);
+}
+.theme-light.accent-esmeralda {
+    -color-accent-fg: #0B7A48;
+    -color-accent-emphasis: #0E8F55;
+    -color-accent-muted: rgba(14, 143, 85, 0.35);
+    -color-accent-subtle: rgba(14, 143, 85, 0.09);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(18, 163, 102, 0.07);
+    -jd-brand: linear-gradient(to bottom right, #34D399 0%, #0E8F55 60%, #0A6A40 100%);
+    -jd-card-border-hover: rgba(14, 143, 85, 0.42);
+}
+
+/* ------------------------------------------------------------- Ámbar */
+.theme-dark.accent-ambar {
+    -color-accent-fg: #FFC861;
+    -color-accent-emphasis: #F0A928;
+    -color-accent-muted: rgba(255, 200, 97, 0.42);
+    -color-accent-subtle: rgba(255, 200, 97, 0.13);
+    -jd-on-accent: #1F1400;
+    -jd-glow: rgba(255, 180, 60, 0.12);
+    -jd-brand: linear-gradient(to bottom right, #FFD98A 0%, #F0A928 55%, #B5730A 100%);
+    -jd-card-border-hover: rgba(255, 200, 97, 0.42);
+}
+.theme-light.accent-ambar {
+    -color-accent-fg: #8A5300;
+    -color-accent-emphasis: #E0A010;
+    -color-accent-muted: rgba(200, 130, 0, 0.36);
+    -color-accent-subtle: rgba(200, 130, 0, 0.10);
+    -jd-on-accent: #1F1400;
+    -jd-glow: rgba(224, 160, 16, 0.08);
+    -jd-brand: linear-gradient(to bottom right, #FCD34D 0%, #E0A010 60%, #A16207 100%);
+    -jd-card-border-hover: rgba(200, 130, 0, 0.42);
+}
+
+/* ------------------------------------------------------------- Coral */
+.theme-dark.accent-coral {
+    -color-accent-fg: #FF9A8A;
+    -color-accent-emphasis: #E5533F;
+    -color-accent-muted: rgba(255, 154, 138, 0.44);
+    -color-accent-subtle: rgba(255, 154, 138, 0.13);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(255, 120, 100, 0.13);
+    -jd-brand: linear-gradient(to bottom right, #FFB4A6 0%, #E5533F 55%, #A8301F 100%);
+    -jd-card-border-hover: rgba(255, 154, 138, 0.44);
+}
+.theme-light.accent-coral {
+    -color-accent-fg: #B3321F;
+    -color-accent-emphasis: #C8432D;
+    -color-accent-muted: rgba(200, 67, 45, 0.34);
+    -color-accent-subtle: rgba(200, 67, 45, 0.08);
+    -jd-on-accent: #FFFFFF;
+    -jd-glow: rgba(200, 67, 45, 0.06);
+    -jd-brand: linear-gradient(to bottom right, #FB9A85 0%, #C8432D 60%, #8F2A1A 100%);
+    -jd-card-border-hover: rgba(200, 67, 45, 0.40);
+}
+
+/* Muestras fijas del selector de acento (independientes del acento activo) */
+.swatch-indigo    { -jd-swatch: #6E78FF; }
+.swatch-cobalto   { -jd-swatch: #3B8BF0; }
+.swatch-violeta   { -jd-swatch: #9B6BFA; }
+.swatch-turquesa  { -jd-swatch: #1FBFC4; }
+.swatch-esmeralda { -jd-swatch: #22C07C; }
+.swatch-ambar     { -jd-swatch: #F0A928; }
+.swatch-coral     { -jd-swatch: #EC5F4B; }

@@ -49,9 +49,9 @@ public class AppShell extends StackPane {
         ModalPane modalPane = new ModalPane();
         modalPane.getStyleClass().add("modal-layer");
         ModalHost.install(modalPane);
-        palette = new CommandPalette(modalPane, buildCommands());
+        palette = new CommandPalette(modalPane, this::buildCommands);
 
-        TopBar topBar = new TopBar(navigator, palette::open, this::refresh);
+        TopBar topBar = new TopBar(navigator, palette::open, this::refresh, this::showShortcuts);
         VBox main = new VBox(topBar, contentHost);
         main.getStyleClass().add("main-area");
         VBox.setVgrow(contentHost, Priority.ALWAYS);
@@ -68,11 +68,34 @@ public class AppShell extends StackPane {
         Notifier.install(toastHost);
 
         getChildren().addAll(layout, modalPane, toastHost);
+        if (ThemeManager.getProfile().sidebarCollapsed()) {
+            sidebar.toggleCollapsed();
+        }
+    }
+
+    /** Ruta inicial del perfil de apariencia activo (por defecto, el panel general). */
+    public static Route startRoute() {
+        try {
+            Route r = Route.valueOf(ThemeManager.getProfile().startRoute());
+            return r.inSidebar() ? r : Route.DASHBOARD;
+        } catch (IllegalArgumentException e) {
+            return Route.DASHBOARD;
+        }
+    }
+
+    /** Muestra la chuleta de atajos de teclado (F1 o Ctrl+/). */
+    public void showShortcuts() {
+        ModalHost.show(new ShortcutsSheet());
     }
 
     /** Muestra la ruta inicial. */
     public void start(Route initial) {
         navigator.navigate(initial);
+    }
+
+    /** Abre la paleta de comandos con una búsqueda inicial. */
+    public void openPalette(String query) {
+        palette.open(query);
     }
 
     public Navigator getNavigator() {
@@ -94,8 +117,22 @@ public class AppShell extends StackPane {
                 Feather.PLUS_CIRCLE, "Ctrl N", this::createNew));
         commands.add(new Command("Actualizar datos", "Vuelve a consultar MySQL para la vista actual",
                 Feather.REFRESH_CW, "F5", this::refresh));
-        commands.add(new Command("Cambiar tema claro / oscuro", "Alterna entre Invernadero nocturno y Vivero diurno",
+        commands.add(new Command("Cambiar tema claro / oscuro", "Alterna entre el tema oscuro y el claro del perfil",
                 Feather.SUN, "Ctrl T", ThemeManager::toggle));
+        commands.add(new Command("Atajos de teclado", "Chuleta con todos los atajos disponibles",
+                Feather.COMMAND, "F1", this::showShortcuts));
+        for (var profile : ThemeManager.profiles()) {
+            commands.add(new Command("Perfil: " + profile.name(), profile.activeTheme().label() + " · acento "
+                    + profile.accent().label(), Feather.USER_CHECK, "", () -> ThemeManager.activate(profile.name())));
+        }
+        for (var theme : com.jardineria.infrastructure.adapter.in.desktop.theme.ThemePreset.values()) {
+            commands.add(new Command("Tema: " + theme.label(), theme.description(), Feather.MONITOR, "",
+                    () -> ThemeManager.update(p -> p.withTheme(theme))));
+        }
+        for (var accent : com.jardineria.infrastructure.adapter.in.desktop.theme.Accent.values()) {
+            commands.add(new Command("Acento: " + accent.label(), "Cambia el color de acento del perfil activo",
+                    Feather.DROPLET, "", () -> ThemeManager.update(p -> p.withAccent(accent))));
+        }
         commands.add(new Command("Contraer / expandir menú lateral", "Gana espacio de trabajo",
                 Feather.SIDEBAR, "Ctrl B", () -> sidebar.toggleCollapsed()));
         commands.add(new Command("Aumentar tamaño de texto", "Accesibilidad", Feather.ZOOM_IN, "Ctrl +",
@@ -135,5 +172,8 @@ public class AppShell extends StackPane {
         acc.put(new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.SHORTCUT_DOWN), ThemeManager::decreaseFont);
         acc.put(new KeyCodeCombination(KeyCode.DIGIT0, KeyCombination.SHORTCUT_DOWN), ThemeManager::resetFont);
         acc.put(new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN), navigator::back);
+        acc.put(new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN), navigator::forward);
+        acc.put(new KeyCodeCombination(KeyCode.F1), this::showShortcuts);
+        acc.put(new KeyCodeCombination(KeyCode.SLASH, KeyCombination.SHORTCUT_DOWN), this::showShortcuts);
     }
 }

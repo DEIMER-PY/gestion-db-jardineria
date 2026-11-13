@@ -19,7 +19,10 @@ public enum Route {
     GAMAS("Gamas", "Familias botánicas del catálogo", Material2AL.ECO, Section.CATALOGO, KeyCode.DIGIT7),
     OFICINAS("Oficinas", "Red de oficinas comerciales", Feather.MAP_PIN, Section.ORGANIZACION, KeyCode.DIGIT8),
     EMPLEADOS("Empleados", "Equipo, puestos y jerarquía", Feather.BRIEFCASE, Section.ORGANIZACION, KeyCode.DIGIT9),
-    PATRONES("Patrones GoF", "Patrones estructurales aplicados al dominio", Feather.LAYERS, Section.ARQUITECTURA, null);
+    PATRONES("Patrones GoF", "Patrones estructurales aplicados al dominio", Feather.LAYERS, Section.ARQUITECTURA, null),
+    /** Se abre desde el pie del menú lateral, la barra superior o Ctrl+, (no aparece en la lista de módulos). */
+    AJUSTES("Ajustes", "Perfiles de apariencia, temas, colores de acento y accesibilidad", Feather.SETTINGS,
+            Section.PREFERENCIAS, KeyCode.COMMA);
 
     private final String title;
     private final String description;
@@ -57,7 +60,20 @@ public enum Route {
 
     /** Texto del atajo para mostrar al usuario, p. ej. "Ctrl 3". */
     public String shortcutLabel() {
-        return shortcut == null ? "" : "Ctrl " + shortcut.getName();
+        return shortcut == null ? "" : "Ctrl " + keyText();
+    }
+
+    /** Tecla del atajo tal como se imprime en el teclado ("3", ","). */
+    public String keyText() {
+        if (shortcut == null) {
+            return "";
+        }
+        return shortcut == KeyCode.COMMA ? "," : shortcut.getName();
+    }
+
+    /** {@code true} si la ruta es un módulo del menú lateral (Ajustes vive en el pie). */
+    public boolean inSidebar() {
+        return section != Section.PREFERENCIAS;
     }
 
     /** Secciones del menú lateral. */
@@ -66,7 +82,8 @@ public enum Route {
         OPERACION("Operación"),
         CATALOGO("Catálogo"),
         ORGANIZACION("Organización"),
-        ARQUITECTURA("Arquitectura");
+        ARQUITECTURA("Arquitectura"),
+        PREFERENCIAS("Preferencias");
 
         private final String label;
 

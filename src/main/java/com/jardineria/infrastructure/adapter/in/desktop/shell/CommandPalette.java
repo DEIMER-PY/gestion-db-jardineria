@@ -5,6 +5,7 @@ import atlantafx.base.controls.ModalPane;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Icons;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -23,6 +24,7 @@ import org.kordamp.ikonli.feather.Feather;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 /**
  * Paleta de comandos (Ctrl+K) al estilo de los editores modernos: búsqueda difusa
@@ -39,12 +41,16 @@ public class CommandPalette extends VBox {
     }
 
     private final ModalPane modal;
+    private final Supplier<List<Command>> source;
+    private final ObservableList<Command> all = FXCollections.observableArrayList();
     private final CustomTextField input = new CustomTextField();
     private final FilteredList<Command> filtered;
     private final ListView<Command> list;
 
-    public CommandPalette(ModalPane modal, List<Command> commands) {
+    /** @param commands proveedor de comandos: se consulta en cada apertura (perfiles nuevos, etc.). */
+    public CommandPalette(ModalPane modal, Supplier<List<Command>> commands) {
         this.modal = modal;
+        this.source = commands;
         getStyleClass().add("palette");
         setMaxSize(620, 460);
         setSpacing(0);
@@ -57,7 +63,7 @@ public class CommandPalette extends VBox {
         input.getStyleClass().add("palette-input");
         input.setAccessibleText("Buscar comando");
 
-        filtered = new FilteredList<>(FXCollections.observableArrayList(commands), c -> true);
+        filtered = new FilteredList<>(all, c -> true);
         list = new ListView<>(filtered);
         list.getStyleClass().add("palette-list");
         list.setCellFactory(v -> new CommandCell());
@@ -115,8 +121,16 @@ public class CommandPalette extends VBox {
     }
 
     public void open() {
+        open("");
+    }
+
+    /** Abre la paleta con una búsqueda ya escrita (p. ej. "tema"). */
+    public void open(String query) {
+        all.setAll(source.get());
         input.clear();
         filtered.setPredicate(c -> true);
+        input.setText(query == null ? "" : query);
+        input.positionCaret(input.getText().length());
         list.getSelectionModel().selectFirst();
         modal.show(this);
         Platform.runLater(input::requestFocus);

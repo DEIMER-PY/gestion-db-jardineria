@@ -145,7 +145,7 @@ public class ClientesView extends CrudModuleView<Cliente> {
         String ciudad = all.stream().collect(Collectors.groupingBy(Cliente::getCiudad, Collectors.counting()))
                 .entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey).orElse("—");
         return new StatStrip()
-                .stat(Feather.USERS, Formatters.integer(all.size()), "clientes en cartera", KpiCard.Tone.JADE)
+                .stat(Feather.USERS, Formatters.integer(all.size()), "clientes en cartera", KpiCard.Tone.ACCENT)
                 .stat(Feather.GLOBE, Formatters.integer(paises), "países", KpiCard.Tone.SKY)
                 .stat(Feather.CREDIT_CARD, Formatters.compactCurrency(credito), "crédito concedido", KpiCard.Tone.LIME)
                 .stat(Feather.MAP_PIN, ciudad, "ciudad con más clientes", KpiCard.Tone.LILAC)

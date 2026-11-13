@@ -62,6 +62,9 @@ public class Sidebar extends VBox {
         nav.getStyleClass().add("sidebar-nav");
         Route.Section currentSection = null;
         for (Route route : Route.values()) {
+            if (!route.inSidebar()) {
+                continue;
+            }
             if (route.section() != currentSection) {
                 currentSection = route.section();
                 Label section = new Label(currentSection.label().toUpperCase());
@@ -89,8 +92,14 @@ public class Sidebar extends VBox {
         collapsed.addListener((obs, was, now) ->
                 toggle.setGraphic(Icons.of(now ? Feather.CHEVRONS_RIGHT : Feather.CHEVRONS_LEFT, 16)));
 
+        Button settings = createItem(Route.AJUSTES, navigator);
+        settings.getStyleClass().add("nav-item-settings");
+        items.put(Route.AJUSTES, settings);
+
         connection.compactProperty().bind(collapsed);
-        VBox footer = new VBox(10, connection, toggle);
+        HBox footerActions = new HBox(4, toggle);
+        footerActions.setAlignment(Pos.CENTER_LEFT);
+        VBox footer = new VBox(10, connection, settings, footerActions);
         footer.getStyleClass().add("sidebar-footer");
         footer.setAlignment(Pos.CENTER_LEFT);
 
@@ -113,7 +122,7 @@ public class Sidebar extends VBox {
         graphic.setAlignment(Pos.CENTER_LEFT);
 
         if (route.shortcut() != null) {
-            Label kbd = new Label(route.shortcut().getName());
+            Label kbd = new Label(route.keyText());
             kbd.getStyleClass().add("nav-kbd");
             kbd.managedProperty().bind(collapsed.not());
             kbd.visibleProperty().bind(collapsed.not());
