@@ -32,6 +32,7 @@ public final class ApplicationContext {
     private final DashboardUseCase dashboardService;
     private final AnalyticsUseCase analyticsService;
     private final AsistenteUseCase asistenteService;
+    private final MensajeriaUseCase mensajeriaService;
 
     private ApplicationContext() {
         // Adaptadores de salida (persistencia JDBC sobre MySQL)
@@ -58,6 +59,8 @@ public final class ApplicationContext {
                 clienteRepository, pedidoRepository, productoRepository,
                 empleadoRepository, oficinaRepository, pagoRepository);
         this.analyticsService = new AnalyticsService(analyticsRepository);
+
+        this.mensajeriaService = new MensajeriaService(new MensajeriaJdbcRepository(), empleadoRepository);
 
         // Asistente: modelo de lenguaje (Groq, clave en GROQ_API_KEY) y documentación para el RAG
         this.asistenteService = new AsistenteService(
@@ -120,5 +123,9 @@ public final class ApplicationContext {
 
     public AsistenteUseCase getAsistenteService() {
         return asistenteService;
+    }
+
+    public MensajeriaUseCase getMensajeriaService() {
+        return mensajeriaService;
     }
 }
