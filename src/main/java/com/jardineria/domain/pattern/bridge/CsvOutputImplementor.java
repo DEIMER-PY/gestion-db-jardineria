@@ -3,7 +3,7 @@ package com.jardineria.domain.pattern.bridge;
 import java.util.List;
 
 /**
- * Implementador Concreto para salida en formato CSV.
+ * Implementador Concreto para salida en formato CSV (separador coma, RFC 4180).
  */
 public class CsvOutputImplementor implements ReportOutputImplementor {
     private final StringBuilder sb = new StringBuilder();
@@ -18,12 +18,33 @@ public class CsvOutputImplementor implements ReportOutputImplementor {
 
     @Override
     public void agregarEncabezados(List<String> columnas) {
-        sb.append(String.join(",", columnas)).append("\n");
+        appendRow(columnas);
     }
 
     @Override
     public void agregarFila(List<String> valores) {
-        sb.append(String.join(",", valores)).append("\n");
+        appendRow(valores);
+    }
+
+    private void appendRow(List<String> valores) {
+        for (int i = 0; i < valores.size(); i++) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            sb.append(escape(valores.get(i)));
+        }
+        sb.append("\n");
+    }
+
+    /** Entrecomilla los valores con comas, comillas o saltos de línea (p. ej. importes "3,50"). */
+    static String escape(String value) {
+        if (value == null) {
+            return "";
+        }
+        if (value.contains(",") || value.contains("\"") || value.contains("\n") || value.contains("\r")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+        return value;
     }
 
     @Override

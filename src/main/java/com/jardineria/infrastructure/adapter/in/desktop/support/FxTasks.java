@@ -100,6 +100,18 @@ public final class FxTasks {
             return "No hay conexión con MySQL. Verifica que el contenedor Docker esté en ejecución.";
         }
         String msg = error.getMessage();
+        if (msg != null && msg.contains("foreign key constraint fails")) {
+            return msg.contains("Cannot delete or update a parent row")
+                    ? "No se puede eliminar: hay otros registros que dependen de este (pedidos, pagos, "
+                    + "productos o empleados). Elimínalos o reasígnalos primero."
+                    : "Algún valor seleccionado no existe en la base de datos (revisa las referencias).";
+        }
+        if (msg != null && msg.contains("Duplicate entry")) {
+            return "Ya existe un registro con esa clave.";
+        }
+        if (msg != null && msg.contains("Data too long")) {
+            return "Algún texto supera la longitud máxima permitida por la base de datos.";
+        }
         if (msg == null || msg.isBlank()) {
             return "Se produjo un error inesperado (" + error.getClass().getSimpleName() + ").";
         }
