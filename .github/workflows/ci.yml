@@ -1,0 +1,60 @@
+# Compila, prueba y empaqueta en Windows, macOS (Apple Silicon) y Linux (x64 y ARM64).
+# Cada sistema publica su JAR ejecutable como artefacto descargable.
+name: CI multiplataforma
+
+on:
+  push:
+    branches: [develop, main, 'feature/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.nombre }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest,   nombre: Windows x64,      plataforma: win }
+          - { os: macos-latest,     nombre: macOS ARM64,      plataforma: mac-aarch64 }
+          - { os: ubuntu-latest,    nombre: Linux x64 + MySQL, plataforma: linux, mysql: true }
+          - { os: ubuntu-24.04-arm, nombre: Linux ARM64,      plataforma: linux-aarch64 }
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # En Linux x64 se levanta MySQL para ejecutar también las pruebas de integración JDBC
+      # y el CRUD de extremo a extremo. En el resto se omiten automáticamente.
+      - name: Base de datos (Docker Compose)
+        if: matrix.mysql
+        run: ./scripts/iniciar.sh --db
+
+      - name: Compilar y probar (GUI headless con Monocle)
+        run: ./mvnw -B -ntp verify
+
+      - name: Empaquetar JAR ejecutable
+        run: ./mvnw -B -ntp package -DskipTests
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gestion-jardineria-${{ matrix.plataforma }}
+          path: target/gestion-jardineria-*-${{ matrix.plataforma }}.jar
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: informes-pruebas-${{ matrix.plataforma }}
+          path: target/surefire-reports/

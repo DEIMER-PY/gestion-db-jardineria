@@ -1,0 +1,20 @@
+# Finales de línea coherentes en Windows, macOS y Linux, sin depender de core.autocrlf.
+* text=auto eol=lf
+
+# Scripts de Windows: CRLF (cmd.exe los necesita).
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Scripts de shell y el wrapper de Maven: siempre LF (con CRLF fallan en macOS/Linux).
+*.sh  text eol=lf
+mvnw  text eol=lf
+
+# Binarios
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.ttf binary
+*.jar binary
+*.zip binary
