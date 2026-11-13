@@ -32,6 +32,7 @@ final class FxTestSupport {
         Path dir = Path.of(System.getProperty("screenshots.dir", "target/screenshots"));
         Files.createDirectories(dir);
         Path file = dir.resolve(name + ".png");
+        Files.createDirectories(file.getParent());
         WritableImage[] holder = new WritableImage[1];
         WaitForAsyncUtils.asyncFx(() -> holder[0] = scene.snapshot(null)).get(10, TimeUnit.SECONDS);
         ImageIO.write(SwingFXUtils.fromFXImage(holder[0], null), "png", new File(file.toString()));
@@ -43,6 +44,7 @@ final class FxTestSupport {
         Path dir = Path.of(System.getProperty("screenshots.dir", "target/screenshots"));
         Files.createDirectories(dir);
         Path file = dir.resolve(name + ".png");
+        Files.createDirectories(file.getParent());
         WritableImage[] holder = new WritableImage[1];
         WaitForAsyncUtils.asyncFx(() -> holder[0] = node.snapshot(null, null)).get(10, TimeUnit.SECONDS);
         ImageIO.write(SwingFXUtils.fromFXImage(holder[0], null), "png", new File(file.toString()));

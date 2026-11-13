@@ -13,6 +13,7 @@ import com.jardineria.infrastructure.adapter.in.desktop.views.modules.PagosView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.modules.PedidosView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.modules.ProductosView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.patterns.PatternsView;
+import com.jardineria.infrastructure.adapter.in.desktop.views.settings.SettingsView;
 
 /**
  * Registro de vistas por ruta (fábrica). Cada vista recibe solo los puertos que necesita.
@@ -35,5 +36,6 @@ public final class DesktopViews {
         navigator.register(Route.EMPLEADOS, () -> new EmpleadosView(services.empleados(), services.oficinas()));
         navigator.register(Route.PATRONES, () -> new PatternsView(services.productos(), services.clientes(),
                 services.facade(), services.productLookup()));
+        navigator.register(Route.AJUSTES, SettingsView::new);
     }
 }
