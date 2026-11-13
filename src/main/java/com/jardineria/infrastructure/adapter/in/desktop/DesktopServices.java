@@ -11,6 +11,7 @@ import java.util.Objects;
  * En las pruebas se construye con implementaciones falsas en memoria.
  *
  * @param connection sonda de conectividad con la base de datos y su descripción
+ * @param asistente  asistente conversacional (desactivado si no hay modelo configurado)
  */
 public record DesktopServices(
         DashboardUseCase dashboard,
@@ -23,7 +24,8 @@ public record DesktopServices(
         GamaProductoUseCase gamas,
         OficinaUseCase oficinas,
         EmpleadoUseCase empleados,
-        ConnectionProbe connection
+        ConnectionProbe connection,
+        AsistenteUseCase asistente
 ) {
     public DesktopServices {
         Objects.requireNonNull(dashboard);
@@ -37,7 +39,35 @@ public record DesktopServices(
         Objects.requireNonNull(oficinas);
         Objects.requireNonNull(empleados);
         Objects.requireNonNull(connection);
+        asistente = asistente == null ? SIN_ASISTENTE : asistente;
     }
+
+    /** Servicios sin asistente (pruebas y arranques sin modelo de lenguaje). */
+    public DesktopServices(DashboardUseCase dashboard, AnalyticsUseCase analytics, ClienteUseCase clientes,
+                           PedidoUseCase pedidos, DetallePedidoUseCase detalles, PagoUseCase pagos,
+                           ProductoUseCase productos, GamaProductoUseCase gamas, OficinaUseCase oficinas,
+                           EmpleadoUseCase empleados, ConnectionProbe connection) {
+        this(dashboard, analytics, clientes, pedidos, detalles, pagos, productos, gamas, oficinas, empleados,
+                connection, null);
+    }
+
+    /** Asistente desactivado: la vista muestra cómo configurarlo. */
+    public static final AsistenteUseCase SIN_ASISTENTE = new AsistenteUseCase() {
+        @Override
+        public boolean disponible() {
+            return false;
+        }
+
+        @Override
+        public String descripcionProveedor() {
+            return "Sin configurar: define la variable de entorno GROQ_API_KEY";
+        }
+
+        @Override
+        public Respuesta preguntar(java.util.List<Turno> historial, String pregunta) {
+            throw new IllegalStateException("El asistente no está configurado: define la variable de entorno GROQ_API_KEY.");
+        }
+    };
 
     /** Puerto mínimo para conocer el estado de la conexión con la base de datos. */
     public interface ConnectionProbe {

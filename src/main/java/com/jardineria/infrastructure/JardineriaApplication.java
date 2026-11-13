@@ -79,6 +79,7 @@ public final class JardineriaApplication {
                 ctx.getGamaProductoService(),
                 ctx.getOficinaService(),
                 ctx.getEmpleadoService(),
-                probe);
+                probe,
+                ctx.getAsistenteService());
     }
 }

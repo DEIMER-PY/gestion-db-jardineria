@@ -1,6 +1,9 @@
 package com.jardineria.infrastructure.adapter.in.desktop;
 
+import com.jardineria.application.port.out.ModeloLenguajePort;
+import com.jardineria.application.service.AsistenteService;
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
+import com.jardineria.infrastructure.adapter.out.docs.ClasspathDocumentacionAdapter;
 import com.jardineria.infrastructure.adapter.in.desktop.shell.AppShell;
 import com.jardineria.infrastructure.adapter.in.desktop.support.ModalHost;
 import com.jardineria.infrastructure.adapter.in.desktop.theme.ThemeManager;
@@ -8,7 +11,9 @@ import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.config.DatabaseConfig;
 import com.jardineria.infrastructure.config.DatabaseConnectionManager;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,7 +27,10 @@ import org.testfx.util.WaitForAsyncUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.Year;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -66,7 +74,11 @@ class DesktopScreenshotTest {
                     public String describe() {
                         return DatabaseConfig.getHost() + ":" + DatabaseConfig.getPort() + " / " + DatabaseConfig.getDatabaseName();
                     }
-                });
+                },
+                new AsistenteService(new ModeloDemo(), new ClasspathDocumentacionAdapter(),
+                        ctx.getClienteService(), ctx.getPedidoService(), ctx.getDetallePedidoService(),
+                        ctx.getProductoService(), ctx.getDashboardService(), ctx.getAnalyticsService(),
+                        Clock.systemDefaultZone()));
         shell = new AppShell(services);
         scene = new Scene(shell, 1440, 900);
         ThemeManager.setMode(ThemeManager.Mode.DARK);
@@ -97,6 +109,67 @@ class DesktopScreenshotTest {
             }
             // Fuerza que la siguiente pasada vuelva a mostrar el panel general
             WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(Route.ANALYTICS)).get();
+        }
+    }
+
+    @Test
+    @DisplayName("Asistente: conversación con datos reales y documentación, en oscuro, claro y ventana mínima")
+    void capturaAsistente() throws Exception {
+        resize(1440, 900);
+        for (ThemeManager.Mode mode : ThemeManager.Mode.values()) {
+            WaitForAsyncUtils.asyncFx(() -> ThemeManager.setMode(mode)).get();
+            WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(Route.ASISTENTE)).get();
+            WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().currentView().createNew()).get();
+            for (String q : new String[]{"¿Qué pedidos están pendientes?", "¿Cómo cambio el tema de la aplicación?"}) {
+                WaitForAsyncUtils.asyncFx(() -> {
+                    TextArea input = (TextArea) scene.getRoot().lookup(".chat-input");
+                    input.setText(q);
+                    ((Button) scene.getRoot().lookup(".chat-send")).fire();
+                }).get();
+                FxTestSupport.settle(1500);
+            }
+            FxTestSupport.snapshot(scene, "asistente-" + mode.name().toLowerCase());
+        }
+        resize(1100, 720);
+        FxTestSupport.settle(400);
+        FxTestSupport.snapshot(scene, "narrow-asistente");
+    }
+
+    /**
+     * Modelo de demostración para las capturas: elige una herramienta según la pregunta y responde
+     * con las primeras líneas del resultado. Las herramientas y los datos son los reales.
+     */
+    static final class ModeloDemo implements ModeloLenguajePort {
+        @Override
+        public boolean configurado() {
+            return true;
+        }
+
+        @Override
+        public String descripcion() {
+            return "Groq · openai/gpt-oss-120b";
+        }
+
+        @Override
+        public Respuesta completar(List<Mensaje> mensajes, List<Herramienta> herramientas) {
+            Mensaje last = mensajes.get(mensajes.size() - 1);
+            if (last.rol() == Rol.USUARIO) {
+                String q = last.contenido().toLowerCase();
+                Llamada l = q.contains("tema")
+                        ? new Llamada("d1", "buscar_documentacion", Map.of("consulta", "cambiar tema apariencia"))
+                        : new Llamada("d1", "buscar_pedidos", Map.of("estado", "Pendiente", "limite", 4));
+                return new Respuesta(null, List.of(l));
+            }
+            String datos = last.contenido();
+            if ("buscar_documentacion".equals(last.herramienta())) {
+                return new Respuesta("""
+                        Desde Ajustes (Ctrl+,) eliges el perfil de apariencia: seis temas con su color de acento, \
+                        modo oscuro o claro y tamaño de texto. El cambio se aplica al momento en todas las pantallas.""", List.of());
+            }
+            List<String> lineas = datos.lines().toList();
+            return new Respuesta("Hay " + lineas.get(0).replace(" (se muestran 4):", "").replace(":", "")
+                    + " en estado Pendiente. Los más recientes:\n"
+                    + String.join("\n", lineas.subList(1, lineas.size())), List.of());
         }
     }
 

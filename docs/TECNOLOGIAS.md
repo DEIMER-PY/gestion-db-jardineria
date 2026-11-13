@@ -52,6 +52,9 @@ flowchart TB
 | **Ikonli (Feather, Material2)** | Iconos como fuente | Escalables, coloreables por CSS; sustituyen a los emojis (prohibidos) | `support.Icons` |
 | **MySQL 8** | Base de datos relacional | Requisito del proyecto; datos de `jardineria` | `docker/init/01-jardineria.sql` |
 | **JDBC + HikariCP** | Acceso a datos + pool | SQL explícito con `PreparedStatement`; conexiones reutilizadas | `adapter.out.persistence.jdbc`, `DatabaseConnectionManager` |
+| **Groq** (API compatible con OpenAI) | Modelo de lenguaje del asistente | Respuestas rápidas, modelos abiertos y llamadas a herramientas; la clave va en `GROQ_API_KEY` | `adapter.out.llm.GroqLanguageModelAdapter` |
+| **`java.net.http` + Jackson 2.17** | Cliente HTTP y JSON | El cliente HTTP es del JDK; Jackson traduce mensajes y herramientas sin que la capa de aplicación conozca el JSON | `GroqLanguageModelAdapter` |
+| **BM25** (propio, Java puro) | Recuperación de documentación (RAG) | Groq no ofrece embeddings; la búsqueda léxica sin tildes basta para un corpus pequeño y no añade dependencias | `application.service.rag.DocumentIndex` |
 | **Docker Compose** | Orquestación local | MySQL y phpMyAdmin con un comando, misma configuración en cualquier equipo | `docker/docker-compose.yml` |
 | **SLF4J + Logback** | Registro | Trazas de conexión y errores sin `System.out` | Configuración y repositorios |
 | **java.util.prefs** | Preferencias del usuario del SO | Persistir perfiles de apariencia sin ficheros sueltos | `theme.ProfileStore` |

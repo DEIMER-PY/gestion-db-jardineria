@@ -717,6 +717,84 @@
 .board-card:hover { -fx-background-color: -color-accent-subtle; }
 .board-card-dragging { -fx-opacity: 0.45; }
 
+/* ---------- Asistente ---------- */
+.chat-page { -fx-padding: 0.2em 2.3em 1.2em 2.3em; }
+.density-compact .chat-page { -fx-padding: 0.2em 1.8em 0.9em 1.8em; }
+.chat-scroll { -fx-background-color: transparent; }
+.chat-messages { -fx-padding: 6 4 12 4; }
+.chat-provider {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 0.8em;
+    -fx-padding: 0.35em 0.7em 0.35em 0.7em;
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 999;
+}
+.chat-provider .ikonli-font-icon { -fx-icon-color: -color-fg-muted; }
+.chat-welcome {
+    -fx-padding: 1.1em 1.2em 1.1em 1.2em;
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 16;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 16;
+    -fx-max-width: 760;
+}
+.chat-welcome-title {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 700;
+    -fx-font-size: 1.25em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.chat-welcome-text { -fx-text-fill: -color-fg-muted; }
+.chat-chip {
+    -fx-background-color: -color-accent-subtle;
+    -fx-text-fill: -color-accent-fg;
+    -fx-background-radius: 999;
+    -fx-border-color: -color-accent-muted;
+    -fx-border-radius: 999;
+    -fx-padding: 0.4em 0.9em 0.4em 0.9em;
+    -fx-cursor: hand;
+}
+.chat-chip:hover { -fx-background-color: -color-accent-muted; }
+.chat-mark {
+    -fx-background-color: -color-accent-subtle;
+    -fx-background-radius: 10;
+    -fx-min-width: 30; -fx-min-height: 30; -fx-max-width: 30; -fx-max-height: 30;
+}
+.chat-mark .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }
+.chat-bubble {
+    -fx-padding: 0.7em 0.95em 0.7em 0.95em;
+    -fx-background-radius: 16;
+}
+.chat-bubble-assistant {
+    -fx-background-color: -jd-card;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 16;
+}
+.chat-bubble-user { -fx-background-color: -color-accent-emphasis; }
+.chat-bubble-user .chat-text-run { -fx-fill: -jd-on-accent; }
+.chat-bubble-error { -fx-border-color: -color-danger-fg; }
+.chat-text-run { -fx-fill: -color-fg-default; -fx-font-size: 0.95em; }
+.chat-link { -fx-text-fill: -color-accent-fg; -fx-padding: 0; -fx-font-weight: 700; }
+.chat-meta { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.78em; }
+.chat-meta .ikonli-font-icon { -fx-icon-color: -color-fg-subtle; }
+.chat-thinking { -fx-text-fill: -color-fg-muted; }
+.chat-thinking-ring { -fx-progress-color: -color-accent-emphasis; }
+.chat-composer {
+    -fx-padding: 0.5em;
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 16;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 16;
+}
+.chat-input { -fx-background-color: transparent; -fx-pref-height: 4.2em; }
+.chat-input .content { -fx-background-color: transparent; }
+.chat-send { -fx-min-width: 40; -fx-min-height: 40; }
+.chat-hint { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.78em; }
+.corners-rectas .chat-bubble, .corners-rectas .chat-welcome, .corners-rectas .chat-composer {
+    -fx-background-radius: 4; -fx-border-radius: 4;
+}
+
 /* ---------- Agenda ---------- */
 .agenda-month {
     -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;

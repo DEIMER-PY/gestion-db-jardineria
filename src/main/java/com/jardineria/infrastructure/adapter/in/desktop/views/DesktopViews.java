@@ -5,6 +5,7 @@ import com.jardineria.infrastructure.adapter.in.desktop.navigation.Navigator;
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
 import com.jardineria.infrastructure.adapter.in.desktop.views.agenda.AgendaView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.analytics.AnalyticsView;
+import com.jardineria.infrastructure.adapter.in.desktop.views.assistant.AsistenteView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.board.BoardView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.dashboard.DashboardView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.modules.ClientesView;
@@ -26,6 +27,7 @@ public final class DesktopViews {
     public static void registerAll(Navigator navigator, DesktopServices services) {
         navigator.register(Route.DASHBOARD, () -> new DashboardView(services, navigator::navigate));
         navigator.register(Route.ANALYTICS, () -> new AnalyticsView(services.analytics(), navigator::navigate));
+        navigator.register(Route.ASISTENTE, () -> new AsistenteView(services.asistente(), navigator::navigate));
         navigator.register(Route.CLIENTES, () -> new ClientesView(services.clientes(), services.empleados(),
                 services.analytics(), services.pedidos(), services.pagos()));
         navigator.register(Route.PEDIDOS, () -> new PedidosView(services.pedidos(), services.detalles(),
