@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
  */
 public class Panel extends VBox {
     private final HBox header;
+    private final Label lblTitle = new Label();
     private final Label lblCaption = new Label();
 
     public Panel(String title, String caption, Node body) {
@@ -19,7 +20,7 @@ public class Panel extends VBox {
         getStyleClass().add("panel");
         setMinWidth(0);
 
-        Label lblTitle = new Label(title);
+        lblTitle.setText(title);
         lblTitle.getStyleClass().add("panel-title");
         lblCaption.getStyleClass().add("panel-caption");
         lblCaption.setWrapText(true);
@@ -31,6 +32,12 @@ public class Panel extends VBox {
 
         getChildren().addAll(header, body);
         VBox.setVgrow(body, Priority.ALWAYS);
+        setAccessibleText(title);
+    }
+
+    /** Cambia el título del panel (también su texto accesible). */
+    public void setTitleText(String title) {
+        lblTitle.setText(title);
         setAccessibleText(title);
     }
 

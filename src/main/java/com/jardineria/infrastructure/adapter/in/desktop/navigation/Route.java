@@ -16,6 +16,7 @@ public enum Route {
     CLIENTES("Clientes", "Cartera, crédito disponible e historial de compra", Feather.USERS, Section.OPERACION, KeyCode.DIGIT3),
     PEDIDOS("Pedidos", "Ciclo de vida de pedidos y sus líneas de detalle", Feather.SHOPPING_BAG, Section.OPERACION, KeyCode.DIGIT4),
     PAGOS("Pagos", "Cobros registrados por cliente y forma de pago", Feather.CREDIT_CARD, Section.OPERACION, KeyCode.DIGIT5),
+    AGENDA("Agenda", "Entregas previstas, entregas realizadas y cobros por fecha", Feather.CALENDAR, Section.OPERACION, KeyCode.DIGIT0),
     PRODUCTOS("Productos", "Catálogo, precios y control de stock", Feather.PACKAGE, Section.CATALOGO, KeyCode.DIGIT6),
     GAMAS("Gamas", "Familias botánicas del catálogo", Material2AL.ECO, Section.CATALOGO, KeyCode.DIGIT7),
     OFICINAS("Oficinas", "Red de oficinas comerciales", Feather.MAP_PIN, Section.ORGANIZACION, KeyCode.DIGIT8),

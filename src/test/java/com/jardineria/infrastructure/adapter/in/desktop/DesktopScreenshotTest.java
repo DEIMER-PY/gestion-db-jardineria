@@ -106,7 +106,7 @@ class DesktopScreenshotTest {
     void capturaDetalleYFormulario() throws Exception {
         resize(1440, 900);
         WaitForAsyncUtils.asyncFx(() -> ThemeManager.setMode(ThemeManager.Mode.DARK)).get();
-        for (Route route : new Route[]{Route.CLIENTES, Route.PEDIDOS}) {
+        for (Route route : new Route[]{Route.CLIENTES, Route.PEDIDOS, Route.EMPLEADOS}) {
             WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(route)).get();
             FxTestSupport.settle(1600);
             TableView<Object> table = (TableView<Object>) scene.getRoot().lookupAll(".crud-table").stream()
@@ -132,7 +132,7 @@ class DesktopScreenshotTest {
             stage.setWidth(1100);
             stage.setHeight(720);
         }).get();
-        for (Route route : new Route[]{Route.DASHBOARD, Route.ANALYTICS, Route.PRODUCTOS, Route.PEDIDOS}) {
+        for (Route route : new Route[]{Route.DASHBOARD, Route.ANALYTICS, Route.PRODUCTOS, Route.PEDIDOS, Route.AGENDA, Route.EMPLEADOS}) {
             WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(route)).get();
             FxTestSupport.settle(1600);
             FxTestSupport.scrollCurrentViewToTop(scene);
