@@ -52,7 +52,17 @@ public final class ModalHost {
      * @param onConfirm acción a ejecutar si el usuario confirma
      */
     public static void confirmDanger(String title, String message, String confirm, Runnable onConfirm) {
-        StackPane badge = new StackPane(Icons.of(Feather.TRASH_2, 20));
+        confirm(Feather.TRASH_2, title, message, confirm, "danger", onConfirm);
+    }
+
+    /**
+     * Confirmación genérica (p. ej. un cambio de estado). El foco empieza en «Cancelar».
+     *
+     * @param buttonStyle clase del botón de confirmación ({@code accent} o {@code danger})
+     */
+    public static void confirm(org.kordamp.ikonli.Ikon icon, String title, String message, String confirm,
+                               String buttonStyle, Runnable onConfirm) {
+        StackPane badge = new StackPane(Icons.of(icon, 20));
         badge.getStyleClass().add("confirm-badge");
         Label lblTitle = new Label(title);
         lblTitle.getStyleClass().add("dialog-title");
@@ -64,8 +74,8 @@ public final class ModalHost {
         Button cancel = new Button("Cancelar");
         cancel.setCancelButton(true);
         cancel.setOnAction(e -> hide());
-        Button ok = new Button(confirm, Icons.of(Feather.TRASH_2, 14));
-        ok.getStyleClass().add("danger");
+        Button ok = new Button(confirm, Icons.of(icon, 14));
+        ok.getStyleClass().add(buttonStyle);
         ok.setDefaultButton(true);
         ok.setOnAction(e -> {
             hide();
@@ -75,7 +85,7 @@ public final class ModalHost {
         buttons.setAlignment(Pos.CENTER_RIGHT);
 
         VBox box = new VBox(14, badge, lblTitle, lblMessage, buttons);
-        box.getStyleClass().addAll("dialog", "dialog-confirm");
+        box.getStyleClass().addAll("dialog", "dialog-confirm", "confirm-" + buttonStyle);
         box.setMaxSize(440, VBox.USE_PREF_SIZE);
         show(box);
         Platform.runLater(cancel::requestFocus);

@@ -488,6 +488,8 @@
 .confirm-badge .ikonli-font-icon {
     -fx-icon-color: -color-danger-fg;
 }
+.confirm-accent .confirm-badge { -fx-background-color: -color-accent-subtle; }
+.confirm-accent .confirm-badge .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }
 
 /* ---------- Botones ---------- */
 .button, .menu-button, .toggle-button {
@@ -696,6 +698,25 @@
     -fx-background-radius: 12;
 }
 .timeline-row:hover { -fx-background-color: -color-bg-subtle; }
+/* ---------- Tablero ---------- */
+.board-search { -fx-pref-width: 16em; }
+.board-column { -fx-spacing: 14; }
+.board-column.board-drop-target {
+    -fx-border-color: -color-accent-emphasis;
+    -fx-border-width: 2;
+    -fx-background-color: -jd-card, -color-accent-subtle;
+}
+.board-card {
+    -fx-padding: 0.7em 0.85em 0.7em 0.85em;
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 12;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+}
+.board-card:hover { -fx-background-color: -color-accent-subtle; }
+.board-card-dragging { -fx-opacity: 0.45; }
+
 /* ---------- Agenda ---------- */
 .agenda-month {
     -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;

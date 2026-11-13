@@ -132,7 +132,7 @@ class DesktopScreenshotTest {
             stage.setWidth(1100);
             stage.setHeight(720);
         }).get();
-        for (Route route : new Route[]{Route.DASHBOARD, Route.ANALYTICS, Route.PRODUCTOS, Route.PEDIDOS, Route.AGENDA, Route.EMPLEADOS}) {
+        for (Route route : new Route[]{Route.DASHBOARD, Route.ANALYTICS, Route.PRODUCTOS, Route.PEDIDOS, Route.AGENDA, Route.EMPLEADOS, Route.TABLERO}) {
             WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(route)).get();
             FxTestSupport.settle(1600);
             FxTestSupport.scrollCurrentViewToTop(scene);
