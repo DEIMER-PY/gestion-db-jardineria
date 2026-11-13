@@ -98,7 +98,7 @@ public class EmpleadosView extends CrudModuleView<Empleado> {
     @Override
     protected void configureColumns() {
         numberColumn("Código", Empleado::getCodigoEmpleado, 90).getStyleClass().add("col-code");
-        textColumn("Nombre", Empleado::getNombreCompleto, 220).getStyleClass().add("col-strong");
+        personColumn("Nombre", Empleado::getNombreCompleto, Empleado::getCodigoEmpleado, 240);
         textColumn("Puesto", Empleado::getPuesto, 190);
         textColumn("Oficina", e -> oficinaLabel(e.getCodigoOficina()), 170);
         textColumn("Jefe directo", e -> nombreDe(e.getCodigoJefe()), 200);
