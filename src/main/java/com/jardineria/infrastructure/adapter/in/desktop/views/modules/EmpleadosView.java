@@ -130,13 +130,12 @@ public class EmpleadosView extends CrudModuleView<Empleado> {
 
     @Override
     protected void configureColumns() {
-        numberColumn("Código", Empleado::getCodigoEmpleado, 90).getStyleClass().add("col-code");
+        // Email y extensión se ven en la ficha lateral: la tabla queda legible junto a ella
+        numberColumn("Cód.", Empleado::getCodigoEmpleado, 64).getStyleClass().add("col-code");
         personColumn("Nombre", Empleado::getNombreCompleto, Empleado::getCodigoEmpleado, 240);
-        textColumn("Puesto", Empleado::getPuesto, 190);
-        textColumn("Oficina", e -> oficinaLabel(e.getCodigoOficina()), 170);
-        textColumn("Jefe directo", e -> nombreDe(e.getCodigoJefe()), 200);
-        textColumn("Email", Empleado::getEmail, 240);
-        codeColumn("Ext.", Empleado::getExtension, 80);
+        textColumn("Puesto", Empleado::getPuesto, 180);
+        textColumn("Oficina", e -> oficinaLabel(e.getCodigoOficina()), 160);
+        textColumn("Jefe directo", e -> nombreDe(e.getCodigoJefe()), 180);
     }
 
     @Override
