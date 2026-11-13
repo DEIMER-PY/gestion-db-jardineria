@@ -11,6 +11,8 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 | Métricas | Ficha de cliente |
 |---|---|
 | ![Métricas](docs/img/analytics-dark.png) | ![Ficha de cliente](docs/img/clientes-detalle.png) |
+| **Agenda** | **Organigrama en la ficha de empleado** |
+| ![Agenda](docs/img/agenda-dark.png) | ![Organigrama](docs/img/empleados-organigrama.png) |
 | **Alta de pedido** | **Pedidos (tema claro)** |
 | ![Formulario](docs/img/pedidos-formulario.png) | ![Pedidos en tema claro](docs/img/pedidos-light.png) |
 
@@ -69,8 +71,10 @@ docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=
 |---|---|
 | **Panel general** | Saludo con hora de actualización, 5 indicadores con variación trimestral honesta y sparklines interactivas, ventas frente a cobros (cursor y teclado), estado logístico, pedidos por mes, treemap de ventas por gama, mapa de calor de actividad con totales anuales, **lecturas clave** calculadas automáticamente, clientes más activos, stock crítico y actividad reciente. **Navegación contextual**: un clic en un estado, cliente, producto o pedido abre su módulo ya filtrado y con el elemento seleccionado. Ver [docs/DASHBOARD.md](docs/DASHBOARD.md). |
 | **Métricas** | Filtro por año, ventas frente a cobros (gráfico de áreas con cursor), pedidos por mes y estado, ticket medio, tasa de rechazo, distribución por gama, país y forma de pago, ranking de clientes y exportación CSV. Las gamas, los países y los clientes llevan a su módulo filtrado. |
-| **Clientes** | Búsqueda sin tildes, filtro por país y ficha lateral con contacto, representante, crédito usado frente al límite y últimos pedidos y pagos. |
+| **Clientes** | Avatar con iniciales en cada fila, búsqueda sin tildes, filtro por país y ficha lateral con contacto, representante, crédito usado frente al límite y últimos pedidos y pagos. |
 | **Pedidos** | Filtro por estado, cronología con aviso de retraso, cambio rápido de estado y gestión de líneas (el alta descuenta stock). |
+| **Agenda** | Calendario mensual de entregas previstas, entregas realizadas y cobros; cifras del mes (puntualidad e importe cobrado), detalle del día y pedidos retrasados. Se maneja con las flechas y cada pedido o cobro abre su módulo filtrado. Sin tablas nuevas. |
+| **Empleados** | Avatar en cada fila y ficha lateral como **organigrama navegable**: cadena de mando hasta dirección, equipo directo, personas a cargo y clientes asignados. |
 | **Pagos, Productos, Gamas, Oficinas, Empleados** | CRUD con validación inline (claves repetidas, importes y stock no negativos, fechas coherentes, cantidad de una línea ≤ stock disponible), filtros propios (forma de pago, gama, oficina, stock crítico) y resumen superior. |
 | **Ajustes** | Perfiles de apariencia al estilo de la terminal de Ubuntu: 6 temas (4 oscuros, 2 claros), 7 acentos, tamaño de texto, densidad, esquinas, movimiento reducido, vista de inicio; exportar e importar perfiles. Ver [docs/APARIENCIA.md](docs/APARIENCIA.md). |
 
@@ -82,7 +86,7 @@ Todas las tablas permiten ordenar, buscar, copiar filas, exportar a CSV (UTF-8 c
 
 | Atajo | Acción |
 |---|---|
-| `Ctrl+1` … `Ctrl+9` | Ir al módulo correspondiente |
+| `Ctrl+1` … `Ctrl+9`, `Ctrl+0` | Ir al módulo correspondiente (`Ctrl+0`: Agenda) |
 | `Ctrl+K` | Paleta de comandos (navegar y acciones) |
 | `Ctrl+N` / `Enter` / `Supr` | Nuevo / editar / eliminar el registro seleccionado |
 | `Ctrl+F` | Enfocar el buscador del módulo |
@@ -148,7 +152,7 @@ src/main/java/com/jardineria
     └── adapter/in/
         ├── common/    Formatters (compartido por GUI y CLI)
         ├── cli/
-        └── desktop/   shell · navigation · theme · support · components(/form) · views/{dashboard,analytics,crud,modules,settings}
+        └── desktop/   shell · navigation · theme · support · components(/form) · views/{dashboard,analytics,agenda,crud,modules,settings}
 ```
 
 ### Patrones de diseño
@@ -184,6 +188,8 @@ En la GUI también se aplican **Template Method** (`BaseView`, `CrudModuleView`)
 | `HexagonalArchitectureTest` | Fronteras entre capas (ArchUnit) |
 | `DesktopSmokeTest` | La GUI completa sin base de datos: todas las rutas en ambos temas y los 7 formularios, sin errores |
 | `NavigationRevealTest` | Navegación contextual: abrir Pedidos filtrado por código o por estado y con la fila correcta seleccionada |
+| `OrgChartTest` | Ficha de empleado: cadena de mando, equipo directo y navegación entre personas con el teclado |
+| `AgendaModelTest`, `AvatarTest` | Agenda (fecha de referencia, agrupación por día, retrasos, puntualidad) e iniciales y tonos de los avatares |
 | `FormattersTest`, `SeriesTest`, `CsvExportTest` | Formato es-ES, series temporales y CSV RFC 4180 |
 | `AppearanceProfileTest` | Perfiles de apariencia: límites, serialización tolerante y predefinidos |
 | `DashboardInsightsTest`, `TreemapTest`, `ActivityHeatmapTest` | Lecturas clave, algoritmo squarified y niveles del mapa de calor |

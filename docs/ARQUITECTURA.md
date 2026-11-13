@@ -216,5 +216,5 @@ src/main/java/com/jardineria
             ├── theme/       ThemeManager · ThemePreset · Accent · AppearanceProfile · ProfileStore
             ├── support/     Motion · Icons · Interactions · Keys · Series · CsvExport · FxTasks · ModalHost · Notifier
             ├── components/  KpiCard · AreaTrendChart · ActivityHeatmap · Treemap · DonutChart · Sparkline · ResponsiveGrid · form/ …
-            └── views/       dashboard · analytics · crud · modules · settings
+            └── views/       dashboard · analytics · agenda · crud · modules · settings
 ```
