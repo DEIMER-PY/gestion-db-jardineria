@@ -1,8 +1,7 @@
-package com.jardineria.infrastructure;
+package com.jardineria.infrastructure.adapter.out.persistence.jdbc;
 
 import com.jardineria.domain.model.analytics.CategoryMetric;
 import com.jardineria.domain.model.analytics.MonthlyAmount;
-import com.jardineria.infrastructure.adapter.out.persistence.jdbc.AnalyticsJdbcRepository;
 import com.jardineria.infrastructure.config.DatabaseConnectionManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

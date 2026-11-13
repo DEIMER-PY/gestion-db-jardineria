@@ -46,11 +46,9 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.feather.Feather;
 
 import java.math.BigDecimal;
-import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -363,18 +361,10 @@ public abstract class CrudModuleView<T> extends BaseView {
     }
 
     private void applyFilter() {
-        String q = normalize(search.getText());
-        filtered.setPredicate(t -> extraFilter.test(t) && (q.isEmpty() || normalize(searchableText(t)).contains(q)));
+        String q = Formatters.fold(search.getText());
+        filtered.setPredicate(t -> extraFilter.test(t) && (q.isEmpty() || Formatters.fold(searchableText(t)).contains(q)));
     }
 
-    /** Minúsculas sin tildes, para que "jardin" encuentre "Jardín". */
-    public static String normalize(String s) {
-        if (s == null) {
-            return "";
-        }
-        return Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("\\p{M}", "")
-                .toLowerCase(Locale.ROOT).trim();
-    }
 
     protected List<T> visibleItems() {
         return List.copyOf(table.getItems());
@@ -487,7 +477,7 @@ public abstract class CrudModuleView<T> extends BaseView {
             return;
         }
         CsvExport.saveWithDialog(getScene() == null ? null : getScene().getWindow(),
-                CrudModuleView.normalize(plural).replace(' ', '-') + "-jardineria", csvHeader(), rows);
+                Formatters.fold(plural).replace(' ', '-') + "-jardineria", csvHeader(), rows);
     }
 
     // ------------------------------------------------------------- utilidades

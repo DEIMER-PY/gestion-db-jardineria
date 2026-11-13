@@ -109,9 +109,9 @@ public class EmpleadosView extends CrudModuleView<Empleado> {
     @Override
     protected Node buildSummary(List<Empleado> all) {
         long representantes = all.stream()
-                .filter(e -> e.getPuesto() != null && CrudModuleView.normalize(e.getPuesto()).contains("representante")).count();
+                .filter(e -> e.getPuesto() != null && Formatters.fold(e.getPuesto()).contains("representante")).count();
         long directivos = all.stream().filter(e -> e.getCodigoJefe() == null
-                || (e.getPuesto() != null && CrudModuleView.normalize(e.getPuesto()).contains("director"))).count();
+                || (e.getPuesto() != null && Formatters.fold(e.getPuesto()).contains("director"))).count();
         long conEquipo = all.stream().map(Empleado::getCodigoJefe).filter(Objects::nonNull).distinct().count();
         return new StatStrip()
                 .stat(Feather.USERS, Formatters.integer(all.size()), "personas en plantilla", KpiCard.Tone.ACCENT)
