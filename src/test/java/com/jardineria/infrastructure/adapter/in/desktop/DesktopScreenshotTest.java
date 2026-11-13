@@ -7,6 +7,7 @@ import com.jardineria.infrastructure.adapter.out.docs.ClasspathDocumentacionAdap
 import com.jardineria.infrastructure.adapter.in.desktop.shell.AppShell;
 import com.jardineria.infrastructure.adapter.in.desktop.support.ModalHost;
 import com.jardineria.infrastructure.adapter.in.desktop.theme.ThemeManager;
+import com.jardineria.infrastructure.adapter.in.desktop.views.chat.ChatIdentity;
 import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.config.DatabaseConfig;
 import com.jardineria.infrastructure.config.DatabaseConnectionManager;
@@ -78,7 +79,8 @@ class DesktopScreenshotTest {
                 new AsistenteService(new ModeloDemo(), new ClasspathDocumentacionAdapter(),
                         ctx.getClienteService(), ctx.getPedidoService(), ctx.getDetallePedidoService(),
                         ctx.getProductoService(), ctx.getDashboardService(), ctx.getAnalyticsService(),
-                        Clock.systemDefaultZone()));
+                        Clock.systemDefaultZone()),
+                ctx.getMensajeriaService());
         shell = new AppShell(services);
         scene = new Scene(shell, 1440, 900);
         ThemeManager.setMode(ThemeManager.Mode.DARK);
@@ -133,6 +135,23 @@ class DesktopScreenshotTest {
         resize(1100, 720);
         FxTestSupport.settle(400);
         FxTestSupport.snapshot(scene, "narrow-asistente");
+    }
+
+    @Test
+    @DisplayName("Mensajes del equipo: canal general con menciones y pedidos enlazados, en oscuro, claro y ventana mínima")
+    void capturaChat() throws Exception {
+        ChatIdentity.useMemory();
+        ChatIdentity.set(5);
+        resize(1440, 900);
+        for (ThemeManager.Mode mode : ThemeManager.Mode.values()) {
+            WaitForAsyncUtils.asyncFx(() -> ThemeManager.setMode(mode)).get();
+            WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(Route.CHAT)).get();
+            FxTestSupport.settle(1500);
+            FxTestSupport.snapshot(scene, "chat-" + mode.name().toLowerCase());
+        }
+        resize(1100, 720);
+        FxTestSupport.settle(500);
+        FxTestSupport.snapshot(scene, "narrow-chat");
     }
 
     /**

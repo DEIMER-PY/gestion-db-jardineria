@@ -7,6 +7,7 @@ import com.jardineria.application.port.in.ClienteUseCase;
 import com.jardineria.application.port.in.DashboardUseCase;
 import com.jardineria.application.port.in.DetallePedidoUseCase;
 import com.jardineria.application.port.in.EmpleadoUseCase;
+import com.jardineria.application.port.in.MensajeriaUseCase;
 import com.jardineria.application.port.in.GamaProductoUseCase;
 import com.jardineria.application.port.in.OficinaUseCase;
 import com.jardineria.application.port.in.PagoUseCase;
@@ -67,7 +68,8 @@ final class FxTestSupport {
                         return "simulada";
                     }
                 },
-                pick(AsistenteUseCase.class, DesktopServices.SIN_ASISTENTE, overrides));
+                pick(AsistenteUseCase.class, DesktopServices.SIN_ASISTENTE, overrides),
+                pick(MensajeriaUseCase.class, DesktopServices.SIN_MENSAJERIA, overrides));
     }
 
     private static <P> P pick(Class<P> port, P fallback, Object[] overrides) {

@@ -795,6 +795,64 @@
     -fx-background-radius: 4; -fx-border-radius: 4;
 }
 
+/* ---------- Mensajes del equipo ---------- */
+.team-page { -fx-spacing: 16; }
+.team-side-scroll { -fx-background-color: transparent; }
+.team-side {
+    -fx-padding: 0.9em 0.8em 0.9em 0.8em;
+    -fx-background-color: -jd-card;
+    -fx-background-radius: 16;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 16;
+}
+.team-section {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.72em;
+    -fx-font-weight: 800;
+    -fx-padding: 0.9em 0 0.2em 0.3em;
+}
+.team-channel {
+    -fx-padding: 0.45em 0.6em 0.45em 0.6em;
+    -fx-background-radius: 10;
+}
+.team-channel:hover { -fx-background-color: -color-bg-subtle; }
+.team-channel .ikonli-font-icon { -fx-icon-color: -color-fg-subtle; }
+.team-channel-name { -fx-text-fill: -color-fg-muted; }
+.team-channel-unread .team-channel-name { -fx-text-fill: -color-fg-emphasis; -fx-font-weight: 800; }
+.team-channel-active { -fx-background-color: -color-accent-subtle; }
+.team-channel-active .team-channel-name { -fx-text-fill: -color-accent-fg; -fx-font-weight: 700; }
+.team-channel-active .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }
+.team-unread {
+    -fx-background-color: -color-accent-emphasis;
+    -fx-text-fill: -jd-on-accent;
+    -fx-background-radius: 999;
+    -fx-padding: 0.05em 0.5em 0.05em 0.5em;
+    -fx-font-size: 0.75em;
+    -fx-font-weight: 800;
+}
+.team-empty { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.85em; -fx-padding: 0.3em 0.4em 0.3em 0.4em; }
+.team-header { -fx-padding: 0.1em 0.2em 0.4em 0.2em; }
+.team-title {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 700;
+    -fx-font-size: 1.2em;
+    -fx-text-fill: -color-fg-emphasis;
+}
+.team-description { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.86em; }
+.team-messages { -fx-padding: 0.4em 0.2em 0.8em 0.2em; }
+.team-message { -fx-padding: 0.35em 0.5em 0.35em 0.5em; -fx-background-radius: 12; }
+.team-message:hover { -fx-background-color: -color-bg-subtle; }
+.team-message-mention { -fx-background-color: -color-accent-subtle; }
+.team-author { -fx-text-fill: -color-fg-emphasis; -fx-font-weight: 800; }
+.team-role { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.8em; }
+.team-time { -fx-text-fill: -color-fg-subtle; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.76em; }
+.team-text-run { -fx-fill: -color-fg-default; -fx-font-size: 0.95em; }
+.team-mention { -fx-fill: -color-accent-fg; -fx-font-weight: 700; -fx-font-size: 0.95em; }
+.team-mention-me { -fx-fill: -color-warning-fg; -fx-font-weight: 800; -fx-font-size: 0.95em; }
+.corners-rectas .team-side, .corners-rectas .team-channel, .corners-rectas .team-message {
+    -fx-background-radius: 4; -fx-border-radius: 4;
+}
+
 /* ---------- Agenda ---------- */
 .agenda-month {
     -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;

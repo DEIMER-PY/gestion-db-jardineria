@@ -19,7 +19,7 @@ public class ClasspathDocumentacionAdapter implements DocumentacionPort {
     static final List<String> FUENTES = List.of(
             "README.md", "AGENTS.md",
             "docs/README.md", "docs/APARIENCIA.md", "docs/ARQUITECTURA.md", "docs/ASISTENTE.md", "docs/CAPTURAS.md",
-            "docs/DASHBOARD.md", "docs/MULTIPLATAFORMA.md", "docs/TECNOLOGIAS.md");
+            "docs/DASHBOARD.md", "docs/MENSAJES.md", "docs/MULTIPLATAFORMA.md", "docs/TECNOLOGIAS.md");
 
     @Override
     public List<Documento> cargar() {

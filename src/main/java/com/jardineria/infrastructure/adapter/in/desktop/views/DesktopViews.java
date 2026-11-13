@@ -7,6 +7,7 @@ import com.jardineria.infrastructure.adapter.in.desktop.views.agenda.AgendaView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.analytics.AnalyticsView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.assistant.AsistenteView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.board.BoardView;
+import com.jardineria.infrastructure.adapter.in.desktop.views.chat.ChatView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.dashboard.DashboardView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.modules.ClientesView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.modules.EmpleadosView;
@@ -40,6 +41,7 @@ public final class DesktopViews {
         navigator.register(Route.GAMAS, () -> new GamasView(services.gamas(), services.productos()));
         navigator.register(Route.OFICINAS, () -> new OficinasView(services.oficinas(), services.empleados()));
         navigator.register(Route.EMPLEADOS, () -> new EmpleadosView(services.empleados(), services.oficinas(), services.clientes()));
+        navigator.register(Route.CHAT, () -> new ChatView(services.mensajeria(), services.empleados(), navigator::navigate));
         navigator.register(Route.AJUSTES, SettingsView::new);
     }
 }

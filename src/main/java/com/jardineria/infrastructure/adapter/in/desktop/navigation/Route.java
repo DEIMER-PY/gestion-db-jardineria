@@ -27,6 +27,9 @@ public enum Route {
     GAMAS("Gamas", "Familias botánicas del catálogo", Material2AL.ECO, Section.CATALOGO, KeyCode.DIGIT7),
     OFICINAS("Oficinas", "Red de oficinas comerciales", Feather.MAP_PIN, Section.ORGANIZACION, KeyCode.DIGIT8),
     EMPLEADOS("Empleados", "Equipo, puestos y jerarquía", Feather.BRIEFCASE, Section.ORGANIZACION, KeyCode.DIGIT9),
+    /** Sin atajo propio; se abre desde el menú o con Ctrl+K. */
+    CHAT("Mensajes", "Canal general, uno por oficina y mensajes directos entre empleados", Feather.MESSAGE_SQUARE,
+            Section.ORGANIZACION, null),
     /** Se abre desde el pie del menú lateral, la barra superior o Ctrl+, (no aparece en la lista de módulos). */
     AJUSTES("Ajustes", "Perfiles de apariencia, temas, colores de acento y accesibilidad", Feather.SETTINGS,
             Section.PREFERENCIAS, KeyCode.COMMA);
