@@ -3,7 +3,11 @@ package com.jardineria.infrastructure.config;
 import com.jardineria.application.port.in.*;
 import com.jardineria.application.service.*;
 import com.jardineria.domain.repository.*;
+import com.jardineria.infrastructure.adapter.out.docs.ClasspathDocumentacionAdapter;
+import com.jardineria.infrastructure.adapter.out.llm.GroqLanguageModelAdapter;
 import com.jardineria.infrastructure.adapter.out.persistence.jdbc.*;
+
+import java.time.Clock;
 
 /**
  * Composition Root de la aplicación (inyección de dependencias manual).
@@ -27,6 +31,7 @@ public final class ApplicationContext {
     private final PagoUseCase pagoService;
     private final DashboardUseCase dashboardService;
     private final AnalyticsUseCase analyticsService;
+    private final AsistenteUseCase asistenteService;
 
     private ApplicationContext() {
         // Adaptadores de salida (persistencia JDBC sobre MySQL)
@@ -53,6 +58,12 @@ public final class ApplicationContext {
                 clienteRepository, pedidoRepository, productoRepository,
                 empleadoRepository, oficinaRepository, pagoRepository);
         this.analyticsService = new AnalyticsService(analyticsRepository);
+
+        // Asistente: modelo de lenguaje (Groq, clave en GROQ_API_KEY) y documentación para el RAG
+        this.asistenteService = new AsistenteService(
+                GroqLanguageModelAdapter.desdeEntorno(), new ClasspathDocumentacionAdapter(),
+                clienteService, pedidoService, detallePedidoService, productoService,
+                dashboardService, analyticsService, Clock.systemDefaultZone());
     }
 
     /** Devuelve el contexto único de la aplicación (Singleton con doble verificación). */
@@ -105,5 +116,9 @@ public final class ApplicationContext {
 
     public AnalyticsUseCase getAnalyticsService() {
         return analyticsService;
+    }
+
+    public AsistenteUseCase getAsistenteService() {
+        return asistenteService;
     }
 }

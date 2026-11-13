@@ -55,6 +55,13 @@
             <version>${hikaricp.version}</version>
         </dependency>
 
+        <!-- JSON para el adaptador del modelo de lenguaje (Groq, API compatible con OpenAI) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
         <!-- JavaFX 21 LTS -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -148,6 +155,27 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <!-- Documentación que el asistente indexa para responder preguntas de uso (RAG) -->
+            <resource>
+                <directory>${project.basedir}</directory>
+                <targetPath>rag</targetPath>
+                <includes>
+                    <include>README.md</include>
+                    <include>AGENTS.md</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/docs</directory>
+                <targetPath>rag/docs</targetPath>
+                <includes>
+                    <include>*.md</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
