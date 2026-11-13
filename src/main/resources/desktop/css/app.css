@@ -63,6 +63,54 @@
 .brand-mark-leaf { -fx-fill: #F3FFF6; }
 .brand-mark-leaf-light { -fx-fill: #B8F2C9; }
 .brand-mark-vein { -fx-fill: transparent; -fx-stroke: rgba(31, 122, 77, 0.7); -fx-stroke-width: 1.2; }
+
+/* ---------- Pantalla de carga (SplashScreen): paisaje al amanecer, igual en todos los temas ---------- */
+.splash {
+    -fx-background-color: #0E3B2A;
+    -fx-background-radius: 18;
+}
+.splash-sky {
+    -fx-fill: linear-gradient(to bottom, #12324A 0%, #3E5F7A 34%, #F2A766 72%, #FFD89A 100%);
+}
+.splash-sun { -fx-fill: radial-gradient(center 50% 50%, radius 50%, #FFF1C4 0%, #FFC857 70%, #F7A93B 100%); }
+.splash-sun-glow { -fx-fill: radial-gradient(center 50% 50%, radius 50%, rgba(255, 200, 87, 0.45) 0%, rgba(255, 200, 87, 0) 100%); }
+.splash-bird { -fx-fill: transparent; -fx-stroke: rgba(18, 40, 50, 0.55); -fx-stroke-width: 1.8; }
+.splash-hill-far { -fx-fill: linear-gradient(to bottom, #5E9C78, #3E7D5C); }
+.splash-hill-mid { -fx-fill: linear-gradient(to bottom, #2E9A63, #1F7A4D); }
+.splash-hill-near { -fx-fill: linear-gradient(to bottom, #145C3B, #0A2E20); }
+.splash-stem { -fx-fill: transparent; -fx-stroke: #2E9A63; -fx-stroke-width: 3; }
+.splash-leaf { -fx-fill: #6FD39A; }
+.splash-leaf-light { -fx-fill: #B8F2C9; }
+.splash-flower-gold { -fx-fill: #FFC857; }
+.splash-flower-rose { -fx-fill: #F27C9B; }
+.splash-flower-core { -fx-fill: #7A3E12; }
+.splash-card {
+    -fx-background-color: rgba(10, 30, 24, 0.62);
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(243, 255, 246, 0.14);
+    -fx-border-radius: 16;
+    -fx-padding: 20 22 18 22;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 24, 0.1, 0, 8);
+}
+.splash-title {
+    -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+    -fx-font-weight: 800;
+    -fx-font-size: 26px;
+    -fx-text-fill: #F3FFF6;
+}
+.splash-tagline { -fx-font-size: 13px; -fx-text-fill: rgba(243, 255, 246, 0.72); }
+.splash-track { -fx-background-color: rgba(243, 255, 246, 0.16); -fx-background-radius: 3; }
+.splash-fill {
+    -fx-background-color: linear-gradient(to right, #6FD39A, #FFC857);
+    -fx-background-radius: 3;
+    -fx-effect: dropshadow(gaussian, rgba(255, 200, 87, 0.55), 8, 0.2, 0, 0);
+}
+.splash-status { -fx-font-size: 12.5px; -fx-text-fill: rgba(243, 255, 246, 0.86); }
+.splash-version {
+    -fx-font-family: "JetBrains Mono", "Consolas", monospace;
+    -fx-font-size: 11px;
+    -fx-text-fill: rgba(243, 255, 246, 0.6);
+}
 .brand-name {
     -fx-font-family: "Bricolage Grotesque", "Manrope", sans-serif;
     -fx-font-weight: 800;

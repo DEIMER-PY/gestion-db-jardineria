@@ -1,6 +1,13 @@
 package com.jardineria.infrastructure.adapter.in.desktop;
 
 import com.jardineria.infrastructure.adapter.in.desktop.shell.AppShell;
+import com.jardineria.infrastructure.adapter.in.desktop.shell.SplashScreen;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Motion;
+import javafx.animation.FadeTransition;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
+import java.util.List;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Notifier;
 import com.jardineria.infrastructure.adapter.in.desktop.theme.ProfileStore;
 import com.jardineria.infrastructure.adapter.in.desktop.views.chat.ChatIdentity;
@@ -29,6 +36,8 @@ import java.util.Objects;
 public class JardineriaDesktopApp extends Application {
     private static final Logger log = LoggerFactory.getLogger(JardineriaDesktopApp.class);
     private static DesktopServices services;
+    /** Duración mínima de cada paso de la pantalla de carga, para que la animación se aprecie. */
+    private static final long SPLASH_MIN_STEP_MS = 650;
 
     /** Arranca la GUI con los servicios provistos por el composition root (bloquea hasta cerrar). */
     public static void launchWith(DesktopServices desktopServices, String... args) {
@@ -45,10 +54,54 @@ public class JardineriaDesktopApp extends Application {
         });
 
         ThemeManager.loadFonts();
-        ThemeManager.useStore(ProfileStore.preferences());
-        ChatIdentity.usePreferences();
-        AppShell shell = new AppShell(services);
+        if (!Boolean.parseBoolean(System.getProperty("jardineria.splash", "true"))) {
+            ThemeManager.useStore(ProfileStore.preferences());
+            ChatIdentity.usePreferences();
+            showMain(stage, new AppShell(services));
+            return;
+        }
 
+        Stage splashStage = new Stage(StageStyle.TRANSPARENT);
+        SplashScreen splash = new SplashScreen();
+        Rectangle clip = new Rectangle(SplashScreen.WIDTH, SplashScreen.HEIGHT);
+        clip.setArcWidth(36);
+        clip.setArcHeight(36);
+        splash.setClip(clip);
+        Scene splashScene = new Scene(splash, SplashScreen.WIDTH, SplashScreen.HEIGHT, Color.TRANSPARENT);
+        splashScene.getStylesheets().add(JardineriaDesktopApp.class.getResource("/desktop/css/app.css").toExternalForm());
+        splashStage.setScene(splashScene);
+        splashStage.setTitle("Jardinería Suite");
+        splashStage.getIcons().addAll(renderAppIcons());
+        splashStage.centerOnScreen();
+        splashStage.show();
+        splash.animate();
+
+        AppShell[] shell = new AppShell[1];
+        List<SplashScreen.Paso> pasos = List.of(
+                SplashScreen.Paso.interfaz("Aplicando el tema y tus preferencias…", () -> {
+                    ThemeManager.useStore(ProfileStore.preferences());
+                    ChatIdentity.usePreferences();
+                }),
+                SplashScreen.Paso.segundoPlano("Conectando con MySQL (" + services.connection().describe() + ")…", () -> {
+                    boolean ok = services.connection().isAvailable();
+                    log.info("Base de datos {} al arrancar", ok ? "disponible" : "no disponible");
+                }),
+                SplashScreen.Paso.interfaz("Preparando los módulos…", () -> shell[0] = new AppShell(services)));
+        splash.run(pasos, Duration.millis(SPLASH_MIN_STEP_MS),
+                error -> log.warn("Paso de arranque con error: {}", error.getMessage()),
+                () -> {
+                    if (shell[0] == null) {
+                        shell[0] = new AppShell(services);
+                    }
+                    showMain(stage, shell[0]);
+                    FadeTransition fade = new FadeTransition(Duration.millis(Motion.isReduced() ? 1 : 380), splash);
+                    fade.setToValue(0);
+                    fade.setOnFinished(e -> splashStage.close());
+                    fade.play();
+                });
+    }
+
+    private void showMain(Stage stage, AppShell shell) {
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
         double width = Math.min(1480, screen.getWidth() * 0.92);
         double height = Math.min(940, screen.getHeight() * 0.92);
@@ -62,6 +115,7 @@ public class JardineriaDesktopApp extends Application {
         stage.setScene(scene);
         stage.getIcons().addAll(renderAppIcons());
         stage.show();
+        stage.toFront();
 
         shell.start(AppShell.startRoute());
         log.info("GUI JavaFX iniciada ({}x{})", (int) width, (int) height);
