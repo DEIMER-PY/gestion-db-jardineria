@@ -1,5 +1,16 @@
 package com.jardineria.infrastructure.adapter.in.desktop;
 
+import com.jardineria.application.dto.DashboardMetrics;
+import com.jardineria.application.port.in.AnalyticsUseCase;
+import com.jardineria.application.port.in.ClienteUseCase;
+import com.jardineria.application.port.in.DashboardUseCase;
+import com.jardineria.application.port.in.DetallePedidoUseCase;
+import com.jardineria.application.port.in.EmpleadoUseCase;
+import com.jardineria.application.port.in.GamaProductoUseCase;
+import com.jardineria.application.port.in.OficinaUseCase;
+import com.jardineria.application.port.in.PagoUseCase;
+import com.jardineria.application.port.in.PedidoUseCase;
+import com.jardineria.application.port.in.ProductoUseCase;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -9,15 +20,57 @@ import org.testfx.util.WaitForAsyncUtils;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
+import static org.mockito.Mockito.RETURNS_SMART_NULLS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Utilidades compartidas por las pruebas de la GUI.
  */
 final class FxTestSupport {
     private FxTestSupport() {
+    }
+
+    /**
+     * Servicios simulados con conexión disponible: cada puerto es un mock vacío salvo los
+     * que se pasan en {@code overrides} (se asignan por tipo).
+     */
+    static DesktopServices services(Object... overrides) {
+        DashboardUseCase dashboard = mock(DashboardUseCase.class, RETURNS_SMART_NULLS);
+        when(dashboard.obtenerMetricas()).thenReturn(new DashboardMetrics(0, 0, 0, 0, 0, BigDecimal.ZERO, 0, 0, 0, 0));
+        return new DesktopServices(
+                pick(DashboardUseCase.class, dashboard, overrides),
+                pick(AnalyticsUseCase.class, null, overrides),
+                pick(ClienteUseCase.class, null, overrides),
+                pick(PedidoUseCase.class, null, overrides),
+                pick(DetallePedidoUseCase.class, null, overrides),
+                pick(PagoUseCase.class, null, overrides),
+                pick(ProductoUseCase.class, null, overrides),
+                pick(GamaProductoUseCase.class, null, overrides),
+                pick(OficinaUseCase.class, null, overrides),
+                pick(EmpleadoUseCase.class, null, overrides),
+                new DesktopServices.ConnectionProbe() {
+                    @Override
+                    public boolean isAvailable() {
+                        return true;
+                    }
+
+                    @Override
+                    public String describe() {
+                        return "simulada";
+                    }
+                });
+    }
+
+    private static <P> P pick(Class<P> port, P fallback, Object[] overrides) {
+        return Arrays.stream(overrides).filter(port::isInstance).map(port::cast).findFirst()
+                .orElseGet(() -> fallback != null ? fallback : mock(port, RETURNS_SMART_NULLS));
     }
 
     /** Espera a que se vacíe la cola de eventos FX y a que terminen las consultas asíncronas. */

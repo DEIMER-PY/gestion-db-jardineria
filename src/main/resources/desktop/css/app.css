@@ -696,6 +696,8 @@
     -fx-background-radius: 12;
 }
 .timeline-row:hover { -fx-background-color: -color-bg-subtle; }
+.timeline-row.org-self { -fx-background-color: -color-accent-subtle; }
+.timeline-row.org-self .timeline-title { -fx-text-fill: -color-fg-emphasis; }
 .timeline-dot {
     -fx-background-color: -jd-tone, -jd-card, -jd-tone;
     -fx-background-insets: 0, 2, 4;

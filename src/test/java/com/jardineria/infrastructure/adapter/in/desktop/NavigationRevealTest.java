@@ -1,16 +1,6 @@
 package com.jardineria.infrastructure.adapter.in.desktop;
 
-import com.jardineria.application.dto.DashboardMetrics;
-import com.jardineria.application.port.in.AnalyticsUseCase;
-import com.jardineria.application.port.in.ClienteUseCase;
-import com.jardineria.application.port.in.DashboardUseCase;
-import com.jardineria.application.port.in.DetallePedidoUseCase;
-import com.jardineria.application.port.in.EmpleadoUseCase;
-import com.jardineria.application.port.in.GamaProductoUseCase;
-import com.jardineria.application.port.in.OficinaUseCase;
-import com.jardineria.application.port.in.PagoUseCase;
 import com.jardineria.application.port.in.PedidoUseCase;
-import com.jardineria.application.port.in.ProductoUseCase;
 import com.jardineria.domain.model.Pedido;
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
 import com.jardineria.infrastructure.adapter.in.desktop.shell.AppShell;
@@ -28,7 +18,6 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -48,37 +37,13 @@ class NavigationRevealTest {
 
     @Start
     void start(Stage stage) {
-        DashboardUseCase dashboard = mock(DashboardUseCase.class, Mockito.RETURNS_SMART_NULLS);
-        when(dashboard.obtenerMetricas()).thenReturn(
-                new DashboardMetrics(0, 0, 0, 0, 0, BigDecimal.ZERO, 0, 0, 0, 0));
         PedidoUseCase pedidos = mock(PedidoUseCase.class, Mockito.RETURNS_SMART_NULLS);
         LocalDate hoy = LocalDate.of(2009, 1, 17);
         when(pedidos.listarTodos()).thenReturn(List.of(
                 new Pedido(300, hoy, hoy, null, "Pendiente", null, 1),
                 new Pedido(30, hoy.minusDays(1), hoy, hoy, "Entregado", null, 1),
                 new Pedido(31, hoy.minusDays(2), hoy, null, "Rechazado", null, 1)));
-        DesktopServices services = new DesktopServices(
-                dashboard,
-                mock(AnalyticsUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                mock(ClienteUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                pedidos,
-                mock(DetallePedidoUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                mock(PagoUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                mock(ProductoUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                mock(GamaProductoUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                mock(OficinaUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                mock(EmpleadoUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                new DesktopServices.ConnectionProbe() {
-                    @Override
-                    public boolean isAvailable() {
-                        return true;
-                    }
-
-                    @Override
-                    public String describe() {
-                        return "simulada";
-                    }
-                });
+        DesktopServices services = FxTestSupport.services(pedidos);
         shell = new AppShell(services);
         scene = new Scene(shell, 1280, 800);
         ThemeManager.install(scene);
