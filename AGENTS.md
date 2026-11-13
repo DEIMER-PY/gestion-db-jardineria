@@ -5,7 +5,7 @@ Contexto operativo para cualquier agente (Claude, Cursor, Copilot…) que modifi
 ## 1. Resumen
 
 - **Producto**: suite de escritorio para la base de datos `jardineria` (8 tablas: oficina, empleado, cliente, gama_producto, producto, pedido, detalle_pedido, pago).
-- **Stack**: Java 21 · JavaFX 21 + AtlantaFX 2.1 + Ikonli · JDBC + HikariCP · MySQL 8 en Docker · JUnit 5, Mockito, ArchUnit, TestFX + Monocle.
+- **Stack**: Java 21 · JavaFX 21 + AtlantaFX 2.1 + Ikonli · JDBC + HikariCP · MySQL 8 en Docker · JUnit 5, Mockito, ArchUnit, TestFX + Monocle · Maven Wrapper (`mvnw`, no requiere Maven instalado) · CI en Windows, macOS y Linux (`.github/workflows/ci.yml`).
 - **Versión**: 2.0.0 (`pom.xml`). Punto de entrada: `com.jardineria.infrastructure.JardineriaApplication` (sin argumentos abre la GUI; `--cli` abre la consola).
 - **Lo que se evalúa**: persistencia JDBC con MySQL en Docker, CRUD funcional, arquitectura hexagonal, SOLID y patrones GoF.
 
@@ -36,6 +36,8 @@ Contexto operativo para cualquier agente (Claude, Cursor, Copilot…) que modifi
 - **Accesibilidad**: todo botón de icono lleva `setAccessibleText` y `Tooltip`. Hay que respetar `Motion.isReduced()`.
 - **Layout**: los contenedores de tarjetas usan `ResponsiveGrid`, que baja elementos de fila en lugar de comprimirlos. Hay que comprobar el resultado a 1100×720 (ventana mínima).
 
+- **Multiplataforma** (Windows, macOS, Linux; x64 y ARM64): los atajos se registran con `KeyCombination.SHORTCUT_DOWN` (nunca `CONTROL_DOWN`) y todo texto que nombre teclas pasa por `Keys.text(...)` (muestra ⌘ ⌥ ⌫ en macOS). Nada de rutas fijas ni separadores `\`: usa `Path`/`Files` y `user.home`. Los scripts existen en dos versiones (`scripts/iniciar.sh` y `scripts/iniciar.ps1` + `.cmd`): si cambias uno, cambia el otro. Detalle en `docs/MULTIPLATAFORMA.md`.
+
 ## 4. Texto y codificación
 
 - Todo el código fuente, el SQL y los recursos están en **UTF-8**. El texto visible lleva ortografía española completa (tildes, ñ, ¿?, ¡!).
@@ -56,12 +58,12 @@ docker compose -f docker/docker-compose.yml up -d     # MySQL :3307 + phpMyAdmin
 ## 6. Comandos
 
 ```bash
-mvn javafx:run                         # ejecutar la GUI
-mvn test                               # suite completa (GUI headless; los tests JDBC se omiten sin MySQL)
-mvn test -Dtest=DesktopScreenshotTest -Dui.screenshots=true   # capturas en target/screenshots
-mvn test -Dtest=DesktopGalleryTest -Dui.screenshots=true      # galería de temas, Ajustes y panel en target/screenshots/gallery
-mvn package -DskipTests                # target/gestion-jardineria-2.0.0.jar (JAR sombreado)
-java -jar target/gestion-jardineria-2.0.0.jar [--cli]
+./mvnw javafx:run                       # ejecutar la GUI (Windows: .\mvnw.cmd); o ./scripts/iniciar.sh | scripts\iniciar.cmd
+./mvnw test                               # suite completa (GUI headless; los tests JDBC se omiten sin MySQL)
+./mvnw test -Dtest=DesktopScreenshotTest -Dui.screenshots=true   # capturas en target/screenshots
+./mvnw test -Dtest=DesktopGalleryTest -Dui.screenshots=true      # galería de temas, Ajustes y panel en target/screenshots/gallery
+./mvnw package -DskipTests              # target/gestion-jardineria-2.0.0-<plataforma>.jar (win, mac, mac-aarch64, linux, linux-aarch64)
+java -jar target/gestion-jardineria-2.0.0-<plataforma>.jar [--cli]
 ```
 
 Tras un cambio visual, genera las capturas y revísalas en tema oscuro, en tema claro y en la ventana mínima (`narrow-*`). Si cambian pantallas documentadas, actualiza las imágenes de `docs/img` (ver `docs/CAPTURAS.md`).

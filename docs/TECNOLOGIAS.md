@@ -28,7 +28,8 @@ flowchart TB
         TFX["TestFX 4.0.18 + Monocle 21.0.2"]
     end
     subgraph Build["Construcción"]
-        MV["Maven 3.9<br/>compiler · surefire · javafx-maven-plugin · shade"]
+        MV["Maven 3.9.9 vía wrapper (mvnw)<br/>compiler · surefire · javafx-maven-plugin · shade"]
+        CI["GitHub Actions<br/>Windows · macOS · Linux x64/ARM64"]
     end
     JDK --> FX --> AFX
     FX --> IK
@@ -36,6 +37,7 @@ flowchart TB
     DK --> DB
     DK --> PMA --> DB
     MV --> JDK
+    CI --> MV
     TFX --> FX
     AU -. vigila capas .-> JDK
 ```
@@ -57,6 +59,8 @@ flowchart TB
 | **Mockito** | Dobles de prueba | Servicios sin base de datos | `ApplicationServicesTest` |
 | **ArchUnit** | Pruebas de arquitectura | Impide que el dominio dependa de JDBC o JavaFX | `HexagonalArchitectureTest` |
 | **TestFX + Monocle** | Pruebas de GUI sin pantalla | Recorre todas las vistas y genera las capturas de esta documentación | `DesktopSmokeTest`, `DesktopScreenshotTest`, `DesktopGalleryTest` |
+| **Maven Wrapper** | Script que descarga Maven | Nadie necesita instalar Maven; misma versión en todos los equipos | `mvnw`, `mvnw.cmd`, `.mvn/wrapper` |
+| **GitHub Actions** | Integración continua | Compila, prueba y genera el JAR en Windows, macOS y Linux (x64 y ARM64) | `.github/workflows/ci.yml` |
 | **Mermaid** | Diagramas como texto | GitHub los dibuja; viven junto al código | `docs/*.md` |
 
 ## 3. Concurrencia en la interfaz
@@ -78,12 +82,12 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    SRC[src/main] --> C[mvn compile]
-    C --> T[mvn test]
+    SRC[src/main] --> C[./mvnw compile]
+    C --> T[./mvnw test]
     T --> U[Unitarias<br/>dominio, servicios, Series, Formatters, Insights, Treemap]
     T --> A[ArchUnit]
     T --> I[Integración JDBC<br/>si MySQL está arriba]
     T --> G[GUI headless<br/>DesktopSmokeTest]
     T -.->|"-Dui.screenshots=true"| S[Capturas<br/>target/screenshots]
-    C --> P[mvn package] --> J[JAR sombreado<br/>gestion-jardineria-2.0.0.jar]
+    C --> P[./mvnw package] --> J[JAR por plataforma<br/>gestion-jardineria-2.0.0-&lt;plataforma&gt;.jar]
 ```

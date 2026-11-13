@@ -8,8 +8,8 @@ Las imágenes de la documentación no se hacen a mano: las generan las pruebas d
 
 ```bash
 docker-compose -f docker/docker-compose.yml up -d          # MySQL con datos
-mvn test -Dtest=DesktopScreenshotTest -Dui.screenshots=true  # cada módulo, ambos modos, formularios, ventana mínima
-mvn test -Dtest=DesktopGalleryTest -Dui.screenshots=true     # temas, panel desplazado, Ajustes, atajos, paleta
+./mvnw test -Dtest=DesktopScreenshotTest -Dui.screenshots=true  # cada módulo, ambos modos, formularios, ventana mínima
+./mvnw test -Dtest=DesktopGalleryTest -Dui.screenshots=true     # temas, panel desplazado, Ajustes, atajos, paleta
 ```
 
 ```mermaid
