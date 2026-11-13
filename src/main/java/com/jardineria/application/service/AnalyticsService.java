@@ -63,6 +63,11 @@ public class AnalyticsService implements AnalyticsUseCase {
     }
 
     @Override
+    public List<CategoryMetric> clientesMasActivos(int limite) {
+        return repository.clientesMasActivos(Math.max(1, limite));
+    }
+
+    @Override
     public Optional<ClienteFinancialSummary> resumenCliente(int codigoCliente) {
         return repository.resumenCliente(codigoCliente);
     }
@@ -78,10 +83,19 @@ public class AnalyticsService implements AnalyticsUseCase {
 
     @Override
     public double[] tendenciaVentas(int puntos) {
+        return tendencia(repository.ventasPorMes(), puntos);
+    }
+
+    @Override
+    public double[] tendenciaCobros(int puntos) {
+        return tendencia(repository.pagosPorMes(), puntos);
+    }
+
+    /** Últimos {@code puntos} meses de la serie (ordenada), rellenando con cero los meses sin datos. */
+    private static double[] tendencia(List<MonthlyAmount> serie, int puntos) {
         if (puntos <= 0) {
             return new double[0];
         }
-        List<MonthlyAmount> serie = repository.ventasPorMes();
         if (serie.isEmpty()) {
             return new double[puntos];
         }

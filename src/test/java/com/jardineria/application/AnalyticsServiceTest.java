@@ -51,6 +51,17 @@ class AnalyticsServiceTest {
     }
 
     @Test
+    @DisplayName("La tendencia de cobros usa la serie de pagos y devuelve ceros si no hay datos")
+    void tendenciaCobros() {
+        when(repository.pagosPorMes()).thenReturn(List.of(mes(2008, 12, "2"), mes(2009, 1, "9")));
+        AnalyticsService service = new AnalyticsService(repository);
+
+        assertThat(service.tendenciaCobros(3)).containsExactly(0d, 2d, 9d);
+        when(repository.pagosPorMes()).thenReturn(List.of());
+        assertThat(service.tendenciaCobros(2)).containsExactly(0d, 0d);
+    }
+
+    @Test
     @DisplayName("Los años disponibles se obtienen sin duplicados y ordenados")
     void aniosDisponiblesOrdenados() {
         when(repository.pedidosPorMesYEstado()).thenReturn(List.of(

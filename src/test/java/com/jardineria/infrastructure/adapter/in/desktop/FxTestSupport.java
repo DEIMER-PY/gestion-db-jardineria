@@ -3,6 +3,7 @@ package com.jardineria.infrastructure.adapter.in.desktop;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.WritableImage;
 import org.testfx.util.WaitForAsyncUtils;
 
@@ -46,5 +47,30 @@ final class FxTestSupport {
         WaitForAsyncUtils.asyncFx(() -> holder[0] = node.snapshot(null, null)).get(10, TimeUnit.SECONDS);
         ImageIO.write(SwingFXUtils.fromFXImage(holder[0], null), "png", new File(file.toString()));
         return file;
+    }
+
+    /**
+     * Desplaza al final el ScrollPane de la vista visible.
+     *
+     * @return {@code true} si había contenido por debajo del pliegue
+     */
+    static boolean scrollCurrentViewToBottom(Scene scene) throws Exception {
+        return scrollCurrentView(scene, true);
+    }
+
+    /** Devuelve la vista visible a su posición inicial (las vistas se cachean entre capturas). */
+    static void scrollCurrentViewToTop(Scene scene) throws Exception {
+        scrollCurrentView(scene, false);
+    }
+
+    private static boolean scrollCurrentView(Scene scene, boolean bottom) throws Exception {
+        return WaitForAsyncUtils.asyncFx(() -> scene.getRoot().lookupAll(".view-scroll").stream()
+                .filter(n -> n instanceof ScrollPane && n.isVisible() && n.getParent() != null
+                        && n.getParent().isVisible() && n.getScene() != null)
+                .map(ScrollPane.class::cast)
+                .filter(sp -> sp.getContent() != null
+                        && sp.getContent().getBoundsInLocal().getHeight() > sp.getViewportBounds().getHeight() + 4)
+                .peek(sp -> sp.setVvalue(bottom ? sp.getVmax() : sp.getVmin()))
+                .count() > 0).get(10, TimeUnit.SECONDS);
     }
 }

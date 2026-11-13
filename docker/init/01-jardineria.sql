@@ -147,7 +147,7 @@ INSERT INTO empleado VALUES (29,'Kevin','Fallmer','','3210','kfalmer@gardening.c
 INSERT INTO empleado VALUES (30,'Julian','Bellinelli','','3211','jbellinelli@gardening.com','SYD-AU',29,'Representante Ventas');
 INSERT INTO empleado VALUES (31,'Mariko','Kishi','','3211','mkishi@gardening.com','SYD-AU',29,'Representante Ventas');
 
-INSERT INTO gama_producto VALUES ('Herbaceas','Plantas para jardin decorativas',NULL,NULL);
+INSERT INTO gama_producto VALUES ('Herbaceas','Plantas para jardín decorativas',NULL,NULL);
 INSERT INTO gama_producto VALUES ('Herramientas','Herramientas para todo tipo de acción',NULL,NULL);
 INSERT INTO gama_producto VALUES ('Aromáticas','Plantas aromáticas',NULL,NULL);
 INSERT INTO gama_producto VALUES ('Frutales','Árboles pequeños de producción frutal',NULL,NULL);

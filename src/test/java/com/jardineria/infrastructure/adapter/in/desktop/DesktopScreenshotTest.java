@@ -7,6 +7,7 @@ import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.config.DatabaseConfig;
 import com.jardineria.infrastructure.config.DatabaseConnectionManager;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,7 @@ import org.testfx.util.WaitForAsyncUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Year;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -35,6 +37,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 class DesktopScreenshotTest {
     private AppShell shell;
     private Scene scene;
+    private Stage stage;
 
     @BeforeAll
     static void requiereBaseDeDatos() {
@@ -43,6 +46,7 @@ class DesktopScreenshotTest {
 
     @Start
     void start(Stage stage) {
+        this.stage = stage;
         ThemeManager.loadFonts();
         ApplicationContext ctx = ApplicationContext.getInstance();
         DesktopServices services = new DesktopServices(
@@ -78,11 +82,51 @@ class DesktopScreenshotTest {
             for (Route route : Route.values()) {
                 WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(route)).get();
                 FxTestSupport.settle(1600);
-                Path png = FxTestSupport.snapshot(scene, mode.name().toLowerCase() + "-" + route.name().toLowerCase());
+                FxTestSupport.scrollCurrentViewToTop(scene);
+                FxTestSupport.settle(200);
+                String name = mode.name().toLowerCase() + "-" + route.name().toLowerCase();
+                Path png = FxTestSupport.snapshot(scene, name);
                 assertThat(Files.size(png)).isPositive();
+                if (FxTestSupport.scrollCurrentViewToBottom(scene)) {
+                    FxTestSupport.settle(300);
+                    FxTestSupport.snapshot(scene, name + "-bottom");
+                }
             }
             // Fuerza que la siguiente pasada vuelva a mostrar el panel general
             WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(Route.ANALYTICS)).get();
         }
+    }
+
+    @Test
+    @DisplayName("En la ventana mínima (1100x720) los paneles se reorganizan sin recortarse")
+    void capturaVentanaMinima() throws Exception {
+        WaitForAsyncUtils.asyncFx(() -> {
+            ThemeManager.setMode(ThemeManager.Mode.DARK);
+            stage.setWidth(1100);
+            stage.setHeight(720);
+        }).get();
+        for (Route route : new Route[]{Route.DASHBOARD, Route.ANALYTICS}) {
+            WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(route)).get();
+            FxTestSupport.settle(1600);
+            FxTestSupport.scrollCurrentViewToTop(scene);
+            FxTestSupport.settle(200);
+            FxTestSupport.snapshot(scene, "narrow-" + route.name().toLowerCase());
+        }
+    }
+
+    @Test
+    @DisplayName("El filtro de año de Métricas recarga los datos del periodo")
+    @SuppressWarnings("unchecked")
+    void capturaFiltroAnio() throws Exception {
+        WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(Route.ANALYTICS)).get();
+        FxTestSupport.settle(1600);
+        ComboBox<Year> filtro = (ComboBox<Year>) scene.lookup(".year-filter");
+        assertThat(filtro.getItems()).contains(Year.of(2009));
+        WaitForAsyncUtils.asyncFx(() -> filtro.setValue(Year.of(2009))).get();
+        FxTestSupport.settle(1600);
+        FxTestSupport.snapshot(scene, "dark-analytics-2009");
+        assertThat(scene.getRoot().lookupAll(".panel-caption").stream()
+                .map(n -> ((javafx.scene.control.Label) n).getText()))
+                .contains("Meses con actividad en 2009");
     }
 }
