@@ -6,26 +6,38 @@
 
     <groupId>com.jardineria</groupId>
     <artifactId>gestion-jardineria</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>gestion-jardineria</name>
-    <description>Sistema de Gestión de Jardinería con Arquitectura Hexagonal</description>
+    <description>Sistema de Gestión de Jardinería: JavaFX + MySQL con Arquitectura Hexagonal</description>
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <main.class>com.jardineria.infrastructure.JardineriaApplication</main.class>
+
+        <!-- Persistencia -->
         <mysql.version>8.3.0</mysql.version>
         <hikaricp.version>5.1.0</hikaricp.version>
-        <flatlaf.version>3.4.1</flatlaf.version>
+
+        <!-- Interfaz de escritorio -->
+        <javafx.version>21.0.13</javafx.version>
+        <atlantafx.version>2.1.0</atlantafx.version>
+        <ikonli.version>12.4.0</ikonli.version>
+
+        <!-- Logging -->
         <slf4j.version>2.0.12</slf4j.version>
         <logback.version>1.5.3</logback.version>
+
+        <!-- Testing -->
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.11.0</mockito.version>
         <assertj.version>3.25.3</assertj.version>
-        <testcontainers.version>1.19.7</testcontainers.version>
         <archunit.version>1.3.0</archunit.version>
+        <testfx.version>4.0.18</testfx.version>
+        <monocle.version>21.0.2</monocle.version>
     </properties>
 
     <dependencies>
@@ -36,18 +48,42 @@
             <version>${mysql.version}</version>
         </dependency>
 
-        <!-- HikariCP Connection Pool (Singleton) -->
+        <!-- HikariCP Connection Pool (gestionado por el Singleton DatabaseConnectionManager) -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikaricp.version}</version>
         </dependency>
 
-        <!-- Modern Swing UI Look & Feel: FlatLaf -->
+        <!-- JavaFX 21 LTS -->
         <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf</artifactId>
-            <version>${flatlaf.version}</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- AtlantaFX: temas modernos (Primer) + controles extra (ModalPane, Notification, Card, Tag...) -->
+        <dependency>
+            <groupId>io.github.mkpaz</groupId>
+            <artifactId>atlantafx-base</artifactId>
+            <version>${atlantafx.version}</version>
+        </dependency>
+
+        <!-- Ikonli: iconografía vectorial (Feather + Material Design 2) -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-feather-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-material2-pack</artifactId>
+            <version>${ikonli.version}</version>
         </dependency>
 
         <!-- Logging SLF4J + Logback -->
@@ -90,17 +126,23 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Testcontainers MySQL -->
+        <!-- TestFX + Monocle: pruebas de la GUI JavaFX en modo headless -->
         <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${testcontainers.version}</version>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>${testfx.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>mysql</artifactId>
-            <version>${testcontainers.version}</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>openjfx-monocle</artifactId>
+            <version>${monocle.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -119,15 +161,40 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+                <configuration>
+                    <!-- La GUI se prueba sin ventana real (Monocle headless + render por software) -->
+                    <systemPropertyVariables>
+                        <testfx.robot>glass</testfx.robot>
+                        <testfx.headless>true</testfx.headless>
+                        <glass.platform>Monocle</glass.platform>
+                        <monocle.platform>Headless</monocle.platform>
+                        <prism.order>sw</prism.order>
+                        <headless.geometry>1920x1200-32</headless.geometry>
+                        <java.awt.headless>true</java.awt.headless>
+                        <screenshots.dir>${project.build.directory}/screenshots</screenshots.dir>
+                        <file.encoding>UTF-8</file.encoding>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
+            <!-- mvn javafx:run  -> lanza la GUI de escritorio -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>${main.class}</mainClass>
+                </configuration>
+            </plugin>
+            <!-- Consola interactiva: mvn exec:java -Dexec.args=cli -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <mainClass>com.jardineria.infrastructure.JardineriaApplication</mainClass>
+                    <mainClass>${main.class}</mainClass>
                 </configuration>
             </plugin>
+            <!-- Uber-JAR ejecutable: java -jar target/gestion-jardineria-2.0.0.jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -140,9 +207,22 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.jardineria.infrastructure.JardineriaApplication</mainClass>
+                                    <mainClass>${main.class}</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

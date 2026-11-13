@@ -1,66 +1,72 @@
 package com.jardineria.infrastructure;
 
 import com.jardineria.infrastructure.adapter.in.cli.ConsoleMenuRunner;
+import com.jardineria.infrastructure.adapter.in.desktop.DesktopServices;
+import com.jardineria.infrastructure.adapter.in.desktop.JardineriaDesktopApp;
 import com.jardineria.infrastructure.config.ApplicationContext;
-import com.jardineria.infrastructure.adapter.in.ui.MainDashboardWindow;
-import com.jardineria.infrastructure.adapter.in.ui.components.ElectronModeLauncher;
-import com.jardineria.infrastructure.adapter.in.ui.components.ThemeManager;
+import com.jardineria.infrastructure.config.DatabaseConfig;
+import com.jardineria.infrastructure.config.DatabaseConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.Arrays;
+import java.awt.GraphicsEnvironment;
 import java.util.List;
 
 /**
- * Punto de entrada principal para el Sistema de Gestión de Jardinería.
- * Soporta modos de ejecución múltiple:
- *  1. Interfaz Gráfica Nativa Moderna (GUI con FlatLaf + Iconografía Vectorial).
- *  2. Modo Aplicación de Escritorio Web (--app / --desktop-app vía Chromium/Chrome en modo ventana independiente sin barra de direcciones).
- *  3. Consola Interactiva (--cli o en entornos sin display/headless).
+ * Punto de entrada del Sistema de Gestión de Jardinería.
+ * <ul>
+ *   <li>Sin argumentos: interfaz gráfica de escritorio JavaFX.</li>
+ *   <li>{@code --cli}: consola interactiva (también se usa automáticamente en entornos sin pantalla).</li>
+ * </ul>
+ * No extiende {@code javafx.application.Application} a propósito: así el JAR sombreado
+ * arranca JavaFX desde el classpath sin necesidad de configurar el module-path.
  */
-public class JardineriaApplication {
+public final class JardineriaApplication {
     private static final Logger log = LoggerFactory.getLogger(JardineriaApplication.class);
 
+    private JardineriaApplication() {
+    }
+
     public static void main(String[] args) {
-        log.info("Iniciando Sistema de Gestión de Jardinería...");
+        List<String> argList = List.of(args);
+        boolean cli = argList.contains("--cli") || argList.contains("cli") || GraphicsEnvironment.isHeadless();
+        ApplicationContext context = ApplicationContext.getInstance();
 
-        List<String> argList = Arrays.asList(args);
-        boolean forceCli = argList.contains("--cli");
-        boolean forceApp = argList.contains("--app") || argList.contains("--desktop-app");
-        boolean isHeadless = GraphicsEnvironment.isHeadless();
-
-        ApplicationContext registry = ApplicationContext.getInstance();
-
-        if (forceCli || (isHeadless && !forceApp)) {
-            if (isHeadless && !forceCli) {
-                log.info("Entorno gráfico no detectado (headless mode). Iniciando en modo Consola (CLI).");
-            } else {
-                log.info("Argumento --cli recibido. Iniciando en modo Consola interactiva (CLI).");
-            }
-            ConsoleMenuRunner cli = new ConsoleMenuRunner(registry);
-            cli.run();
-        } else if (forceApp) {
-            log.info("Argumento --app / --desktop-app recibido. Lanzando Aplicación de Escritorio enriquecida...");
-            String url = (com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()) != null) ? com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()).getDashboardUrl() : "http://localhost:8080/dashboard";
-            ElectronModeLauncher.openElectronMode(url);
-            log.info("Aplicación de Escritorio en ejecución en {}", url);
-        } else {
-            log.info("Iniciando Interfaz Gráfica Moderna (GUI con FlatLaf y Componentes Vectoriales)...");
-            ThemeManager.setupInitialTheme();
-
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    MainDashboardWindow window = new MainDashboardWindow(registry);
-                    window.setVisible(true);
-                    log.info("Ventana de Dashboard mostrada con éxito.");
-                } catch (Exception e) {
-                    log.error("Error al iniciar la interfaz gráfica Swing, iniciando en modo Web App...", e);
-                    String url = (com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()) != null) ? com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()).getDashboardUrl() : "http://localhost:8080/dashboard";
-                    ElectronModeLauncher.openElectronMode(url);
-                }
-            });
+        if (cli) {
+            log.info("Iniciando consola interactiva (CLI)...");
+            new ConsoleMenuRunner(context).run();
+            return;
         }
+        log.info("Iniciando interfaz de escritorio JavaFX...");
+        JardineriaDesktopApp.launchWith(desktopServices(context), args);
+    }
+
+    /** Adapta el composition root al conjunto de puertos que consume la GUI. */
+    static DesktopServices desktopServices(ApplicationContext ctx) {
+        DesktopServices.ConnectionProbe probe = new DesktopServices.ConnectionProbe() {
+            @Override
+            public boolean isAvailable() {
+                return DatabaseConnectionManager.isAvailable(3);
+            }
+
+            @Override
+            public String describe() {
+                return DatabaseConfig.getHost() + ":" + DatabaseConfig.getPort() + " / " + DatabaseConfig.getDatabaseName();
+            }
+        };
+        return new DesktopServices(
+                ctx.getDashboardService(),
+                ctx.getAnalyticsService(),
+                ctx.getClienteService(),
+                ctx.getPedidoService(),
+                ctx.getDetallePedidoService(),
+                ctx.getPagoService(),
+                ctx.getProductoService(),
+                ctx.getGamaProductoService(),
+                ctx.getOficinaService(),
+                ctx.getEmpleadoService(),
+                ctx.getBusinessFacade(),
+                ctx.getCachedProductProxy(),
+                probe);
     }
 }

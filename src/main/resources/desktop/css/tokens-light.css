@@ -1,0 +1,86 @@
+/*
+ * Paleta "Vivero diurno" (tema claro).
+ * Papel cálido, verdes profundos con contraste AA y acentos terrosos.
+ */
+.root {
+    -color-bg-default: #FFFFFF;
+    -color-bg-subtle: #F2F5EF;
+    -color-bg-overlay: #FFFFFF;
+    -color-bg-inset: #EAEFE7;
+
+    /* Texto (contraste AA sobre blanco: 15.8:1 / 6.1:1 / 4.6:1) */
+    -color-fg-default: #11201A;
+    -color-fg-muted: #4D6359;
+    -color-fg-subtle: #627A6F;
+    -color-fg-emphasis: #000000;
+
+    -color-border-default: #D5DED3;
+    -color-border-muted: #E2E8DF;
+    -color-border-subtle: #ECF0E9;
+
+    -color-accent-fg: #0B7A48;
+    -color-accent-emphasis: #0E8F55;
+    -color-accent-muted: rgba(14, 143, 85, 0.35);
+    -color-accent-subtle: rgba(14, 143, 85, 0.10);
+
+    -color-success-fg: #0B7A48;
+    -color-success-emphasis: #0E8F55;
+    -color-success-muted: rgba(14, 143, 85, 0.35);
+    -color-success-subtle: rgba(14, 143, 85, 0.10);
+
+    -color-warning-fg: #8A5A00;
+    -color-warning-emphasis: #C47F00;
+    -color-warning-muted: rgba(196, 127, 0, 0.35);
+    -color-warning-subtle: rgba(196, 127, 0, 0.10);
+
+    -color-danger-fg: #B3321F;
+    -color-danger-emphasis: #D0412C;
+    -color-danger-muted: rgba(208, 65, 44, 0.35);
+    -color-danger-subtle: rgba(208, 65, 44, 0.09);
+
+    -color-chart-1: #12A366;
+    -color-chart-2: #7DB52B;
+    -color-chart-3: #E0A22E;
+    -color-chart-4: #2B8FD6;
+    -color-chart-5: #E3664F;
+    -color-chart-6: #8B6FE0;
+    -color-chart-7: #1BB3A4;
+    -color-chart-8: #D46A9C;
+    -color-chart-1-alpha20: rgba(18, 163, 102, 0.18);
+    -color-chart-2-alpha20: rgba(125, 181, 43, 0.18);
+    -color-chart-3-alpha20: rgba(224, 162, 46, 0.18);
+    -color-chart-4-alpha20: rgba(43, 143, 214, 0.18);
+    -color-chart-5-alpha20: rgba(227, 102, 79, 0.18);
+    -color-chart-6-alpha20: rgba(139, 111, 224, 0.18);
+    -color-chart-1-alpha70: rgba(18, 163, 102, 0.70);
+    -color-chart-2-alpha70: rgba(125, 181, 43, 0.70);
+    -color-chart-3-alpha70: rgba(224, 162, 46, 0.70);
+    -color-chart-4-alpha70: rgba(43, 143, 214, 0.70);
+    -color-chart-5-alpha70: rgba(227, 102, 79, 0.70);
+    -color-chart-6-alpha70: rgba(139, 111, 224, 0.70);
+
+    -color-button-bg: #FFFFFF;
+    -color-button-border: #D0D9CE;
+    -color-button-bg-hover: #F4F7F2;
+    -color-button-border-hover: #BCC8B9;
+    -color-input-bg: #FFFFFF;
+    -color-input-border: #CDD7CA;
+    -color-cell-bg: transparent;
+    -color-cell-bg-odd: rgba(17, 32, 26, 0.022);
+    -color-modal-pane-overlay: rgba(17, 32, 26, 0.38);
+    -color-shadow-default: rgba(30, 50, 40, 0.16);
+
+    -jd-canvas: #F5F7F2;
+    -jd-sidebar: #EEF2EB;
+    -jd-card: #FFFFFF;
+    -jd-card-hover: #FCFDFB;
+    -jd-card-border: rgba(17, 32, 26, 0.08);
+    -jd-card-border-hover: rgba(14, 143, 85, 0.45);
+    -jd-on-accent: #FFFFFF;
+    -jd-ambient: radial-gradient(center 88% -10%, radius 62%, rgba(18, 163, 102, 0.10) 0%, rgba(18, 163, 102, 0.00) 100%),
+                 radial-gradient(center 4% 108%, radius 48%, rgba(224, 162, 46, 0.07) 0%, rgba(224, 162, 46, 0.00) 100%);
+    -jd-brand: linear-gradient(to bottom right, #34D399 0%, #0E8F55 60%, #0A6A40 100%);
+    -jd-hero: linear-gradient(to right, #E6F4EC 0%, #FFFFFF 60%, #F7F9F4 100%);
+    -jd-track: rgba(17, 32, 26, 0.07);
+    -jd-shadow: rgba(30, 50, 40, 0.10);
+}
