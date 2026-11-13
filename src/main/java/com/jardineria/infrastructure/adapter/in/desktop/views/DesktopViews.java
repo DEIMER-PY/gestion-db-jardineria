@@ -32,7 +32,7 @@ public final class DesktopViews {
         navigator.register(Route.PRODUCTOS, () -> new ProductosView(services.productos(), services.gamas()));
         navigator.register(Route.GAMAS, () -> new GamasView(services.gamas(), services.productos()));
         navigator.register(Route.OFICINAS, () -> new OficinasView(services.oficinas(), services.empleados()));
-        navigator.register(Route.EMPLEADOS, () -> new EmpleadosView(services.empleados(), services.oficinas()));
+        navigator.register(Route.EMPLEADOS, () -> new EmpleadosView(services.empleados(), services.oficinas(), services.clientes()));
         navigator.register(Route.AJUSTES, SettingsView::new);
     }
 }
