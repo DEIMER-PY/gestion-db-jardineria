@@ -156,3 +156,15 @@ El orden importa: cada capa sobrescribe a la anterior. Como el acento depende de
 | Chuleta de atajos | Paleta de comandos |
 |---|---|
 | ![Atajos](img/atajos.png) | ![Paleta](img/paleta.png) |
+
+## 7. Pantalla de carga
+
+![Pantalla de carga](img/splash.png)
+
+`shell.SplashScreen` se muestra en una ventana sin bordes de 880×520 mientras arranca la aplicación (`JardineriaDesktopApp.start`).
+
+- **Paisaje**: cielo de amanecer en degradado, sol con resplandor, tres colinas en capas y siete plantas con flores, todo en vector (`SVGPath`). Las colinas suben de forma escalonada y las plantas crecen desde la base con un `Scale`. Los colores son fijos de la marca (`.splash-*` en `app.css`) y no dependen del tema.
+- **Progreso real**: la barra avanza al completar cada paso (`SplashScreen.Paso`): aplicar el tema y las preferencias (hilo de JavaFX), comprobar MySQL con `ConnectionProbe` (hilo virtual) y crear el `AppShell` (hilo de JavaFX). Cada paso dura al menos 650 ms para que la animación se aprecie. Si un paso falla, se registra y la carga continúa: la aplicación ya muestra «Sin conexión» por su cuenta.
+- **Movimiento reducido**: con `Motion.isReduced()` el paisaje aparece completo y la barra salta sin animación.
+- **Desactivarla**: `-Djardineria.splash=false` abre directamente la ventana principal.
+- **Pruebas**: `SplashScreenTest` comprueba el orden de los pasos, la tolerancia a errores y el 100 % final, y genera `target/screenshots/splash.png`.
