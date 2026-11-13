@@ -76,7 +76,8 @@ public class OficinasView extends CrudModuleView<Oficina> {
         FormDialog form = new FormDialog(Feather.MAP_PIN, nuevo ? "Nueva oficina" : "Editar oficina " + o.getCodigoOficina(),
                 "Los campos con * son obligatorios. El código no se puede cambiar una vez creado.");
         FormField<String> codigo = form.text("Código", o.getCodigoOficina(), 10).required().locked(!nuevo)
-                .rule(v -> v.matches("[A-Za-z0-9-]+") ? null : "Solo letras, números y guiones (p. ej. MAD-ES).");
+                .rule(v -> v.matches("[A-Za-z0-9-]+") ? null : "Solo letras, números y guiones (p. ej. MAD-ES).")
+                .rule(uniqueKey(nuevo, Oficina::getCodigoOficina, "una oficina"));
         FormField<String> telefono = form.text("Teléfono", o.getTelefono(), 20).required();
         FormField<String> ciudad = form.text("Ciudad", o.getCiudad(), 30).required();
         FormField<String> pais = form.text("País", o.getPais(), 50).required();

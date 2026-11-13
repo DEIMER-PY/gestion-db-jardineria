@@ -408,6 +408,17 @@ public abstract class CrudModuleView<T> extends BaseView {
         return List.copyOf(table.getItems());
     }
 
+    /**
+     * Regla de formulario para altas: avisa en línea si la clave ya existe en los datos
+     * cargados (la capa de aplicación sigue validándolo al guardar).
+     */
+    protected <K> Function<K, String> uniqueKey(boolean nuevo, Function<T, K> key, String singular) {
+        return v -> nuevo && master.stream().anyMatch(t -> v instanceof String s
+                ? s.trim().equalsIgnoreCase(String.valueOf(key.apply(t)))
+                : Objects.equals(key.apply(t), v))
+                ? "Ya existe " + singular + " con esa clave." : null;
+    }
+
     protected List<T> allItems() {
         return List.copyOf(master);
     }

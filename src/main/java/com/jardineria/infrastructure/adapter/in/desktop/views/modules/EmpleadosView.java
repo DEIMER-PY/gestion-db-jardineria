@@ -151,7 +151,8 @@ public class EmpleadosView extends CrudModuleView<Empleado> {
                         : "El código de empleado no se puede cambiar una vez creado.");
         form.section("Datos personales");
         FormField<Integer> codigo = form.integer("Código", nuevo ? siguiente : e.getCodigoEmpleado()).required().locked(!nuevo)
-                .rule(v -> v <= 0 ? "Debe ser un número positivo." : null);
+                .rule(v -> v <= 0 ? "Debe ser un número positivo." : null)
+                .rule(uniqueKey(nuevo, Empleado::getCodigoEmpleado, "un empleado"));
         FormField<String> nombre = form.text("Nombre", e.getNombre(), 50).required();
         FormField<String> apellido1 = form.text("Primer apellido", e.getApellido1(), 50).required();
         FormField<String> apellido2 = form.text("Segundo apellido", e.getApellido2(), 50);
