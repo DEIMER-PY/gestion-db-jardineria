@@ -14,7 +14,8 @@ flowchart TB
     end
     subgraph APP["Aplicación · application"]
         direction LR
-        PIN["port.in<br/>10 × *UseCase"]
+        PIN["port.in<br/>11 × *UseCase"]
+        POUT["port.out<br/>ModeloLenguaje · Documentacion"]
         SVC["service<br/>*Service"]
         FAC["facade<br/>JardineriaBusinessFacade"]
         DTO["dto<br/>DashboardMetrics…"]
@@ -30,7 +31,10 @@ flowchart TB
         direction LR
         JDBC["persistence.jdbc<br/>9 repositorios"]
         MAP["persistence.mapper<br/>RowMapper"]
+        LLM["llm<br/>Groq (HTTP + JSON)"]
+        DOCS["docs<br/>documentación del classpath"]
     end
+    GROQ(["API de Groq"])
     CFG["config<br/>ApplicationContext · HikariCP"]
     DB[("MySQL 8<br/>Docker :3307")]
 
@@ -45,6 +49,10 @@ flowchart TB
     JDBC -. implementa .-> REPO
     JDBC --> MAP
     JDBC --> CFG --> DB
+    SVC --> POUT
+    LLM -. implementa .-> POUT
+    DOCS -. implementa .-> POUT
+    LLM --> GROQ
 ```
 
 | Capa | Puede depender de | Nunca de |
@@ -54,6 +62,8 @@ flowchart TB
 | `infrastructure` | todo | — |
 
 **Inversión de dependencias (DIP):** los servicios dependen de `domain.repository.*Repository` (interfaces); las implementaciones JDBC viven fuera, en infraestructura. La GUI y la CLI solo ven los puertos `*UseCase`, agrupados para la GUI en el record `DesktopServices`.
+
+Los puertos de salida que no son persistencia viven en `application.port.out`: `ModeloLenguajePort` (el modelo de lenguaje del asistente) y `DocumentacionPort` (la documentación que indexa el RAG). Ver [ASISTENTE.md](ASISTENTE.md).
 
 ## 2. Composición (composition root)
 
@@ -203,14 +213,15 @@ flowchart TB
 ```
 src/main/java/com/jardineria
 ├── domain/            model · model/analytics · repository · exception · pattern/{adapter,bridge,composite,decorator,flyweight,proxy}
-├── application/       port/in · service · facade · dto
+├── application/       port/in · port/out · service (+ rag) · facade · dto
 └── infrastructure/
     ├── config/        ApplicationContext · DatabaseConfig · DatabaseConnectionManager
-    ├── adapter/out/persistence/   jdbc · mapper
+    ├── adapter/out/   persistence/{jdbc,mapper} · llm (Groq) · docs (RAG)
     └── adapter/in/
         ├── common/    Formatters (compartido por GUI y CLI)
         ├── cli/
         └── desktop/
+            ├── views/assistant/  AsistenteView (conversación, enlaces #N)
             ├── shell/       AppShell · Sidebar · TopBar · CommandPalette · ShortcutsSheet
             ├── navigation/  Route · Navigator
             ├── theme/       ThemeManager · ThemePreset · Accent · AppearanceProfile · ProfileStore

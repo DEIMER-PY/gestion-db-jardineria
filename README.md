@@ -4,7 +4,7 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 
 ![Panel general](docs/img/dashboard-dark.png)
 
-> Documentación técnica y visual completa en [`docs/`](docs/README.md): [instalación en cada sistema](docs/MULTIPLATAFORMA.md), [arquitectura](docs/ARQUITECTURA.md), [tecnologías](docs/TECNOLOGIAS.md), [panel general](docs/DASHBOARD.md), [apariencia y perfiles](docs/APARIENCIA.md) y [capturas](docs/CAPTURAS.md).
+> Documentación técnica y visual completa en [`docs/`](docs/README.md): [instalación en cada sistema](docs/MULTIPLATAFORMA.md), [arquitectura](docs/ARQUITECTURA.md), [tecnologías](docs/TECNOLOGIAS.md), [panel general](docs/DASHBOARD.md), [apariencia y perfiles](docs/APARIENCIA.md), [asistente](docs/ASISTENTE.md) y [capturas](docs/CAPTURAS.md).
 
 ![Seis temas con acento propio](docs/img/temas.png)
 
@@ -13,8 +13,8 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 | ![Métricas](docs/img/analytics-dark.png) | ![Ficha de cliente](docs/img/clientes-detalle.png) |
 | **Agenda** | **Organigrama en la ficha de empleado** |
 | ![Agenda](docs/img/agenda-dark.png) | ![Organigrama](docs/img/empleados-organigrama.png) |
-| **Tablero de pedidos** | |
-| ![Tablero Kanban](docs/img/tablero-dark.png) | |
+| **Tablero de pedidos** | **Asistente** |
+| ![Tablero Kanban](docs/img/tablero-dark.png) | ![Asistente](docs/img/asistente-dark.png) |
 | **Alta de pedido** | **Pedidos (tema claro)** |
 | ![Formulario](docs/img/pedidos-formulario.png) | ![Pedidos en tema claro](docs/img/pedidos-light.png) |
 
@@ -73,6 +73,7 @@ docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=
 |---|---|
 | **Panel general** | Saludo con hora de actualización, 5 indicadores con variación trimestral honesta y sparklines interactivas, ventas frente a cobros (cursor y teclado), estado logístico, pedidos por mes, treemap de ventas por gama, mapa de calor de actividad con totales anuales, **lecturas clave** calculadas automáticamente, clientes más activos, stock crítico y actividad reciente. **Navegación contextual**: un clic en un estado, cliente, producto o pedido abre su módulo ya filtrado y con el elemento seleccionado. Ver [docs/DASHBOARD.md](docs/DASHBOARD.md). |
 | **Métricas** | Filtro por año, ventas frente a cobros (gráfico de áreas con cursor), pedidos por mes y estado, ticket medio, tasa de rechazo, distribución por gama, país y forma de pago, ranking de clientes y exportación CSV. Las gamas, los países y los clientes llevan a su módulo filtrado. |
+| **Asistente** | Preguntas en lenguaje natural sobre los datos (pedidos, clientes, stock, ventas) y sobre el uso de la aplicación, con las fuentes de la documentación citadas (RAG). Solo consulta; los pedidos que menciona abren su ficha. Usa Groq con la clave en la variable `GROQ_API_KEY`. Ver [docs/ASISTENTE.md](docs/ASISTENTE.md). |
 | **Clientes** | Avatar con iniciales en cada fila, búsqueda sin tildes, filtro por país y ficha lateral con contacto, representante, crédito usado frente al límite y últimos pedidos y pagos. |
 | **Pedidos** | Filtro por estado, cronología con aviso de retraso, cambio rápido de estado y gestión de líneas (el alta descuenta stock). |
 | **Tablero** | Kanban de pedidos con una columna por estado. Se cambia el estado arrastrando la tarjeta o con las flechas izquierda y derecha, siempre con confirmación; `Intro` abre el pedido. Filtro por código o cliente. |
@@ -193,6 +194,7 @@ En la GUI también se aplican **Template Method** (`BaseView`, `CrudModuleView`)
 | `NavigationRevealTest` | Navegación contextual: abrir Pedidos filtrado por código o por estado y con la fila correcta seleccionada |
 | `OrgChartTest` | Ficha de empleado: cadena de mando, equipo directo y navegación entre personas con el teclado |
 | `BoardViewTest` | Tablero: agrupación por estado, columnas vecinas y cambio de estado con teclado y confirmación |
+| `AsistenteServiceTest`, `DocumentIndexTest`, `GroqLanguageModelAdapterTest`, `AsistenteViewTest` | Asistente: bucle de herramientas con un modelo guionizado, búsqueda BM25 en la documentación, protocolo de Groq contra un servidor HTTP local y la vista de conversación |
 | `AgendaModelTest`, `AvatarTest` | Agenda (fecha de referencia, agrupación por día, retrasos, puntualidad) e iniciales y tonos de los avatares |
 | `FormattersTest`, `SeriesTest`, `CsvExportTest` | Formato es-ES, series temporales y CSV RFC 4180 |
 | `AppearanceProfileTest` | Perfiles de apariencia: límites, serialización tolerante y predefinidos |

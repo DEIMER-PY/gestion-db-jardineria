@@ -48,5 +48,7 @@ Si MySQL no está disponible, ambas clases se omiten (`assumeTrue`) en lugar de 
 | ![](img/agenda-dark.png) | ![](img/agenda-retrasos-light.png) |
 | **Organigrama (ficha de empleado)** | **Tablero de pedidos** |
 | ![](img/empleados-organigrama.png) | ![](img/tablero-dark.png) |
+| **Asistente** | **Asistente (claro)** |
+| ![](img/asistente-dark.png) | ![](img/asistente-light.png) |
 | **Ventana mínima (1100×720)** | **Ajustes (parte inferior)** |
 | ![](img/ventana-minima.png) | ![](img/ajustes-dark-bottom.png) |
