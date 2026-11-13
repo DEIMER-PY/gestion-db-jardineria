@@ -4,7 +4,7 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 
 ![Panel general](docs/img/dashboard-dark.png)
 
-> Documentación técnica y visual completa en [`docs/`](docs/README.md): [arquitectura](docs/ARQUITECTURA.md), [tecnologías](docs/TECNOLOGIAS.md), [panel general](docs/DASHBOARD.md), [apariencia y perfiles](docs/APARIENCIA.md) y [capturas](docs/CAPTURAS.md).
+> Documentación técnica y visual completa en [`docs/`](docs/README.md): [instalación en cada sistema](docs/MULTIPLATAFORMA.md), [arquitectura](docs/ARQUITECTURA.md), [tecnologías](docs/TECNOLOGIAS.md), [panel general](docs/DASHBOARD.md), [apariencia y perfiles](docs/APARIENCIA.md) y [capturas](docs/CAPTURAS.md).
 
 ![Seis temas con acento propio](docs/img/temas.png)
 
@@ -18,23 +18,32 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 
 ## Puesta en marcha
 
-Requisitos: **JDK 21**, **Maven 3.9+** y **Docker Desktop**. En Windows se instalan con:
+Funciona en **Windows, macOS (Intel y Apple Silicon) y Linux (x64 y ARM64)**. Solo necesitas **JDK 21** y **Docker**; Maven no hace falta, porque el proyecto incluye el *wrapper* (`mvnw`). Instalación por sistema y solución de problemas: [docs/MULTIPLATAFORMA.md](docs/MULTIPLATAFORMA.md).
 
-```powershell
-winget install EclipseAdoptium.Temurin.21.JDK Apache.Maven Docker.DockerDesktop
-```
+| Sistema | Instalar requisitos |
+|---|---|
+| Windows | `winget install EclipseAdoptium.Temurin.21.JDK Docker.DockerDesktop` |
+| macOS | `brew install --cask temurin@21 docker-desktop` |
+| Ubuntu / Debian | `sudo apt install openjdk-21-jdk docker.io docker-compose-v2 libgtk-3-0` |
+
+**Un solo comando** (comprueba requisitos, levanta MySQL, espera a que esté listo y abre la app):
+
+| | macOS / Linux | Windows |
+|---|---|---|
+| Interfaz gráfica | `./scripts/iniciar.sh` | `scripts\iniciar.cmd` o `.\scripts\iniciar.ps1` |
+| Consola | `./scripts/iniciar.sh --cli` | `scripts\iniciar.cmd cli` |
+| Solo base de datos | `./scripts/iniciar.sh --db` | `scripts\iniciar.cmd db` |
+
+**A mano:**
 
 ```bash
-# 1. Base de datos y phpMyAdmin
-docker compose -f docker/docker-compose.yml up -d
+docker compose -f docker/docker-compose.yml up -d     # 1. MySQL + phpMyAdmin
+./mvnw javafx:run                                     # 2. Interfaz gráfica (Windows: .\mvnw.cmd javafx:run)
 
-# 2. Aplicación de escritorio
-mvn javafx:run
-
-# 3. (opcional) JAR autocontenido
-mvn package -DskipTests
-java -jar target/gestion-jardineria-2.0.0.jar          # interfaz gráfica
-java -jar target/gestion-jardineria-2.0.0.jar --cli    # consola interactiva
+# 3. (opcional) JAR ejecutable de tu plataforma: target/gestion-jardineria-2.0.0-<win|mac|mac-aarch64|linux|linux-aarch64>.jar
+./mvnw package -DskipTests
+java -jar target/gestion-jardineria-2.0.0-<plataforma>.jar          # interfaz gráfica
+java -jar target/gestion-jardineria-2.0.0-<plataforma>.jar --cli    # consola interactiva
 ```
 
 | Servicio | Dirección | Credenciales |
@@ -69,6 +78,8 @@ docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=
 Todas las tablas permiten ordenar, buscar, copiar filas, exportar a CSV (UTF-8 con BOM y `;`, apto para Excel) y abrir el menú contextual. Las consultas se ejecutan en hilos virtuales, así que la interfaz nunca se congela; los errores de MySQL (clave duplicada, clave foránea, longitud) se traducen a mensajes comprensibles junto al campo afectado.
 
 ### Atajos de teclado
+
+> En macOS, `Ctrl` es `⌘`, `Alt` es `⌥` y `Supr` es `⌫`; la aplicación muestra los símbolos de tu sistema.
 
 | Atajo | Acción |
 |---|---|
@@ -160,8 +171,8 @@ En la GUI también se aplican **Template Method** (`BaseView`, `CrudModuleView`)
 ## Pruebas
 
 ```bash
-mvn test                                    # suite completa (GUI en modo headless con Monocle)
-mvn test -Dtest=DesktopScreenshotTest -Dui.screenshots=true   # capturas en target/screenshots
+./mvnw test                                    # suite completa (GUI en modo headless con Monocle)
+./mvnw test -Dtest=DesktopScreenshotTest -Dui.screenshots=true   # capturas en target/screenshots
 ```
 
 | Prueba | Cubre |

@@ -16,6 +16,7 @@ import org.kordamp.ikonli.feather.Feather;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
 /**
  * Chuleta de atajos de teclado (F1 o Ctrl+/), agrupada por contexto.
@@ -51,25 +52,25 @@ public class ShortcutsSheet extends VBox {
                 nav.add(new Shortcut(r.shortcutLabel(), r.title()));
             }
         }
-        nav.add(new Shortcut("Alt ←", "Vista anterior"));
-        nav.add(new Shortcut("Alt →", "Vista siguiente"));
+        nav.add(new Shortcut(Keys.text("Alt ←"), "Vista anterior"));
+        nav.add(new Shortcut(Keys.text("Alt →"), "Vista siguiente"));
 
         List<Shortcut> general = List.of(
-                new Shortcut("Ctrl K", "Paleta de comandos"),
+                new Shortcut(Keys.text("Ctrl K"), "Paleta de comandos"),
                 new Shortcut("F5", "Actualizar datos"),
-                new Shortcut("Ctrl T", "Tema oscuro / claro"),
-                new Shortcut("Ctrl B", "Contraer menú lateral"),
+                new Shortcut(Keys.text("Ctrl T"), "Tema oscuro / claro"),
+                new Shortcut(Keys.text("Ctrl B"), "Contraer menú lateral"),
                 new Shortcut("F1", "Esta ayuda"),
                 new Shortcut("Esc", "Cerrar diálogo"));
         List<Shortcut> data = List.of(
-                new Shortcut("Ctrl N", "Nuevo registro"),
+                new Shortcut(Keys.text("Ctrl N"), "Nuevo registro"),
                 new Shortcut("Enter", "Editar selección"),
-                new Shortcut("Supr", "Eliminar selección"),
-                new Shortcut("Ctrl F", "Buscar en el módulo"));
+                new Shortcut(Keys.text("Supr"), "Eliminar selección"),
+                new Shortcut(Keys.text("Ctrl F"), "Buscar en el módulo"));
         List<Shortcut> a11y = List.of(
-                new Shortcut("Ctrl +", "Aumentar texto"),
-                new Shortcut("Ctrl -", "Reducir texto"),
-                new Shortcut("Ctrl 0", "Tamaño original"),
+                new Shortcut(Keys.text("Ctrl +"), "Aumentar texto"),
+                new Shortcut(Keys.text("Ctrl -"), "Reducir texto"),
+                new Shortcut(Keys.text("Ctrl 0"), "Tamaño original"),
                 new Shortcut("Tab", "Siguiente control"));
 
         GridPane grid = new GridPane();

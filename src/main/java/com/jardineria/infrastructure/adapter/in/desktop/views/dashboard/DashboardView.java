@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
 import java.util.function.DoubleFunction;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
 /**
  * Panel general: saludo con resumen narrativo, KPIs animados con microtendencias
@@ -190,7 +191,7 @@ public class DashboardView extends BaseView {
         clientes.setOnAction(e -> navigate.accept(Route.CLIENTES));
         Button ajustes = new Button("Personalizar", Icons.of(Feather.SLIDERS, 15));
         ajustes.getStyleClass().add("flat");
-        ajustes.setTooltip(new Tooltip("Tema, color de acento y perfiles (Ctrl+,)"));
+        ajustes.setTooltip(new Tooltip(Keys.text("Tema, color de acento y perfiles (Ctrl+,)")));
         ajustes.setOnAction(e -> navigate.accept(Route.AJUSTES));
         HBox cta = new HBox(10, pedidos, clientes, ajustes);
 

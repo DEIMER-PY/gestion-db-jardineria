@@ -47,6 +47,7 @@ import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
 /**
  * Pantalla de Ajustes: perfiles de apariencia al estilo de la terminal de Ubuntu.
@@ -200,7 +201,7 @@ public class SettingsView extends BaseView {
                 ThemeManager.setMode((ThemeManager.Mode) n.getUserData());
             }
         });
-        Label hint = new Label("Ctrl+T alterna entre el tema oscuro y el claro elegidos en este perfil.");
+        Label hint = new Label(Keys.text("Ctrl+T alterna entre el tema oscuro y el claro elegidos en este perfil."));
         hint.getStyleClass().add("settings-hint");
         hint.setWrapText(true);
         VBox content = new VBox(14, themes, new HBox(12, mode, hint));

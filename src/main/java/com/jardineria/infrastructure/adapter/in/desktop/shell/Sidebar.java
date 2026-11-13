@@ -26,6 +26,7 @@ import org.kordamp.ikonli.material2.Material2AL;
 
 import java.util.EnumMap;
 import java.util.Map;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
 /**
  * Menú lateral agrupado por secciones, colapsable (Ctrl+B) a solo íconos,
@@ -87,7 +88,7 @@ public class Sidebar extends VBox {
         Button toggle = new Button(null, Icons.of(Feather.CHEVRONS_LEFT, 16));
         toggle.getStyleClass().addAll("sidebar-toggle", "flat", "button-icon");
         toggle.setAccessibleText("Contraer o expandir menú lateral");
-        toggle.setTooltip(new Tooltip("Contraer / expandir menú (Ctrl+B)"));
+        toggle.setTooltip(new Tooltip(Keys.text("Contraer / expandir menú (Ctrl+B)")));
         toggle.setOnAction(e -> toggleCollapsed());
         collapsed.addListener((obs, was, now) ->
                 toggle.setGraphic(Icons.of(now ? Feather.CHEVRONS_RIGHT : Feather.CHEVRONS_LEFT, 16)));

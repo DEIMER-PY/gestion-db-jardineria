@@ -4,6 +4,7 @@ Guía técnica y visual de **Jardinería · Suite de gestión**. Cada documento 
 
 | Documento | Para qué sirve |
 |---|---|
+| [MULTIPLATAFORMA.md](MULTIPLATAFORMA.md) | Instalación y ejecución en Windows, macOS y Linux; JAR por plataforma; diferencias y solución de problemas |
 | [ARQUITECTURA.md](ARQUITECTURA.md) | Capas hexagonales, flujo de una petición, modelo de datos, hilos y concurrencia, mapa de paquetes |
 | [TECNOLOGIAS.md](TECNOLOGIAS.md) | Cada tecnología del proyecto: qué es, por qué se eligió y dónde se usa |
 | [DASHBOARD.md](DASHBOARD.md) | Anatomía del panel general: widgets, fuentes de datos, cálculos, interacciones y accesibilidad |
@@ -21,6 +22,7 @@ Guía técnica y visual de **Jardinería · Suite de gestión**. Cada documento 
 ```mermaid
 flowchart LR
     R[README del proyecto] --> D[docs/README]
+    D --> MP[MULTIPLATAFORMA]
     D --> A[ARQUITECTURA]
     D --> T[TECNOLOGIAS]
     D --> P[DASHBOARD]

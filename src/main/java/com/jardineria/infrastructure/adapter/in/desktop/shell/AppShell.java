@@ -23,6 +23,7 @@ import org.kordamp.ikonli.feather.Feather;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
 /**
  * Contenedor principal de la ventana: menú lateral + barra superior + área de contenido,
@@ -114,11 +115,11 @@ public class AppShell extends StackPane {
                     route.shortcutLabel(), () -> navigator.navigate(route)));
         }
         commands.add(new Command("Crear registro en la vista actual", "Abre el formulario de alta del módulo activo",
-                Feather.PLUS_CIRCLE, "Ctrl N", this::createNew));
+                Feather.PLUS_CIRCLE, Keys.text("Ctrl N"), this::createNew));
         commands.add(new Command("Actualizar datos", "Vuelve a consultar MySQL para la vista actual",
                 Feather.REFRESH_CW, "F5", this::refresh));
         commands.add(new Command("Cambiar tema claro / oscuro", "Alterna entre el tema oscuro y el claro del perfil",
-                Feather.SUN, "Ctrl T", ThemeManager::toggle));
+                Feather.SUN, Keys.text("Ctrl T"), ThemeManager::toggle));
         commands.add(new Command("Atajos de teclado", "Chuleta con todos los atajos disponibles",
                 Feather.COMMAND, "F1", this::showShortcuts));
         for (var profile : ThemeManager.profiles()) {
@@ -134,13 +135,13 @@ public class AppShell extends StackPane {
                     Feather.DROPLET, "", () -> ThemeManager.update(p -> p.withAccent(accent))));
         }
         commands.add(new Command("Contraer / expandir menú lateral", "Gana espacio de trabajo",
-                Feather.SIDEBAR, "Ctrl B", () -> sidebar.toggleCollapsed()));
-        commands.add(new Command("Aumentar tamaño de texto", "Accesibilidad", Feather.ZOOM_IN, "Ctrl +",
+                Feather.SIDEBAR, Keys.text("Ctrl B"), () -> sidebar.toggleCollapsed()));
+        commands.add(new Command("Aumentar tamaño de texto", "Accesibilidad", Feather.ZOOM_IN, Keys.text("Ctrl +"),
                 ThemeManager::increaseFont));
-        commands.add(new Command("Reducir tamaño de texto", "Accesibilidad", Feather.ZOOM_OUT, "Ctrl -",
+        commands.add(new Command("Reducir tamaño de texto", "Accesibilidad", Feather.ZOOM_OUT, Keys.text("Ctrl -"),
                 ThemeManager::decreaseFont));
         commands.add(new Command("Volver a la vista anterior", "Historial de navegación", Feather.ARROW_LEFT,
-                "Alt ←", navigator::back));
+                Keys.text("Alt ←"), navigator::back));
         return commands;
     }
 
@@ -173,6 +174,11 @@ public class AppShell extends StackPane {
         acc.put(new KeyCodeCombination(KeyCode.DIGIT0, KeyCombination.SHORTCUT_DOWN), ThemeManager::resetFont);
         acc.put(new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN), navigator::back);
         acc.put(new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN), navigator::forward);
+        if (Keys.MAC) {
+            // Convención de macOS (Finder, Safari): ⌘[ atrás y ⌘] adelante.
+            acc.put(new KeyCodeCombination(KeyCode.OPEN_BRACKET, KeyCombination.SHORTCUT_DOWN), navigator::back);
+            acc.put(new KeyCodeCombination(KeyCode.CLOSE_BRACKET, KeyCombination.SHORTCUT_DOWN), navigator::forward);
+        }
         acc.put(new KeyCodeCombination(KeyCode.F1), this::showShortcuts);
         acc.put(new KeyCodeCombination(KeyCode.SLASH, KeyCombination.SHORTCUT_DOWN), this::showShortcuts);
     }
