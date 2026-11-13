@@ -69,10 +69,20 @@ public final class Formatters {
         return date == null ? "—" : DATE_SHORT.format(date);
     }
 
-    /** Mes abreviado con año: {@code ene 09}. */
+    /** Mes abreviado con año: {@code ene 09}. Siempre tres letras (el JDK da "sept" para septiembre). */
     public static String month(YearMonth ym) {
-        return ym.getMonth().getDisplayName(TextStyle.SHORT, ES).replace(".", "")
-                + " " + String.valueOf(ym.getYear()).substring(2);
+        return monthShort(ym.getMonthValue()) + " " + String.valueOf(ym.getYear()).substring(2);
+    }
+
+    /** Mes abreviado de tres letras en minúscula: {@code ene}, {@code sep}. */
+    public static String monthShort(int month) {
+        String name = java.time.Month.of(month).getDisplayName(TextStyle.SHORT, ES).replace(".", "");
+        return name.length() > 3 ? name.substring(0, 3) : name;
+    }
+
+    /** Mes y año completos: {@code septiembre de 2009}. */
+    public static String monthLong(YearMonth ym) {
+        return ym.getMonth().getDisplayName(TextStyle.FULL, ES) + " de " + ym.getYear();
     }
 
     /**

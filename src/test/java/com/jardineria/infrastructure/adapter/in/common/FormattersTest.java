@@ -29,7 +29,9 @@ class FormattersTest {
     void fechas() {
         assertThat(Formatters.date(LocalDate.of(2009, 1, 17))).isEqualTo("17 ene 2009");
         assertThat(Formatters.shortDate(LocalDate.of(2009, 1, 17))).isEqualTo("17/01/2009");
-        assertThat(Formatters.month(YearMonth.of(2009, 9))).startsWith("sep").endsWith(" 09");
+        assertThat(Formatters.month(YearMonth.of(2009, 9))).isEqualTo("sep 09");
+        assertThat(Formatters.month(YearMonth.of(2009, 1))).isEqualTo("ene 09");
+        assertThat(Formatters.monthLong(YearMonth.of(2009, 3))).isEqualTo("marzo de 2009");
         assertThat(Formatters.date(null)).isEqualTo("—");
         assertThat(Formatters.orDash("  ")).isEqualTo("—");
     }

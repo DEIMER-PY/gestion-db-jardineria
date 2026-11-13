@@ -100,6 +100,57 @@ public final class Series {
         return (after - before) / before;
     }
 
+    /**
+     * Variación del último tramo de {@code window} puntos frente al tramo anterior del mismo tamaño
+     * (p. ej. últimos 3 meses frente a los 3 previos). Si el tramo anterior suma cero no hay base
+     * de comparación y se devuelve vacío, en lugar de un engañoso "+100 %" o "+357 %".
+     */
+    public static java.util.OptionalDouble recentChange(double[] values, int window) {
+        if (values == null || window <= 0 || values.length < window * 2) {
+            return java.util.OptionalDouble.empty();
+        }
+        double recent = 0;
+        double previous = 0;
+        for (int i = values.length - window; i < values.length; i++) {
+            recent += values[i];
+        }
+        for (int i = values.length - 2 * window; i < values.length - window; i++) {
+            previous += values[i];
+        }
+        if (previous == 0) {
+            return java.util.OptionalDouble.empty();
+        }
+        return java.util.OptionalDouble.of((recent - previous) / previous);
+    }
+
+    /** Últimas {@code n} entradas de un mapa ordenado (conserva el orden). */
+    public static <K, V> Map<K, V> lastEntries(Map<K, V> ordered, int n) {
+        Map<K, V> result = new LinkedHashMap<>();
+        int skip = Math.max(0, ordered.size() - n);
+        int i = 0;
+        for (Map.Entry<K, V> e : ordered.entrySet()) {
+            if (i++ >= skip) {
+                result.put(e.getKey(), e.getValue());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Paso "redondo" (1, 2, 2,5 o 5 × 10^n) para dividir {@code max} en unas {@code ticks} marcas.
+     * Hace que los ejes muestren 0 · 50 · 100 · 150 en lugar de 0 · 47,3 · 94,6.
+     */
+    public static double niceStep(double max, int ticks) {
+        if (max <= 0 || ticks <= 0) {
+            return 1;
+        }
+        double raw = max / ticks;
+        double magnitude = Math.pow(10, Math.floor(Math.log10(raw)));
+        double norm = raw / magnitude;
+        double nice = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10;
+        return nice * magnitude;
+    }
+
     private static String normalizeEstado(String estado) {
         if (estado == null || estado.isBlank()) {
             return "Pendiente";
