@@ -445,6 +445,15 @@ public class DashboardView extends BaseView {
             row.setAlignment(Pos.CENTER_LEFT);
             row.getStyleClass().addAll("timeline-row", "interactive-row");
             row.setOnMouseClicked(e -> navigate.accept(Route.PEDIDOS));
+            row.setFocusTraversable(true);
+            row.setAccessibleRole(javafx.scene.AccessibleRole.BUTTON);
+            row.setAccessibleText(title.getText() + ", " + detail.getText() + ", " + p.getEstado()
+                    + ". Abrir el módulo de pedidos");
+            row.setOnKeyPressed(e -> {
+                if (e.getCode() == javafx.scene.input.KeyCode.ENTER || e.getCode() == javafx.scene.input.KeyCode.SPACE) {
+                    navigate.accept(Route.PEDIDOS);
+                }
+            });
             Tooltip.install(row, new Tooltip("Abrir el módulo de pedidos"));
             activity.getChildren().add(row);
         }

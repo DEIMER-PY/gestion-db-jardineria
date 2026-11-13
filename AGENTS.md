@@ -28,7 +28,9 @@ Contexto operativo para cualquier agente (Claude, Cursor, Copilot…) que modifi
 - **Vistas**: heredan de `BaseView` (cabecera, scroll y estados cargando/error) y consultan datos con `load(callable, render)`, que ejecuta en un hilo virtual. **Nunca** se hace JDBC en el hilo de JavaFX.
 - **Módulos CRUD**: heredan de `CrudModuleView<T>` e implementan `fetch`, `configureColumns`, `searchableText`, `openEditor`, `deleteItem`, `describe`, `csvHeader` y `csvRow`. Los formularios se construyen con `FormDialog` (validación inline y guardado en segundo plano).
 - **Registro**: cada ruta de `navigation.Route` se registra en `views.DesktopViews.registerAll`. Una ruta nueva necesita entrada en el enum, vista y registro.
-- **Estilos**: solo CSS (`resources/desktop/css/app.css` y `tokens-dark.css` / `tokens-light.css`). Los colores salen de variables (`-color-*`, `-jd-*`, `.tone-*`), nunca de valores fijos en Java, salvo los datos que traen su propio color (los hex del flyweight).
+- **Estilos**: solo CSS. `ThemeManager` aplica, por este orden, Primer (AtlantaFX), `css/themes/<tema>.css` (superficies y texto), `css/accents.css` (acento por modo, `.theme-dark.accent-*` / `.theme-light.accent-*`) y `css/app.css` (componentes), más clases en la raíz (`theme-*`, `accent-*`, `density-*`, `corners-*`, `ambient-off`). Los colores salen de variables (`-color-*`, `-jd-*`, `.tone-*`), nunca de valores fijos en Java, salvo los datos que traen su propio color (los hex del flyweight). Un tema nuevo necesita entrada en `ThemePreset` y su CSS; un acento nuevo, entrada en `Accent` y sus dos bloques en `accents.css`. Detalle en `docs/APARIENCIA.md`.
+- **Apariencia**: la configura el usuario en Ajustes mediante `AppearanceProfile` (record inmutable, se modifica con `ThemeManager.update(p -> p.withX(...))`) y se persiste con `ProfileStore` (`preferences()` en la app, `inMemory()` en pruebas). No guardes preferencias visuales por otra vía.
+- **Panel general**: los datos se obtienen en una sola carga (`DashboardSnapshot.load`); las conclusiones textuales viven en `DashboardInsights` (lógica pura, con pruebas). Las variaciones se calculan con `Series.recentChange` (ventana fija, vacío si la base es cero); no compares periodos de distinta duración. Detalle en `docs/DASHBOARD.md`.
 - **Iconos**: solo Ikonli (`Icons.of(Feather.X, size)`). **Prohibido usar emojis** en la UI, en el dominio y en la CLI. En un `FontIcon` no se usa `setStyle(...)` a secas, porque borra la fuente del icono: el color se añade concatenándolo a `getStyle()`.
 - **Mensajes al usuario**: con `Notifier.success/info/warning/error` (toasts) y diálogos mediante `ModalHost` (`show`, `confirmDanger`). Nada de ventanas nativas `Alert`.
 - **Accesibilidad**: todo botón de icono lleva `setAccessibleText` y `Tooltip`. Hay que respetar `Motion.isReduced()`.
@@ -57,11 +59,12 @@ docker compose -f docker/docker-compose.yml up -d     # MySQL :3307 + phpMyAdmin
 mvn javafx:run                         # ejecutar la GUI
 mvn test                               # suite completa (GUI headless; los tests JDBC se omiten sin MySQL)
 mvn test -Dtest=DesktopScreenshotTest -Dui.screenshots=true   # capturas en target/screenshots
+mvn test -Dtest=DesktopGalleryTest -Dui.screenshots=true      # galería de temas, Ajustes y panel en target/screenshots/gallery
 mvn package -DskipTests                # target/gestion-jardineria-2.0.0.jar (JAR sombreado)
 java -jar target/gestion-jardineria-2.0.0.jar [--cli]
 ```
 
-Tras un cambio visual, genera las capturas y revísalas en tema oscuro, en tema claro y en la ventana mínima (`narrow-*`).
+Tras un cambio visual, genera las capturas y revísalas en tema oscuro, en tema claro y en la ventana mínima (`narrow-*`). Si cambian pantallas documentadas, actualiza las imágenes de `docs/img` (ver `docs/CAPTURAS.md`).
 
 ## 7. Git
 

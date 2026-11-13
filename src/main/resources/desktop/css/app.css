@@ -1557,6 +1557,7 @@
 .insight-detail { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.82em; }
 
 .interactive-row { -fx-cursor: hand; }
+.interactive-row:focus-visible { -fx-background-color: -color-accent-subtle; -fx-border-color: -color-accent-muted; -fx-border-radius: 8; -fx-background-radius: 8; }
 
 /* Pedidos por mes: atenuación del resto al pasar sobre una barra */
 .jd-chart .chart-bar.status-bar { -fx-cursor: hand; }
