@@ -4,7 +4,7 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 
 ![Panel general](docs/img/dashboard-dark.png)
 
-> Documentación técnica y visual completa en [`docs/`](docs/README.md): [instalación en cada sistema](docs/MULTIPLATAFORMA.md), [arquitectura](docs/ARQUITECTURA.md), [tecnologías](docs/TECNOLOGIAS.md), [panel general](docs/DASHBOARD.md), [apariencia y perfiles](docs/APARIENCIA.md), [asistente](docs/ASISTENTE.md) y [capturas](docs/CAPTURAS.md).
+> Documentación técnica y visual completa en [`docs/`](docs/README.md): [instalación en cada sistema](docs/MULTIPLATAFORMA.md), [arquitectura](docs/ARQUITECTURA.md), [tecnologías](docs/TECNOLOGIAS.md), [panel general](docs/DASHBOARD.md), [apariencia y perfiles](docs/APARIENCIA.md), [asistente](docs/ASISTENTE.md), [mensajes](docs/MENSAJES.md) y [capturas](docs/CAPTURAS.md).
 
 ![Seis temas con acento propio](docs/img/temas.png)
 
@@ -15,6 +15,8 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 | ![Agenda](docs/img/agenda-dark.png) | ![Organigrama](docs/img/empleados-organigrama.png) |
 | **Tablero de pedidos** | **Asistente** |
 | ![Tablero Kanban](docs/img/tablero-dark.png) | ![Asistente](docs/img/asistente-dark.png) |
+| **Mensajes del equipo** | |
+| ![Mensajes](docs/img/chat-dark.png) | |
 | **Alta de pedido** | **Pedidos (tema claro)** |
 | ![Formulario](docs/img/pedidos-formulario.png) | ![Pedidos en tema claro](docs/img/pedidos-light.png) |
 
@@ -65,6 +67,12 @@ El script de inicialización solo se ejecuta la primera vez que se crea el volum
 docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=utf8mb4 jardineria < docker/maintenance/repair-encoding.sql
 ```
 
+Si el volumen es anterior al módulo Mensajes, crea sus tablas (el script es idempotente; en PowerShell, `Get-Content docker/init/02-chat.sql -Encoding UTF8 | docker exec -i …`):
+
+```bash
+docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=utf8mb4 jardineria < docker/init/02-chat.sql
+```
+
 ---
 
 ## Funcionalidad
@@ -80,6 +88,7 @@ docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=
 | **Agenda** | Calendario mensual de entregas previstas, entregas realizadas y cobros; cifras del mes (puntualidad e importe cobrado), detalle del día y pedidos retrasados. Se maneja con las flechas y cada pedido o cobro abre su módulo filtrado. Sin tablas nuevas. |
 | **Empleados** | Avatar en cada fila y ficha lateral como **organigrama navegable**: cadena de mando hasta dirección, equipo directo, personas a cargo y clientes asignados. |
 | **Pagos, Productos, Gamas, Oficinas, Empleados** | CRUD con validación inline (claves repetidas, importes y stock no negativos, fechas coherentes, cantidad de una línea ≤ stock disponible), filtros propios (forma de pago, gama, oficina, stock crítico) y resumen superior. |
+| **Mensajes** | Chat interno con canal general, uno por oficina y mensajes directos. Se elige quién eres sin contraseña; `#14` enlaza el pedido, `@nombre.apellido` menciona y avisa, y cada canal muestra sus no leídos. Se actualiza cada 3 s contra MySQL, sin servidor adicional. Ver [docs/MENSAJES.md](docs/MENSAJES.md). |
 | **Ajustes** | Perfiles de apariencia al estilo de la terminal de Ubuntu: 6 temas (4 oscuros, 2 claros), 7 acentos, tamaño de texto, densidad, esquinas, movimiento reducido, vista de inicio; exportar e importar perfiles. Ver [docs/APARIENCIA.md](docs/APARIENCIA.md). |
 
 Todas las tablas permiten ordenar, buscar, copiar filas, exportar a CSV (UTF-8 con BOM y `;`, apto para Excel) y abrir el menú contextual. Las consultas se ejecutan en hilos virtuales, así que la interfaz nunca se congela; los errores de MySQL (clave duplicada, clave foránea, longitud) se traducen a mensajes comprensibles junto al campo afectado.
@@ -195,6 +204,7 @@ En la GUI también se aplican **Template Method** (`BaseView`, `CrudModuleView`)
 | `OrgChartTest` | Ficha de empleado: cadena de mando, equipo directo y navegación entre personas con el teclado |
 | `BoardViewTest` | Tablero: agrupación por estado, columnas vecinas y cambio de estado con teclado y confirmación |
 | `AsistenteServiceTest`, `DocumentIndexTest`, `GroqLanguageModelAdapterTest`, `AsistenteViewTest` | Asistente: bucle de herramientas con un modelo guionizado, búsqueda BM25 en la documentación, protocolo de Groq contra un servidor HTTP local y la vista de conversación |
+| `ChatModelTest`, `MensajeriaServiceTest`, `MensajeriaJdbcRepositoryIntegrationTest`, `ChatViewTest` | Mensajes: canales directos y menciones, reglas del servicio, SQL real de la mensajería y la vista con identidad, no leídos, envío y sondeo |
 | `AgendaModelTest`, `AvatarTest` | Agenda (fecha de referencia, agrupación por día, retrasos, puntualidad) e iniciales y tonos de los avatares |
 | `FormattersTest`, `SeriesTest`, `CsvExportTest` | Formato es-ES, series temporales y CSV RFC 4180 |
 | `AppearanceProfileTest` | Perfiles de apariencia: límites, serialización tolerante y predefinidos |

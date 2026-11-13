@@ -34,6 +34,7 @@ Contexto operativo para cualquier agente (Claude, Cursor, Copilot…) que modifi
 - **Estado de un pedido**: manda `estado`, no `fecha_entrega` (los datos de ejemplo tienen pendientes y rechazados con fecha de entrega). Los cambios de estado pasan por `PedidoUseCase.cambiarEstado` y se confirman con `ModalHost.confirm`.
 - **Agenda**: los eventos salen de pedidos y pagos en `AgendaModel` (lógica pura, con pruebas). La fecha de referencia es el último pedido o cobro si es anterior a hoy; no la calcules con fechas de entrega.
 - **Asistente**: el puerto `AsistenteUseCase` lo implementa `AsistenteService`, que habla con el modelo por `application.port.out.ModeloLenguajePort` (adaptador `GroqLanguageModelAdapter`) y con la documentación por `DocumentacionPort`. Sus herramientas son **solo de lectura**: no añadas ninguna que escriba. La clave se lee de `GROQ_API_KEY` y nunca se guarda en el repositorio ni se escribe en los registros. Un documento nuevo de `docs/` debe añadirse a `ClasspathDocumentacionAdapter.FUENTES`. Detalle en `docs/ASISTENTE.md`.
+- **Mensajes**: `ChatView` consulta cada 3 s con `MensajeriaUseCase.sondear` (nunca dos a la vez y solo con la vista en pantalla). La identidad es `ChatIdentity` (en memoria en pruebas, `usePreferences()` en la app). Los canales directos se llaman `dm-<menor>-<mayor>`. Detalle en `docs/MENSAJES.md`.
 - **Validación**: las reglas de formulario van con `FormField.rule`; para claves de altas usa `CrudModuleView.uniqueKey`. La capa de aplicación vuelve a validar al guardar.
 - **Estilos**: solo CSS. `ThemeManager` aplica, por este orden, Primer (AtlantaFX), `css/themes/<tema>.css` (superficies y texto), `css/accents.css` (acento por modo, `.theme-dark.accent-*` / `.theme-light.accent-*`) y `css/app.css` (componentes), más clases en la raíz (`theme-*`, `accent-*`, `density-*`, `corners-*`, `ambient-off`). Los colores salen de variables (`-color-*`, `-jd-*`, `.tone-*`), nunca de valores fijos en Java, salvo los datos que traen su propio color (los hex del flyweight). Un tema nuevo necesita entrada en `ThemePreset` y su CSS; un acento nuevo, entrada en `Accent` y sus dos bloques en `accents.css`. Detalle en `docs/APARIENCIA.md`.
 - **Apariencia**: la configura el usuario en Ajustes mediante `AppearanceProfile` (record inmutable, se modifica con `ThemeManager.update(p -> p.withX(...))`) y se persiste con `ProfileStore` (`preferences()` en la app, `inMemory()` en pruebas). No guardes preferencias visuales por otra vía.
@@ -58,7 +59,7 @@ docker compose -f docker/docker-compose.yml up -d     # MySQL :3307 + phpMyAdmin
 ```
 
 - Credenciales: `root` / `password`, base `jardineria`. Se sobrescriben con `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y `DB_PASSWORD`.
-- Esquema y datos: `docker/init/01-jardineria.sql`, que solo se ejecuta al crear el volumen.
+- Esquema y datos: `docker/init/01-jardineria.sql`, que solo se ejecuta al crear el volumen. Las tablas de mensajería (`canal`, `mensaje`, `lectura`) están en `docker/init/02-chat.sql`, que es idempotente y se puede aplicar a un volumen existente. Las fechas de la mensajería se guardan en UTC.
 - Volúmenes antiguos con texto roto: `docker/maintenance/repair-encoding.sql`.
 - El contenedor `golands-db` que pueda existir en la máquina **no pertenece a este proyecto**: no se toca.
 
