@@ -1431,3 +1431,132 @@
 .accent-swatch:hover { -fx-border-color: -color-border-default; }
 .accent-swatch:selected { -fx-border-color: -jd-swatch; }
 .accent-swatch:selected .swatch-check { -fx-opacity: 1; }
+
+/* =====================================================================
+ * Panel general: componentes interactivos
+ * ===================================================================== */
+
+/* Indicador "en vivo" del saludo */
+.live-dot {
+    -fx-background-color: -color-success-fg;
+    -fx-background-radius: 99;
+    -fx-min-width: 7; -fx-min-height: 7; -fx-max-width: 7; -fx-max-height: 7;
+    -fx-effect: dropshadow(gaussian, -color-success-fg, 6, 0.3, 0, 0);
+}
+.hero-live {
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 99;
+    -fx-padding: 0.15em 0.65em 0.15em 0.55em;
+}
+.hero-updated { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.76em; -fx-font-weight: 600; }
+
+/* Tarjetas: sombra más marcada al elevarse */
+.kpi.interactive:hover {
+    -fx-effect: dropshadow(gaussian, -jd-shadow, 30, 0.12, 0, 14);
+}
+
+/* Sparkline con burbuja */
+.sparkline { -fx-cursor: crosshair; }
+.sparkline-guide { -fx-stroke: -color-border-default; -fx-stroke-dash-array: 2 3; }
+.sparkline-bubble {
+    -fx-background-color: -color-bg-overlay;
+    -fx-background-radius: 7;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 7;
+    -fx-padding: 0.15em 0.5em 0.15em 0.5em;
+    -fx-text-fill: -color-fg-default;
+    -fx-font-size: 0.74em;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, -color-shadow-default, 10, 0.1, 0, 3);
+}
+
+/* Gráfica de tendencia */
+.trend-plot { -fx-cursor: crosshair; }
+.trend-plot:focus-visible { -fx-border-color: -color-accent-muted; -fx-border-radius: 8; }
+.trend-grid { -fx-stroke: -color-border-muted; -fx-stroke-dash-array: 3 5; }
+.trend-axis { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.76em; -fx-font-family: "JetBrains Mono"; }
+.trend-line { -fx-stroke: -jd-tone; -fx-stroke-width: 2.6; -fx-fill: transparent; -fx-stroke-line-cap: round; -fx-stroke-line-join: round; }
+.trend-area { -fx-fill: linear-gradient(to bottom, -jd-tone-soft 0%, transparent 100%); -fx-stroke: transparent; }
+.trend-cross { -fx-stroke: -color-fg-subtle; -fx-stroke-width: 1; -fx-stroke-dash-array: 4 4; }
+.trend-dot { -fx-fill: -jd-tone; -fx-stroke: -jd-card; -fx-stroke-width: 2.5; -fx-effect: dropshadow(gaussian, -jd-tone, 8, 0.25, 0, 0); }
+.trend-tip {
+    -fx-background-color: -jd-glass;
+    -fx-background-radius: 12;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 12;
+    -fx-padding: 0.6em 0.75em 0.6em 0.75em;
+    -fx-effect: dropshadow(gaussian, -color-shadow-default, 22, 0.1, 0, 8);
+}
+.trend-tip-title { -fx-text-fill: -color-fg-emphasis; -fx-font-weight: 800; -fx-font-size: 0.9em; }
+.trend-tip-name { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.86em; }
+.trend-tip-value { -fx-text-fill: -color-fg-default; -fx-font-family: "JetBrains Mono"; -fx-font-weight: 700; -fx-font-size: 0.86em; }
+.trend-tip-diff { -fx-font-size: 0.78em; -fx-font-weight: 700; -fx-padding: 0.25em 0 0 0; }
+.diff-up { -fx-text-fill: -color-success-fg; }
+.diff-down { -fx-text-fill: -color-danger-fg; }
+.legend-line { -fx-min-height: 4; -fx-max-height: 4; -fx-min-width: 16; -fx-max-width: 16; -fx-background-radius: 99; }
+
+/* Dona interactiva */
+.donut-slice { -fx-cursor: hand; }
+.donut-legend-row { -fx-padding: 0.2em 0.4em 0.2em 0.4em; -fx-background-radius: 8; -fx-cursor: hand; }
+.donut-legend-row:hover { -fx-background-color: -color-bg-subtle; }
+
+/* Treemap */
+.tile {
+    -fx-background-color: linear-gradient(to bottom right, -jd-tone 0%, -jd-tone-soft 160%);
+    -fx-background-radius: 10;
+    -fx-padding: 0.6em 0.7em 0.6em 0.7em;
+    -fx-cursor: hand;
+    -fx-opacity: 0.92;
+}
+.tile:hover { -fx-opacity: 1; -fx-effect: dropshadow(gaussian, -jd-tone, 14, 0.15, 0, 0); }
+.tile:focus-visible { -fx-border-color: -color-fg-emphasis; -fx-border-width: 2; -fx-border-radius: 10; }
+.tile-name { -fx-text-fill: -jd-on-tile; -fx-font-weight: 800; -fx-font-size: 0.92em; }
+.tile-value { -fx-text-fill: -jd-on-tile; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.8em; -fx-opacity: 0.9; }
+.tile-pct { -fx-text-fill: -jd-on-tile; -fx-font-family: "Bricolage Grotesque"; -fx-font-weight: 800; -fx-font-size: 1.35em; -fx-opacity: 0.85; }
+.theme-dark .tile { -jd-on-tile: #0B0D11; }
+.theme-light .tile { -jd-on-tile: #FFFFFF; }
+.theme-dark .tile.tone-accent { -jd-on-tile: -jd-on-accent; }
+.corners-rectas .tile { -fx-background-radius: 3; }
+
+/* Mapa de calor */
+.heatmap-axis { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.74em; -fx-font-family: "JetBrains Mono"; }
+.heat-cell { -fx-background-radius: 5; -fx-cursor: hand; }
+.heat-cell:focus-visible { -fx-border-color: -color-fg-emphasis; -fx-border-radius: 5; }
+.heat-0 { -fx-background-color: -jd-track; }
+.heat-1 { -fx-background-color: -color-accent-subtle; }
+.heat-2 { -fx-background-color: -color-accent-muted; }
+.heat-3 { -fx-background-color: -color-accent-emphasis; }
+.heat-4 { -fx-background-color: -color-accent-fg; -fx-effect: dropshadow(gaussian, -color-accent-muted, 8, 0.2, 0, 0); }
+.heat-legend { -fx-cursor: default; -fx-effect: null; }
+.heatmap-summary { -fx-text-fill: -color-fg-muted; -fx-font-size: 0.86em; }
+.heatmap-years { -fx-padding: 14 0 0 0; -fx-border-color: -color-border-muted transparent transparent transparent; -fx-border-width: 1 0 0 0; }
+.heatmap-years-title { -fx-text-fill: -color-fg-default; -fx-font-weight: bold; -fx-font-size: 0.9em; -fx-padding: 0 0 2 0; }
+.heatmap-year-track { -fx-background-color: -jd-track; -fx-background-radius: 4; }
+.heatmap-year-fill { -fx-background-color: linear-gradient(to right, -color-accent-emphasis, -color-accent-fg); -fx-background-radius: 4; }
+.heatmap-year-count { -fx-text-fill: -color-fg-default; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.86em; }
+.heatmap-year-delta { -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.78em; }
+.year-up { -fx-text-fill: -color-success-fg; }
+.year-down { -fx-text-fill: -color-danger-fg; }
+.year-flat { -fx-text-fill: -color-fg-subtle; }
+.corners-rectas .heatmap-year-track, .corners-rectas .heatmap-year-fill { -fx-background-radius: 1; }
+.corners-rectas .heat-cell { -fx-background-radius: 1; }
+
+/* Lecturas clave */
+.insight-row {
+    -fx-padding: 0.55em 0.6em 0.55em 0.5em;
+    -fx-background-radius: 12;
+}
+.insight-row:hover { -fx-background-color: -color-bg-subtle; }
+.insight-badge {
+    -fx-background-color: -jd-tone-soft;
+    -fx-background-radius: 10;
+    -fx-min-width: 30; -fx-min-height: 30; -fx-max-width: 30; -fx-max-height: 30;
+}
+.insight-badge .ikonli-font-icon { -fx-icon-color: -jd-tone; }
+.insight-title { -fx-text-fill: -color-fg-default; -fx-font-weight: 800; -fx-font-size: 0.92em; }
+.insight-detail { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.82em; }
+
+.interactive-row { -fx-cursor: hand; }
+
+/* Pedidos por mes: atenuación del resto al pasar sobre una barra */
+.jd-chart .chart-bar.status-bar { -fx-cursor: hand; }

@@ -30,6 +30,10 @@ public class DonutChart extends VBox {
     private final Label centerValue = new Label();
     private final Label centerCaption = new Label();
     private final VBox legend = new VBox(10);
+    private final List<PieChart.Data> current = new ArrayList<>();
+    private String defaultValue = "";
+    private String defaultCaption = "";
+    private double total;
 
     public DonutChart() {
         super(18);
@@ -63,32 +67,69 @@ public class DonutChart extends VBox {
     }
 
     public void setData(List<Slice> slices, String centerText, String caption) {
+        defaultValue = centerText;
+        defaultCaption = caption;
         centerValue.setText(centerText);
         centerCaption.setText(caption);
-        double total = slices.stream().mapToDouble(Slice::value).sum();
+        total = slices.stream().mapToDouble(Slice::value).sum();
+        current.clear();
 
         List<PieChart.Data> data = new ArrayList<>();
         legend.getChildren().clear();
         for (Slice s : slices) {
             PieChart.Data d = new PieChart.Data(s.label(), s.value());
             data.add(d);
+            int index = data.size() - 1;
             d.nodeProperty().addListener((obs, old, node) -> {
                 if (node != null) {
-                    node.getStyleClass().addAll("donut-slice", s.tone());
-                    Tooltip.install(node, new Tooltip(s.label() + ": " + (long) s.value()));
+                    decorate(node, s, index);
                 }
             });
             double pct = total == 0 ? 0 : s.value() * 100 / total;
-            legend.getChildren().add(legendRow(s, pct));
+            HBox row = legendRow(s, pct);
+            row.setOnMouseEntered(e -> focusSlice(index, s));
+            row.setOnMouseExited(e -> focusSlice(-1, null));
+            legend.getChildren().add(row);
         }
+        current.addAll(data);
         pie.setData(FXCollections.observableArrayList(data));
         // Los nodos ya existentes (reutilizados por el chart) también reciben el tono
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i).getNode() != null) {
-                data.get(i).getNode().getStyleClass().addAll("donut-slice", slices.get(i).tone());
+                decorate(data.get(i).getNode(), slices.get(i), i);
             }
         }
         setAccessibleText(caption + ": " + centerText);
+    }
+
+    private void decorate(javafx.scene.Node node, Slice s, int index) {
+        if (!node.getStyleClass().contains("donut-slice")) {
+            node.getStyleClass().addAll("donut-slice", s.tone());
+        }
+        Tooltip.install(node, new Tooltip(s.label() + ": " + (long) s.value()));
+        node.setOnMouseEntered(e -> focusSlice(index, s));
+        node.setOnMouseExited(e -> focusSlice(-1, null));
+    }
+
+    /** Atenúa el resto de segmentos y muestra el valor del elegido en el centro ({@code -1} restaura). */
+    private void focusSlice(int index, Slice s) {
+        for (int i = 0; i < current.size(); i++) {
+            javafx.scene.Node n = current.get(i).getNode();
+            if (n != null) {
+                n.setOpacity(index < 0 || i == index ? 1 : 0.32);
+            }
+        }
+        for (int i = 0; i < legend.getChildren().size(); i++) {
+            legend.getChildren().get(i).setOpacity(index < 0 || i == index ? 1 : 0.5);
+        }
+        if (s == null) {
+            centerValue.setText(defaultValue);
+            centerCaption.setText(defaultCaption);
+        } else {
+            centerValue.setText(String.format(java.util.Locale.forLanguageTag("es-ES"), "%,.0f", s.value()));
+            centerCaption.setText(s.label().toLowerCase(java.util.Locale.ROOT) + " · "
+                    + String.format(java.util.Locale.forLanguageTag("es-ES"), "%.0f %%", total == 0 ? 0 : s.value() * 100 / total));
+        }
     }
 
     private HBox legendRow(Slice s, double pct) {
@@ -104,6 +145,7 @@ public class DonutChart extends VBox {
         percent.getStyleClass().add("legend-percent");
         HBox row = new HBox(10, swatch, name, grow, value, percent);
         row.setAlignment(Pos.CENTER_LEFT);
+        row.getStyleClass().add("donut-legend-row");
         return row;
     }
 }
