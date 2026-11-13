@@ -2,6 +2,7 @@ package com.jardineria.infrastructure.adapter.in.desktop;
 
 import com.jardineria.application.dto.DashboardMetrics;
 import com.jardineria.application.port.in.AnalyticsUseCase;
+import com.jardineria.application.port.in.AsistenteUseCase;
 import com.jardineria.application.port.in.ClienteUseCase;
 import com.jardineria.application.port.in.DashboardUseCase;
 import com.jardineria.application.port.in.DetallePedidoUseCase;
@@ -65,7 +66,8 @@ final class FxTestSupport {
                     public String describe() {
                         return "simulada";
                     }
-                });
+                },
+                pick(AsistenteUseCase.class, DesktopServices.SIN_ASISTENTE, overrides));
     }
 
     private static <P> P pick(Class<P> port, P fallback, Object[] overrides) {

@@ -13,6 +13,9 @@ import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 public enum Route {
     DASHBOARD("Panel general", "Pulso operativo del vivero en tiempo real", Feather.GRID, Section.GENERAL, KeyCode.DIGIT1),
     ANALYTICS("Métricas", "Analítica comercial, tendencias y distribución", Feather.BAR_CHART_2, Section.GENERAL, KeyCode.DIGIT2),
+    /** Sin atajo propio; se abre desde el menú o con Ctrl+K. */
+    ASISTENTE("Asistente", "Pregunta por tus datos o por cómo usar la aplicación", Feather.MESSAGE_CIRCLE,
+            Section.GENERAL, null),
     CLIENTES("Clientes", "Cartera, crédito disponible e historial de compra", Feather.USERS, Section.OPERACION, KeyCode.DIGIT3),
     PEDIDOS("Pedidos", "Ciclo de vida de pedidos y sus líneas de detalle", Feather.SHOPPING_BAG, Section.OPERACION, KeyCode.DIGIT4),
     PAGOS("Pagos", "Cobros registrados por cliente y forma de pago", Feather.CREDIT_CARD, Section.OPERACION, KeyCode.DIGIT5),
