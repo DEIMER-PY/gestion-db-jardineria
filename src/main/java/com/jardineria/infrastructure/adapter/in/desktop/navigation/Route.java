@@ -4,6 +4,7 @@ import javafx.scene.input.KeyCode;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.material2.Material2AL;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
 /**
  * Rutas de navegación de la aplicación: título, descripción, ícono, sección del menú
@@ -60,7 +61,7 @@ public enum Route {
 
     /** Texto del atajo para mostrar al usuario, p. ej. "Ctrl 3". */
     public String shortcutLabel() {
-        return shortcut == null ? "" : "Ctrl " + keyText();
+        return shortcut == null ? "" : Keys.text("Ctrl ") + keyText();
     }
 
     /** Tecla del atajo tal como se imprime en el teclado ("3", ","). */

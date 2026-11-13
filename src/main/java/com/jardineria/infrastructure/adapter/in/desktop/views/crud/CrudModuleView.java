@@ -54,6 +54,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
 /**
  * Plantilla de módulo CRUD (patrón Template Method): cada módulo concreto solo
@@ -86,7 +87,7 @@ public abstract class CrudModuleView<T> extends BaseView {
 
         Button nuevo = new Button((femenino() ? "Nueva " : "Nuevo ") + singular, Icons.of(Feather.PLUS, 15));
         nuevo.getStyleClass().add("accent");
-        nuevo.setTooltip(new Tooltip("Crear " + articulo() + " " + singular + " (Ctrl+N)"));
+        nuevo.setTooltip(new Tooltip("Crear " + articulo() + " " + singular + Keys.text(" (Ctrl+N)")));
         nuevo.setOnAction(e -> createNew());
         Button export = new Button("Exportar", Icons.of(Feather.DOWNLOAD, 15));
         export.setTooltip(new Tooltip("Exporta a CSV los registros visibles"));
@@ -162,7 +163,7 @@ public abstract class CrudModuleView<T> extends BaseView {
         edit.setTooltip(new Tooltip("Editar selección (Intro o doble clic)"));
         edit.setAccessibleText("Editar selección");
         delete.setAccessibleText("Eliminar selección");
-        delete.setTooltip(new Tooltip("Eliminar selección (Supr)"));
+        delete.setTooltip(new Tooltip(Keys.text("Eliminar selección (Supr)")));
 
         filters.setAlignment(Pos.CENTER_LEFT);
         // En ventanas estrechas cede el buscador; botones, filtros y contador conservan su ancho
@@ -246,7 +247,8 @@ public abstract class CrudModuleView<T> extends BaseView {
             if (e.getCode() == KeyCode.ENTER) {
                 editSelected();
                 e.consume();
-            } else if (e.getCode() == KeyCode.DELETE) {
+            } else if (e.getCode() == KeyCode.DELETE || (Keys.MAC && e.getCode() == KeyCode.BACK_SPACE)) {
+                // En los teclados Mac la tecla «delete» envía BACK_SPACE.
                 deleteSelected();
                 e.consume();
             }

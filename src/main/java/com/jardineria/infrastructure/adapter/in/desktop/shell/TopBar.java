@@ -20,6 +20,7 @@ import javafx.scene.layout.Region;
 import org.kordamp.ikonli.feather.Feather;
 
 import java.util.Arrays;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
 /**
  * Barra superior: historial (atrás / adelante), migas de pan navegables, buscador global
@@ -36,10 +37,10 @@ public class TopBar extends HBox {
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(8);
 
-        Button back = iconButton(Feather.ARROW_LEFT, "Volver a la vista anterior (Alt+←)");
+        Button back = iconButton(Feather.ARROW_LEFT, Keys.text("Volver a la vista anterior (Alt+←)"));
         back.setOnAction(e -> navigator.back());
         back.disableProperty().bind(navigator.canGoBackProperty().not());
-        Button forward = iconButton(Feather.ARROW_RIGHT, "Avanzar (Alt+→)");
+        Button forward = iconButton(Feather.ARROW_RIGHT, Keys.text("Avanzar (Alt+→)"));
         forward.setOnAction(e -> navigator.forward());
         forward.disableProperty().bind(navigator.canGoForwardProperty().not());
         HBox history = new HBox(2, back, forward);
@@ -75,7 +76,7 @@ public class TopBar extends HBox {
         Label searchText = new Label("Buscar módulo, acción o tema…");
         searchText.getStyleClass().add("search-pill-text");
         searchText.setMinWidth(0);
-        Label kbd = new Label("Ctrl K");
+        Label kbd = new Label(Keys.text("Ctrl K"));
         kbd.getStyleClass().add("kbd");
         kbd.setMinWidth(Region.USE_PREF_SIZE);
         Region pillGrow = new Region();
@@ -84,7 +85,7 @@ public class TopBar extends HBox {
         pillContent.setAlignment(Pos.CENTER_LEFT);
         Button search = new Button(null, pillContent);
         search.getStyleClass().add("search-pill");
-        search.setAccessibleText("Abrir búsqueda y paleta de comandos, atajo Control K");
+        search.setAccessibleText("Abrir búsqueda y paleta de comandos, atajo " + Keys.spokenMod() + " K");
         search.setOnAction(e -> openPalette.run());
         pillContent.prefWidthProperty().bind(search.widthProperty().subtract(28));
 
@@ -97,11 +98,11 @@ public class TopBar extends HBox {
         Button btnHelp = iconButton(Feather.HELP_CIRCLE, "Atajos de teclado (F1)");
         btnHelp.setOnAction(e -> showShortcuts.run());
 
-        Button btnTheme = iconButton(themeIcon(), "Cambiar tema claro / oscuro (Ctrl+T)");
+        Button btnTheme = iconButton(themeIcon(), Keys.text("Cambiar tema claro / oscuro (Ctrl+T)"));
         btnTheme.setOnAction(e -> ThemeManager.toggle());
         ThemeManager.modeProperty().addListener((obs, o, n) -> btnTheme.setGraphic(Icons.of(themeIcon(), 17)));
 
-        Button btnSettings = iconButton(Feather.SLIDERS, "Ajustes y perfiles de apariencia (Ctrl+,)");
+        Button btnSettings = iconButton(Feather.SLIDERS, Keys.text("Ajustes y perfiles de apariencia (Ctrl+,)"));
         btnSettings.setOnAction(e -> navigator.navigate(Route.AJUSTES));
 
         getChildren().addAll(history, crumbs, grow, search, btnRefresh, btnHelp, accessibilityMenu(), btnTheme, btnSettings);
@@ -152,7 +153,7 @@ public class TopBar extends HBox {
         MenuButton menu = new MenuButton(null, Icons.of(Feather.EYE, 17), bigger, smaller, reset,
                 new SeparatorMenuItem(), reduceMotion, contrast);
         menu.getStyleClass().addAll("topbar-icon", "flat", "button-icon", "no-arrow");
-        menu.setTooltip(new Tooltip("Accesibilidad: tamaño de texto (Ctrl + / Ctrl -), movimiento y contraste"));
+        menu.setTooltip(new Tooltip(Keys.text("Accesibilidad: tamaño de texto (Ctrl + / Ctrl -), movimiento y contraste")));
         menu.setAccessibleText("Opciones de accesibilidad");
         return menu;
     }
