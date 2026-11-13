@@ -13,6 +13,8 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 | ![Métricas](docs/img/analytics-dark.png) | ![Ficha de cliente](docs/img/clientes-detalle.png) |
 | **Agenda** | **Organigrama en la ficha de empleado** |
 | ![Agenda](docs/img/agenda-dark.png) | ![Organigrama](docs/img/empleados-organigrama.png) |
+| **Tablero de pedidos** | |
+| ![Tablero Kanban](docs/img/tablero-dark.png) | |
 | **Alta de pedido** | **Pedidos (tema claro)** |
 | ![Formulario](docs/img/pedidos-formulario.png) | ![Pedidos en tema claro](docs/img/pedidos-light.png) |
 
@@ -73,6 +75,7 @@ docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=
 | **Métricas** | Filtro por año, ventas frente a cobros (gráfico de áreas con cursor), pedidos por mes y estado, ticket medio, tasa de rechazo, distribución por gama, país y forma de pago, ranking de clientes y exportación CSV. Las gamas, los países y los clientes llevan a su módulo filtrado. |
 | **Clientes** | Avatar con iniciales en cada fila, búsqueda sin tildes, filtro por país y ficha lateral con contacto, representante, crédito usado frente al límite y últimos pedidos y pagos. |
 | **Pedidos** | Filtro por estado, cronología con aviso de retraso, cambio rápido de estado y gestión de líneas (el alta descuenta stock). |
+| **Tablero** | Kanban de pedidos con una columna por estado. Se cambia el estado arrastrando la tarjeta o con las flechas izquierda y derecha, siempre con confirmación; `Intro` abre el pedido. Filtro por código o cliente. |
 | **Agenda** | Calendario mensual de entregas previstas, entregas realizadas y cobros; cifras del mes (puntualidad e importe cobrado), detalle del día y pedidos retrasados. Se maneja con las flechas y cada pedido o cobro abre su módulo filtrado. Sin tablas nuevas. |
 | **Empleados** | Avatar en cada fila y ficha lateral como **organigrama navegable**: cadena de mando hasta dirección, equipo directo, personas a cargo y clientes asignados. |
 | **Pagos, Productos, Gamas, Oficinas, Empleados** | CRUD con validación inline (claves repetidas, importes y stock no negativos, fechas coherentes, cantidad de una línea ≤ stock disponible), filtros propios (forma de pago, gama, oficina, stock crítico) y resumen superior. |
@@ -152,7 +155,7 @@ src/main/java/com/jardineria
     └── adapter/in/
         ├── common/    Formatters (compartido por GUI y CLI)
         ├── cli/
-        └── desktop/   shell · navigation · theme · support · components(/form) · views/{dashboard,analytics,agenda,crud,modules,settings}
+        └── desktop/   shell · navigation · theme · support · components(/form) · views/{dashboard,analytics,agenda,board,crud,modules,settings}
 ```
 
 ### Patrones de diseño
@@ -189,6 +192,7 @@ En la GUI también se aplican **Template Method** (`BaseView`, `CrudModuleView`)
 | `DesktopSmokeTest` | La GUI completa sin base de datos: todas las rutas en ambos temas y los 7 formularios, sin errores |
 | `NavigationRevealTest` | Navegación contextual: abrir Pedidos filtrado por código o por estado y con la fila correcta seleccionada |
 | `OrgChartTest` | Ficha de empleado: cadena de mando, equipo directo y navegación entre personas con el teclado |
+| `BoardViewTest` | Tablero: agrupación por estado, columnas vecinas y cambio de estado con teclado y confirmación |
 | `AgendaModelTest`, `AvatarTest` | Agenda (fecha de referencia, agrupación por día, retrasos, puntualidad) e iniciales y tonos de los avatares |
 | `FormattersTest`, `SeriesTest`, `CsvExportTest` | Formato es-ES, series temporales y CSV RFC 4180 |
 | `AppearanceProfileTest` | Perfiles de apariencia: límites, serialización tolerante y predefinidos |
