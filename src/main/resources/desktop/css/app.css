@@ -1230,3 +1230,11 @@
     -fx-max-height: 3em;
 }
 .facade-confirm-badge .ikonli-font-icon { -fx-icon-color: -color-accent-fg; }
+
+/* Interruptores: la bola siempre clara (en el tema claro -color-fg-emphasis es negro). */
+.toggle-switch > .thumb {
+    -fx-background-color: -color-border-default, #FFFFFF;
+}
+.toggle-switch:selected > .thumb {
+    -fx-background-color: -color-accent-emphasis, #FFFFFF;
+}

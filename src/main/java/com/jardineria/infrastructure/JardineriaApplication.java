@@ -34,11 +34,25 @@ public final class JardineriaApplication {
 
         if (cli) {
             log.info("Iniciando consola interactiva (CLI)...");
+            useUtf8WhenRedirected();
             new ConsoleMenuRunner(context).run();
             return;
         }
         log.info("Iniciando interfaz de escritorio JavaFX...");
         JardineriaDesktopApp.launchWith(desktopServices(context), args);
+    }
+
+    /**
+     * Sin terminal real (consola del IDE, tubería o redirección) Java escribe con la página de
+     * códigos ANSI de Windows y las tildes salen como "�". En ese caso se fuerza UTF-8, que es
+     * lo que esperan IntelliJ, VS Code y los terminales modernos. Con una terminal real Java ya
+     * usa la codificación de la consola y no se toca.
+     */
+    private static void useUtf8WhenRedirected() {
+        if (System.console() == null) {
+            System.setOut(new java.io.PrintStream(new java.io.FileOutputStream(java.io.FileDescriptor.out), true,
+                    java.nio.charset.StandardCharsets.UTF_8));
+        }
     }
 
     /** Adapta el composition root al conjunto de puertos que consume la GUI. */
