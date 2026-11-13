@@ -52,10 +52,21 @@ public class TopBar extends HBox {
         crumbSection.getStyleClass().addAll("crumb", "crumb-link");
         crumbSection.setOnAction(e -> openSection());
         crumbPage.getStyleClass().addAll("crumb", "crumb-current");
-        HBox crumbs = new HBox(6, home, sep(), crumbSection, sep(), crumbPage);
+        Label homeSep = sep();
+        HBox crumbs = new HBox(6, home, homeSep, crumbSection, sep(), crumbPage);
         crumbs.setAlignment(Pos.CENTER_LEFT);
         crumbs.getStyleClass().add("crumbs");
         crumbs.setMinWidth(0);
+        crumbPage.setMinWidth(Region.USE_PREF_SIZE);
+        crumbSection.setMinWidth(Region.USE_PREF_SIZE);
+        // En ventanas estrechas se oculta la raíz de la miga para que la página actual se lea entera.
+        widthProperty().addListener((obs, o, w) -> {
+            boolean compact = w.doubleValue() < 960;
+            home.setVisible(!compact);
+            home.setManaged(!compact);
+            homeSep.setVisible(!compact);
+            homeSep.setManaged(!compact);
+        });
 
         Region grow = new Region();
         HBox.setHgrow(grow, Priority.ALWAYS);

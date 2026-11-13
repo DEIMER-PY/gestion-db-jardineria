@@ -112,7 +112,16 @@ class DesktopGalleryTest {
         FxTestSupport.scrollCurrentViewToTop(scene);
         FxTestSupport.settle(250);
         FxTestSupport.snapshot(scene, dir("dashboard-top"));
-        for (double v : new double[]{0.45, 1.0}) {
+        WaitForAsyncUtils.asyncFx(() -> scene.getRoot().lookupAll(".view-scroll").stream()
+                .filter(n -> n.isVisible() && n.getScene() != null)
+                .map(javafx.scene.control.ScrollPane.class::cast)
+                .forEach(sp -> sp.setVvalue(0.22))).get();
+        FxTestSupport.settle(1300);
+        WaitForAsyncUtils.asyncFx(() -> ((com.jardineria.infrastructure.adapter.in.desktop.views.dashboard.DashboardView)
+                shell.getNavigator().currentView()).highlightTrend(8)).get();
+        FxTestSupport.settle(300);
+        FxTestSupport.snapshot(scene, dir("dashboard-hover"));
+        for (double v : new double[]{0.62, 1.0}) {
             WaitForAsyncUtils.asyncFx(() -> scene.getRoot().lookupAll(".view-scroll").stream()
                     .filter(n -> n.isVisible() && n.getScene() != null)
                     .map(javafx.scene.control.ScrollPane.class::cast)

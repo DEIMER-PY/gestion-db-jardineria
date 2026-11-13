@@ -57,4 +57,33 @@ class SeriesTest {
         assertThat(Series.trend(new double[]{5})).isZero();
         assertThat(Series.trend(null)).isZero();
     }
+
+    @Test
+    @DisplayName("recentChange compara los últimos meses con los anteriores y no inventa variaciones sin base")
+    void recentChange() {
+        assertThat(Series.recentChange(new double[]{0, 0, 2, 2, 3, 3}, 2).getAsDouble()).isCloseTo(0.5, within(1e-9));
+        assertThat(Series.recentChange(new double[]{0, 0, 0, 0, 5, 9}, 2)).isEmpty();
+        assertThat(Series.recentChange(new double[]{1, 2, 3}, 2)).isEmpty();
+        assertThat(Series.recentChange(null, 3)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("niceStep produce pasos redondos para los ejes")
+    void niceStep() {
+        assertThat(Series.niceStep(14, 4)).isEqualTo(5);
+        assertThat(Series.niceStep(240, 4)).isEqualTo(100);
+        assertThat(Series.niceStep(0.9, 4)).isEqualTo(0.25);
+        assertThat(Series.niceStep(0, 4)).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("lastEntries conserva solo las últimas entradas en orden")
+    void lastEntries() {
+        Map<Integer, String> m = new java.util.LinkedHashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            m.put(i, "v" + i);
+        }
+        assertThat(Series.lastEntries(m, 2).keySet()).containsExactly(4, 5);
+        assertThat(Series.lastEntries(m, 9)).hasSize(5);
+    }
 }

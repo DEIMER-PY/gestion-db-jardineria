@@ -57,22 +57,25 @@ public class KpiCard extends VBox {
         head.setAlignment(Pos.CENTER_LEFT);
 
         value.getStyleClass().add("kpi-value");
-        value.setMinWidth(0);
+        value.setMinWidth(Region.USE_PREF_SIZE);
         caption.getStyleClass().add("kpi-caption");
         caption.setWrapText(true);
         footer.getStyleClass().add("kpi-footer");
 
         chip.setMinWidth(Region.USE_PREF_SIZE);
-        Region grow = new Region();
-        HBox.setHgrow(grow, Priority.ALWAYS);
-        HBox valueRow = new HBox(8, value, grow, chip);
+        // La cifra nunca se recorta: si no cabe junto al chip, el chip baja de línea.
+        javafx.scene.layout.FlowPane valueRow = new javafx.scene.layout.FlowPane(10, 4, value, chip);
         valueRow.setAlignment(Pos.CENTER_LEFT);
+        valueRow.setRowValignment(javafx.geometry.VPos.CENTER);
+        valueRow.setMinWidth(0);
+        valueRow.setPrefWrapLength(120);
 
         getChildren().addAll(head, valueRow, caption, footer);
         VBox.setVgrow(footer, Priority.ALWAYS);
         footer.setAlignment(Pos.BOTTOM_LEFT);
 
         animated.addListener((obs, o, n) -> value.setText(formatter.apply(n.doubleValue())));
+        hoverProperty().addListener((obs, was, now) -> lift(now));
         setAccessibleRole(AccessibleRole.TEXT);
         setAccessibleText(title);
     }
@@ -98,6 +101,29 @@ public class KpiCard extends VBox {
 
     public void setCaption(String text) {
         caption.setText(text);
+    }
+
+    /** Eleva ligeramente la tarjeta al pasar el ratón (sensación de profundidad). */
+    private void lift(boolean up) {
+        if (Motion.isReduced()) {
+            setTranslateY(0);
+            return;
+        }
+        new Timeline(new KeyFrame(Duration.millis(180),
+                new KeyValue(translateYProperty(), up ? -4 : 0, Motion.EASE_OUT))).play();
+    }
+
+    /** Oculta el chip de variación (sin base de comparación). */
+    public void clearChip() {
+        chip.setVisible(false);
+        chip.setManaged(false);
+    }
+
+    /** Chip con explicación emergente de qué se compara. */
+    public void setChip(String text, boolean positive, String explanation) {
+        setChip(text, positive);
+        javafx.scene.control.Tooltip.install(chip, new javafx.scene.control.Tooltip(explanation));
+        chip.setAccessibleText(text + ". " + explanation);
     }
 
     /** Chip de variación (p. ej. "+12 %"); {@code positive} decide el color. */
