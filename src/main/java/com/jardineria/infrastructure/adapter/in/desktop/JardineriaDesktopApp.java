@@ -4,6 +4,7 @@ import com.jardineria.infrastructure.adapter.in.desktop.shell.AppShell;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Icons;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Notifier;
 import com.jardineria.infrastructure.adapter.in.desktop.theme.ProfileStore;
+import com.jardineria.infrastructure.adapter.in.desktop.views.chat.ChatIdentity;
 import com.jardineria.infrastructure.adapter.in.desktop.theme.ThemeManager;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -46,6 +47,7 @@ public class JardineriaDesktopApp extends Application {
 
         ThemeManager.loadFonts();
         ThemeManager.useStore(ProfileStore.preferences());
+        ChatIdentity.usePreferences();
         AppShell shell = new AppShell(services);
 
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();

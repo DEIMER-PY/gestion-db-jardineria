@@ -12,6 +12,7 @@ import java.util.Objects;
  *
  * @param connection sonda de conectividad con la base de datos y su descripción
  * @param asistente  asistente conversacional (desactivado si no hay modelo configurado)
+ * @param mensajeria mensajería del equipo (canales, mensajes directos y no leídos)
  */
 public record DesktopServices(
         DashboardUseCase dashboard,
@@ -25,7 +26,8 @@ public record DesktopServices(
         OficinaUseCase oficinas,
         EmpleadoUseCase empleados,
         ConnectionProbe connection,
-        AsistenteUseCase asistente
+        AsistenteUseCase asistente,
+        MensajeriaUseCase mensajeria
 ) {
     public DesktopServices {
         Objects.requireNonNull(dashboard);
@@ -40,6 +42,16 @@ public record DesktopServices(
         Objects.requireNonNull(empleados);
         Objects.requireNonNull(connection);
         asistente = asistente == null ? SIN_ASISTENTE : asistente;
+        Objects.requireNonNull(mensajeria);
+    }
+
+    /** Servicios sin mensajería (pruebas que no la usan). */
+    public DesktopServices(DashboardUseCase dashboard, AnalyticsUseCase analytics, ClienteUseCase clientes,
+                           PedidoUseCase pedidos, DetallePedidoUseCase detalles, PagoUseCase pagos,
+                           ProductoUseCase productos, GamaProductoUseCase gamas, OficinaUseCase oficinas,
+                           EmpleadoUseCase empleados, ConnectionProbe connection, AsistenteUseCase asistente) {
+        this(dashboard, analytics, clientes, pedidos, detalles, pagos, productos, gamas, oficinas, empleados,
+                connection, asistente, SIN_MENSAJERIA);
     }
 
     /** Servicios sin asistente (pruebas y arranques sin modelo de lenguaje). */
@@ -48,8 +60,45 @@ public record DesktopServices(
                            ProductoUseCase productos, GamaProductoUseCase gamas, OficinaUseCase oficinas,
                            EmpleadoUseCase empleados, ConnectionProbe connection) {
         this(dashboard, analytics, clientes, pedidos, detalles, pagos, productos, gamas, oficinas, empleados,
-                connection, null);
+                connection, null, SIN_MENSAJERIA);
     }
+
+    /** Mensajería vacía para pruebas que no la usan: sin canales ni mensajes. */
+    public static final MensajeriaUseCase SIN_MENSAJERIA = new MensajeriaUseCase() {
+        @Override
+        public java.util.List<com.jardineria.domain.model.chat.Canal> canales(int codigoEmpleado) {
+            return java.util.List.of();
+        }
+
+        @Override
+        public com.jardineria.domain.model.chat.Canal canalDirecto(int codigoEmpleado, int otroEmpleado) {
+            throw new IllegalStateException("Mensajería no disponible");
+        }
+
+        @Override
+        public java.util.List<com.jardineria.domain.model.chat.Mensaje> historial(int idCanal, int limite) {
+            return java.util.List.of();
+        }
+
+        @Override
+        public com.jardineria.domain.model.chat.Mensaje enviar(int idCanal, int codigoEmpleado, String texto) {
+            throw new IllegalStateException("Mensajería no disponible");
+        }
+
+        @Override
+        public long ultimoMensaje() {
+            return 0;
+        }
+
+        @Override
+        public void marcarLeido(int idCanal, int codigoEmpleado, long ultimoMensaje) {
+        }
+
+        @Override
+        public Sondeo sondear(int codigoEmpleado, long despuesDe) {
+            return new Sondeo(java.util.List.of(), java.util.Map.of(), java.util.List.of());
+        }
+    };
 
     /** Asistente desactivado: la vista muestra cómo configurarlo. */
     public static final AsistenteUseCase SIN_ASISTENTE = new AsistenteUseCase() {

@@ -10,6 +10,7 @@ Guía técnica y visual de **Jardinería · Suite de gestión**. Cada documento 
 | [DASHBOARD.md](DASHBOARD.md) | Anatomía del panel general: widgets, fuentes de datos, cálculos, interacciones y accesibilidad |
 | [APARIENCIA.md](APARIENCIA.md) | Sistema de temas, acentos y perfiles (estilo terminal de Ubuntu), tokens de color y canalización de estilos |
 | [ASISTENTE.md](ASISTENTE.md) | Asistente con Groq: configuración, herramientas de solo lectura, recuperación de documentación (BM25) y pruebas |
+| [MENSAJES.md](MENSAJES.md) | Chat del equipo: canales, mensajes directos, menciones, consulta periódica y tablas nuevas |
 | [CAPTURAS.md](CAPTURAS.md) | Cómo se generan las imágenes de esta documentación y galería completa |
 
 ## Vista rápida
@@ -29,6 +30,7 @@ flowchart LR
     D --> P[DASHBOARD]
     D --> V[APARIENCIA]
     D --> AS[ASISTENTE]
+    D --> MS[MENSAJES]
     D --> C[CAPTURAS]
     A -. capas y puertos .-> P
     V -. tokens y temas .-> P

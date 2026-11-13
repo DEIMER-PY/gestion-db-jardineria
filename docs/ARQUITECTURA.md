@@ -14,7 +14,7 @@ flowchart TB
     end
     subgraph APP["Aplicación · application"]
         direction LR
-        PIN["port.in<br/>11 × *UseCase"]
+        PIN["port.in<br/>12 × *UseCase"]
         POUT["port.out<br/>ModeloLenguaje · Documentacion"]
         SVC["service<br/>*Service"]
         FAC["facade<br/>JardineriaBusinessFacade"]
@@ -29,7 +29,7 @@ flowchart TB
     end
     subgraph OUT["Adaptadores de salida · infrastructure.adapter.out"]
         direction LR
-        JDBC["persistence.jdbc<br/>9 repositorios"]
+        JDBC["persistence.jdbc<br/>10 repositorios"]
         MAP["persistence.mapper<br/>RowMapper"]
         LLM["llm<br/>Groq (HTTP + JSON)"]
         DOCS["docs<br/>documentación del classpath"]
@@ -212,7 +212,7 @@ flowchart TB
 
 ```
 src/main/java/com/jardineria
-├── domain/            model · model/analytics · repository · exception · pattern/{adapter,bridge,composite,decorator,flyweight,proxy}
+├── domain/            model · model/analytics · model/chat · repository · exception · pattern/{adapter,bridge,composite,decorator,flyweight,proxy}
 ├── application/       port/in · port/out · service (+ rag) · facade · dto
 └── infrastructure/
     ├── config/        ApplicationContext · DatabaseConfig · DatabaseConnectionManager
@@ -222,6 +222,7 @@ src/main/java/com/jardineria
         ├── cli/
         └── desktop/
             ├── views/assistant/  AsistenteView (conversación, enlaces #N)
+            ├── views/chat/  ChatView · ChatIdentity (mensajes del equipo)
             ├── shell/       AppShell · Sidebar · TopBar · CommandPalette · ShortcutsSheet
             ├── navigation/  Route · Navigator
             ├── theme/       ThemeManager · ThemePreset · Accent · AppearanceProfile · ProfileStore
