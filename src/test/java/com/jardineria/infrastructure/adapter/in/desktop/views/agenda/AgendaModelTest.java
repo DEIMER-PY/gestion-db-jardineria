@@ -59,6 +59,17 @@ class AgendaModelTest {
     }
 
     @Test
+    @DisplayName("Manda el estado: un pendiente con fecha de entrega sigue abierto y no cuenta como entregado")
+    void mandaElEstado() {
+        Pedido incoherente = new Pedido(7, D.minusDays(9), D.minusDays(3), D.minusDays(1), "Pendiente", null, 1);
+        Pago cobro = new Pago(1, "PayPal", "ak-std-000009", D, BigDecimal.TEN); // fija la referencia en D
+        AgendaModel m = AgendaModel.build(List.of(incoherente), List.of(cobro), CLIENTES::get, D);
+        assertThat(m.on(D.minusDays(1))).isEmpty();
+        assertThat(m.count(D.minusDays(3), AgendaModel.Kind.PREVISTA)).isEqualTo(1);
+        assertThat(m.overdue()).extracting(o -> o.pedido().getCodigoPedido()).containsExactly(7);
+    }
+
+    @Test
     @DisplayName("Solo los pedidos abiertos con fecha prevista superada están retrasados, el más antiguo primero")
     void retrasados() {
         assertThat(model().overdue()).extracting(o -> o.pedido().getCodigoPedido(), AgendaModel.Overdue::dias)

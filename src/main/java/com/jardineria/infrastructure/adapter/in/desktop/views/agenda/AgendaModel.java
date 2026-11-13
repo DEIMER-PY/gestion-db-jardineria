@@ -86,7 +86,7 @@ public final class AgendaModel {
                 add(byDay, new Entry(p.getFechaEsperada(), Kind.PREVISTA, "Pedido #" + p.getCodigoPedido(), who, null,
                         "#" + p.getCodigoPedido()));
             }
-            if (p.getFechaEntrega() != null) {
+            if (isDelivered(p)) {
                 long tarde = p.getFechaEsperada() == null ? 0 : ChronoUnit.DAYS.between(p.getFechaEsperada(), p.getFechaEntrega());
                 add(byDay, new Entry(p.getFechaEntrega(), Kind.ENTREGADO, "Pedido #" + p.getCodigoPedido(),
                         who + (tarde > 0 ? " · " + tarde + (tarde == 1 ? " día tarde" : " días tarde") : " · a tiempo"),
@@ -117,10 +117,18 @@ public final class AgendaModel {
         return new AgendaModel(byDay, overdue, List.copyOf(pedidos), reference);
     }
 
-    /** Abierto = ni entregado ni rechazado. */
+    /**
+     * Abierto = ni entregado ni rechazado. Manda el estado, no la fecha: los datos de ejemplo
+     * tienen pedidos pendientes o rechazados con fecha de entrega.
+     */
     static boolean isOpen(Pedido p) {
         String e = Formatters.fold(p.getEstado());
-        return p.getFechaEntrega() == null && !e.startsWith("entregado") && !e.startsWith("rechazado");
+        return !e.startsWith("entregado") && !e.startsWith("rechazado");
+    }
+
+    /** Entregado con fecha de entrega registrada. */
+    static boolean isDelivered(Pedido p) {
+        return p.getFechaEntrega() != null && Formatters.fold(p.getEstado()).startsWith("entregado");
     }
 
     private static void add(Map<LocalDate, List<Entry>> byDay, Entry e) {
@@ -154,7 +162,7 @@ public final class AgendaModel {
                 .filter(e -> YearMonth.from(e.getKey()).equals(month))
                 .flatMap(e -> e.getValue().stream()).toList();
         List<Pedido> entregados = pedidos.stream()
-                .filter(p -> p.getFechaEntrega() != null && p.getFechaEsperada() != null
+                .filter(p -> isDelivered(p) && p.getFechaEsperada() != null
                         && YearMonth.from(p.getFechaEntrega()).equals(month))
                 .toList();
         Double puntualidad = entregados.isEmpty() ? null
