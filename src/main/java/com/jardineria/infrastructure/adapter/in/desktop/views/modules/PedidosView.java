@@ -61,6 +61,7 @@ public class PedidosView extends CrudModuleView<Pedido> {
     private volatile Map<String, Producto> productoPorCodigo = Map.of();
 
     private final VBox detail = new VBox(16);
+    private final ToggleGroup estados;
     private int detailRequest;
 
     public PedidosView(PedidoUseCase pedidos, DetallePedidoUseCase detalles, ClienteUseCase clientes, ProductoUseCase productos) {
@@ -70,7 +71,7 @@ public class PedidosView extends CrudModuleView<Pedido> {
         this.clientes = clientes;
         this.productos = productos;
 
-        ToggleGroup estados = new ToggleGroup();
+        estados = new ToggleGroup();
         HBox segmented = new HBox();
         segmented.getStyleClass().add("segmented");
         for (String label : List.of("Todos", "Pendiente", "Entregado", "Rechazado")) {
@@ -89,6 +90,20 @@ public class PedidosView extends CrudModuleView<Pedido> {
             setExtraFilter(p -> estado == null || estado.equalsIgnoreCase(p.getEstado()));
         });
         addFilter(segmented);
+    }
+
+    /** Un estado ("Pendiente", "Entregado"…) activa el filtro segmentado; el resto busca en la tabla. */
+    @Override
+    public void reveal(String query) {
+        for (javafx.scene.control.Toggle t : estados.getToggles()) {
+            if (t.getUserData() != null && Formatters.fold(t.getUserData().toString()).equals(Formatters.fold(query))) {
+                estados.selectToggle(t);
+                super.reveal("");
+                return;
+            }
+        }
+        estados.selectToggle(estados.getToggles().get(0));
+        super.reveal(query);
     }
 
     private String cliente(Integer codigo) {

@@ -22,6 +22,7 @@ import com.jardineria.infrastructure.adapter.in.desktop.components.StatusBadge;
 import com.jardineria.infrastructure.adapter.in.desktop.components.Treemap;
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Icons;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Interactions;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Motion;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Series;
 import com.jardineria.infrastructure.adapter.in.desktop.views.BaseView;
@@ -56,8 +57,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalDouble;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.DoubleFunction;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 
@@ -70,13 +72,17 @@ import com.jardineria.infrastructure.adapter.in.desktop.support.Keys;
 public class DashboardView extends BaseView {
     private static final DateTimeFormatter LONG_DATE =
             DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM 'de' yyyy", Formatters.ES);
+    /** Segmento del donut (plural) → valor del estado en la base de datos. */
+    private static final Map<String, String> ESTADO_POR_SEGMENTO = Map.of(
+            "Entregados", "Entregado", "Pendientes", "Pendiente", "Rechazados", "Rechazado");
     private static final DateTimeFormatter HOUR = DateTimeFormatter.ofPattern("HH:mm", Formatters.ES);
     private static final int VENTANA_TENDENCIA = 3;
     private static final String TENDENCIA_AYUDA =
             "Últimos " + VENTANA_TENDENCIA + " meses con datos frente a los " + VENTANA_TENDENCIA + " anteriores";
 
     private final DesktopServices services;
-    private final Consumer<Route> navigate;
+    /** Navegación con contexto opcional: ruta y elemento a mostrar ({@code null} = ninguno). */
+    private final BiConsumer<Route, String> navigate;
 
     private final Label greeting = new Label();
     private final Label summary = new Label();
@@ -100,13 +106,13 @@ public class DashboardView extends BaseView {
     private final VBox stockList = new VBox(12);
     private final VBox activity = new VBox(4);
 
-    public DashboardView(DesktopServices services, Consumer<Route> navigate) {
+    public DashboardView(DesktopServices services, BiConsumer<Route, String> navigate) {
         super(Route.DASHBOARD);
         this.services = services;
         this.navigate = navigate;
 
         Button export = new Button("Ver métricas", Icons.of(Feather.BAR_CHART_2, 15));
-        export.setOnAction(e -> navigate.accept(Route.ANALYTICS));
+        export.setOnAction(e -> navigate.accept(Route.ANALYTICS, null));
         Button refresh = new Button("Actualizar", Icons.of(Feather.REFRESH_CW, 15));
         refresh.getStyleClass().add("accent");
         refresh.setTooltip(new Tooltip("Vuelve a consultar MySQL (F5)"));
@@ -116,11 +122,14 @@ public class DashboardView extends BaseView {
 
     @Override
     protected Node buildContent() {
-        kpiPedidos.setOnOpen(() -> navigate.accept(Route.PEDIDOS));
-        kpiVentas.setOnOpen(() -> navigate.accept(Route.ANALYTICS));
-        kpiCobrado.setOnOpen(() -> navigate.accept(Route.PAGOS));
-        kpiClientes.setOnOpen(() -> navigate.accept(Route.CLIENTES));
-        kpiStock.setOnOpen(() -> navigate.accept(Route.PRODUCTOS));
+        kpiPedidos.setOnOpen(() -> navigate.accept(Route.PEDIDOS, null));
+        kpiVentas.setOnOpen(() -> navigate.accept(Route.ANALYTICS, null));
+        kpiCobrado.setOnOpen(() -> navigate.accept(Route.PAGOS, null));
+        kpiClientes.setOnOpen(() -> navigate.accept(Route.CLIENTES, null));
+        kpiStock.setOnOpen(() -> navigate.accept(Route.PRODUCTOS, null));
+        statusDonut.setOnOpen(slice -> navigate.accept(Route.PEDIDOS, ESTADO_POR_SEGMENTO.get(slice.label())),
+                "Ver estos pedidos");
+        topClientes.setOnOpen(item -> navigate.accept(Route.CLIENTES, item.label()), "Abrir la ficha del cliente");
 
         ResponsiveGrid kpis = new ResponsiveGrid(205, 5, 16);
         for (KpiCard card : List.of(kpiPedidos, kpiVentas, kpiCobrado, kpiClientes, kpiStock)) {
@@ -186,13 +195,13 @@ public class DashboardView extends BaseView {
 
         Button pedidos = new Button("Gestionar pedidos", Icons.of(Feather.SHOPPING_BAG, 15));
         pedidos.getStyleClass().add("accent");
-        pedidos.setOnAction(e -> navigate.accept(Route.PEDIDOS));
+        pedidos.setOnAction(e -> navigate.accept(Route.PEDIDOS, null));
         Button clientes = new Button("Cartera de clientes", Icons.of(Feather.USERS, 15));
-        clientes.setOnAction(e -> navigate.accept(Route.CLIENTES));
+        clientes.setOnAction(e -> navigate.accept(Route.CLIENTES, null));
         Button ajustes = new Button("Personalizar", Icons.of(Feather.SLIDERS, 15));
         ajustes.getStyleClass().add("flat");
         ajustes.setTooltip(new Tooltip(Keys.text("Tema, color de acento y perfiles (Ctrl+,)")));
-        ajustes.setOnAction(e -> navigate.accept(Route.AJUSTES));
+        ajustes.setOnAction(e -> navigate.accept(Route.AJUSTES, null));
         HBox cta = new HBox(10, pedidos, clientes, ajustes);
 
         VBox left = new VBox(6, meta, greeting, summary, cta);
@@ -224,7 +233,7 @@ public class DashboardView extends BaseView {
         b.getStyleClass().addAll("flat", "link-button");
         b.setContentDisplay(ContentDisplay.RIGHT);
         b.setMinWidth(Region.USE_PREF_SIZE);
-        b.setOnAction(e -> navigate.accept(route));
+        b.setOnAction(e -> navigate.accept(route, null));
         return b;
     }
 
@@ -400,6 +409,7 @@ public class DashboardView extends BaseView {
             return;
         }
         BarList bars = new BarList();
+        bars.setOnOpen(item -> navigate.accept(Route.PRODUCTOS, item.detail()), "Abrir el producto en el catálogo");
         bars.setItems(productos.stream().map(p -> new BarList.Item(
                         p.getNombre(), p.getCodigoProducto(),
                         p.getCantidadEnStock(), p.getCantidadEnStock() + " uds",
@@ -444,18 +454,12 @@ public class DashboardView extends BaseView {
             badge.setMinWidth(Region.USE_PREF_SIZE);
             HBox row = new HBox(12, dot, text, badge);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.getStyleClass().addAll("timeline-row", "interactive-row");
-            row.setOnMouseClicked(e -> navigate.accept(Route.PEDIDOS));
-            row.setFocusTraversable(true);
-            row.setAccessibleRole(javafx.scene.AccessibleRole.BUTTON);
+            row.getStyleClass().add("timeline-row");
+            String codigo = "#" + p.getCodigoPedido();
+            Interactions.activatable(row, () -> navigate.accept(Route.PEDIDOS, codigo));
             row.setAccessibleText(title.getText() + ", " + detail.getText() + ", " + p.getEstado()
-                    + ". Abrir el módulo de pedidos");
-            row.setOnKeyPressed(e -> {
-                if (e.getCode() == javafx.scene.input.KeyCode.ENTER || e.getCode() == javafx.scene.input.KeyCode.SPACE) {
-                    navigate.accept(Route.PEDIDOS);
-                }
-            });
-            Tooltip.install(row, new Tooltip("Abrir el módulo de pedidos"));
+                    + ". Abrir el pedido");
+            Tooltip.install(row, new Tooltip("Abrir el pedido " + codigo));
             activity.getChildren().add(row);
         }
         if (activity.getChildren().isEmpty()) {

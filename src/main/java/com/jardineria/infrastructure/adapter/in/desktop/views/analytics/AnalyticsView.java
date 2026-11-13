@@ -3,6 +3,7 @@ package com.jardineria.infrastructure.adapter.in.desktop.views.analytics;
 import com.jardineria.application.port.in.AnalyticsUseCase;
 import com.jardineria.domain.model.analytics.CategoryMetric;
 import com.jardineria.infrastructure.adapter.in.common.Formatters;
+import com.jardineria.infrastructure.adapter.in.desktop.components.AreaTrendChart;
 import com.jardineria.infrastructure.adapter.in.desktop.components.BarList;
 import com.jardineria.infrastructure.adapter.in.desktop.components.DonutChart;
 import com.jardineria.infrastructure.adapter.in.desktop.components.EmptyState;
@@ -18,15 +19,9 @@ import com.jardineria.infrastructure.adapter.in.desktop.support.Motion;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Notifier;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Series;
 import com.jardineria.infrastructure.adapter.in.desktop.views.BaseView;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -43,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
@@ -65,18 +61,19 @@ public class AnalyticsView extends BaseView {
 
     private final OrdersByStatusChart ordersChart = new OrdersByStatusChart();
     private final Panel ordersPanel = new Panel("Pedidos por mes y estado", "", ordersChart);
-    private final CategoryAxis cashX = new CategoryAxis();
-    private final NumberAxis cashY = new NumberAxis();
-    private final BarChart<String, Number> cashChart = new BarChart<>(cashX, cashY);
+    private final AreaTrendChart cashChart = new AreaTrendChart();
     private final StackPane cashHost = new StackPane(cashChart);
     private final BarList gamas = new BarList();
     private final BarList paises = new BarList();
     private final BarList clientes = new BarList();
     private final DonutChart formasPago = new DonutChart();
 
-    public AnalyticsView(AnalyticsUseCase analytics) {
+    public AnalyticsView(AnalyticsUseCase analytics, BiConsumer<Route, String> navigate) {
         super(Route.ANALYTICS);
         this.analytics = analytics;
+        gamas.setOnOpen(item -> navigate.accept(Route.PRODUCTOS, item.label()), "Ver los productos de la gama");
+        paises.setOnOpen(item -> navigate.accept(Route.CLIENTES, item.label()), "Ver los clientes de este país");
+        clientes.setOnOpen(item -> navigate.accept(Route.CLIENTES, item.label()), "Abrir la ficha del cliente");
 
         yearFilter.getStyleClass().add("year-filter");
         yearFilter.setPromptText("Todos los años");
@@ -122,36 +119,14 @@ public class AnalyticsView extends BaseView {
             kpis.add(card, 1);
         }
 
-        cashChart.setAnimated(false);
-        cashChart.setLegendVisible(false);
-        cashChart.setCategoryGap(18);
-        cashChart.setBarGap(3);
-        cashChart.setVerticalGridLinesVisible(false);
-        cashChart.getStyleClass().add("jd-chart");
         cashChart.setMinHeight(240);
-        cashChart.setPrefHeight(280);
-        cashX.setTickMarkVisible(false);
-        cashY.setTickMarkVisible(false);
-        cashY.setMinorTickVisible(false);
-        cashY.setTickLabelFormatter(new StringConverter<>() {
-            @Override
-            public String toString(Number n) {
-                return Formatters.compactCurrency(BigDecimal.valueOf(n.doubleValue()));
-            }
-
-            @Override
-            public Number fromString(String s) {
-                return 0;
-            }
-        });
-        VBox cash = new VBox(10, legend(), cashHost);
 
         ResponsiveGrid row1 = new ResponsiveGrid(360, 3, 16);
         row1.add(ordersPanel, 2);
         row1.add(new Panel("Formas de pago", "Importe cobrado por medio (histórico)", formasPago), 1);
 
         ResponsiveGrid row2 = new ResponsiveGrid(360, 3, 16);
-        row2.add(new Panel("Ventas frente a cobros", "Importe facturado en líneas y pagos recibidos por mes", cash), 2);
+        row2.add(new Panel("Ventas frente a cobros", "Importe facturado en líneas y pagos recibidos por mes", cashHost), 2);
         row2.add(new Panel("Ventas por gama", "Unidades e importe vendidos (histórico)", gamas), 1);
 
         ResponsiveGrid row3 = new ResponsiveGrid(360, 2, 16);
@@ -166,22 +141,6 @@ public class AnalyticsView extends BaseView {
             delay += 70;
         }
         return body;
-    }
-
-    private Node legend() {
-        HBox legend = new HBox(18);
-        legend.getChildren().addAll(legendItem("Ventas", "tone-lime"), legendItem("Cobros", "tone-sky"));
-        return legend;
-    }
-
-    private static Node legendItem(String text, String tone) {
-        Region swatch = new Region();
-        swatch.getStyleClass().addAll("legend-swatch", tone);
-        Label lbl = new Label(text);
-        lbl.getStyleClass().add("legend-label");
-        HBox item = new HBox(8, swatch, lbl);
-        item.setAlignment(Pos.CENTER_LEFT);
-        return item;
     }
 
     @Override
@@ -264,29 +223,12 @@ public class AnalyticsView extends BaseView {
             return;
         }
         cashHost.getChildren().setAll(cashChart);
-        XYChart.Series<String, Number> ventas = new XYChart.Series<>();
-        ventas.setName("Ventas");
-        XYChart.Series<String, Number> cobros = new XYChart.Series<>();
-        cobros.setName("Cobros");
-        data.forEach((ym, v) -> {
-            ventas.getData().add(new XYChart.Data<>(Formatters.month(ym), v[0]));
-            cobros.getData().add(new XYChart.Data<>(Formatters.month(ym), v[1]));
-        });
-        cashX.getCategories().setAll(data.keySet().stream().map(Formatters::month).toList());
-        cashChart.getData().setAll(List.of(ventas, cobros));
-        // BarChart reasigna las clases de cada barra al crearla: el tono va después.
-        tint(ventas, "tone-lime");
-        tint(cobros, "tone-sky");
-    }
-
-    private static void tint(XYChart.Series<String, Number> series, String tone) {
-        for (XYChart.Data<String, Number> d : series.getData()) {
-            if (d.getNode() != null) {
-                d.getNode().getStyleClass().addAll("status-bar", tone);
-                Tooltip.install(d.getNode(), new Tooltip(series.getName() + " · " + d.getXValue() + ": "
-                        + Formatters.currency(BigDecimal.valueOf(d.getYValue().doubleValue()))));
-            }
-        }
+        List<String> meses = data.keySet().stream().map(Formatters::month).toList();
+        cashChart.setData(meses,
+                List.of(new AreaTrendChart.Serie("Ventas", "tone-accent", data.values().stream().mapToDouble(v -> v[0]).toArray()),
+                        new AreaTrendChart.Serie("Cobros", "tone-sky", data.values().stream().mapToDouble(v -> v[1]).toArray())),
+                v -> Formatters.compactCurrency(BigDecimal.valueOf(v)),
+                v -> Formatters.currency(BigDecimal.valueOf(v)));
     }
 
     private static Sparkline sparkline(Map<YearMonth, double[]> data, int index) {

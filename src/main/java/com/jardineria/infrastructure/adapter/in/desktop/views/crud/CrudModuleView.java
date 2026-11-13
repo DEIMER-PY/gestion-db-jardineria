@@ -71,6 +71,8 @@ public abstract class CrudModuleView<T> extends BaseView {
     private final ObservableList<T> master = FXCollections.observableArrayList();
     private final FilteredList<T> filtered = new FilteredList<>(master);
     private final CustomTextField search = new CustomTextField();
+    /** Búsqueda pedida desde otra vista; se resuelve tras la siguiente carga. */
+    private String pendingReveal;
     private final Label count = new Label();
     private final HBox filters = new HBox(10);
     private final VBox summaryHost = new VBox();
@@ -286,7 +288,43 @@ public abstract class CrudModuleView<T> extends BaseView {
             summaryHost.setManaged(summary != null);
             reselect(selected);
             afterLoad(items);
+            if (pendingReveal != null) {
+                selectRevealed(pendingReveal);
+                pendingReveal = null;
+            }
         });
+    }
+
+    /** Filtra por {@code query} y selecciona la mejor coincidencia (vacío limpia la búsqueda). */
+    @Override
+    public void reveal(String query) {
+        String q = query == null ? "" : query.trim();
+        search.setText(q);
+        if (q.isEmpty()) {
+            pendingReveal = null;
+            return;
+        }
+        pendingReveal = q;
+        if (!master.isEmpty()) {
+            selectRevealed(q);
+        }
+    }
+
+    /**
+     * Prefiere el elemento cuyo texto buscable empieza por la consulta como palabra completa
+     * ({@code #30} no debe elegir el pedido 300), luego el que empieza por ella y, si no, el primero.
+     */
+    private void selectRevealed(String query) {
+        String q = Formatters.fold(query);
+        List<T> visible = table.getItems();
+        if (visible.isEmpty()) {
+            return;
+        }
+        T best = visible.stream().filter(t -> Formatters.fold(searchableText(t)).startsWith(q + " ")).findFirst()
+                .or(() -> visible.stream().filter(t -> Formatters.fold(searchableText(t)).startsWith(q)).findFirst())
+                .orElse(visible.get(0));
+        table.getSelectionModel().select(best);
+        table.scrollTo(best);
     }
 
     /** Gancho tras cada recarga (p. ej. para rellenar opciones de filtros). */

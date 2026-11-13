@@ -18,6 +18,14 @@ public interface View {
     /** Vuelve a consultar los datos (F5). */
     void refresh();
 
+    /**
+     * Muestra un elemento concreto al llegar desde otra pantalla (p. ej. un clic en el
+     * dashboard): las vistas de módulo filtran por el texto y seleccionan la coincidencia.
+     * Por defecto no hace nada.
+     */
+    default void reveal(String query) {
+    }
+
     /** Acción "Nuevo" (Ctrl+N); por defecto no hace nada. */
     default void createNew() {
     }

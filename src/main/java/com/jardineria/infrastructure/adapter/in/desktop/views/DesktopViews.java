@@ -23,7 +23,7 @@ public final class DesktopViews {
 
     public static void registerAll(Navigator navigator, DesktopServices services) {
         navigator.register(Route.DASHBOARD, () -> new DashboardView(services, navigator::navigate));
-        navigator.register(Route.ANALYTICS, () -> new AnalyticsView(services.analytics()));
+        navigator.register(Route.ANALYTICS, () -> new AnalyticsView(services.analytics(), navigator::navigate));
         navigator.register(Route.CLIENTES, () -> new ClientesView(services.clientes(), services.empleados(),
                 services.analytics(), services.pedidos(), services.pagos()));
         navigator.register(Route.PEDIDOS, () -> new PedidosView(services.pedidos(), services.detalles(),
