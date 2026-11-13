@@ -11,6 +11,7 @@ import com.jardineria.domain.model.Pago;
 import com.jardineria.domain.model.Pedido;
 import com.jardineria.domain.model.analytics.ClienteFinancialSummary;
 import com.jardineria.infrastructure.adapter.in.common.Formatters;
+import com.jardineria.infrastructure.adapter.in.desktop.components.Avatar;
 import com.jardineria.infrastructure.adapter.in.desktop.components.EmptyState;
 import com.jardineria.infrastructure.adapter.in.desktop.components.KpiCard;
 import com.jardineria.infrastructure.adapter.in.desktop.components.StatStrip;
@@ -39,7 +40,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.kordamp.ikonli.Ikon;
@@ -61,8 +61,6 @@ import java.util.stream.Collectors;
  * todo cargado en una única consulta en segundo plano por selección.
  */
 public class ClientesView extends CrudModuleView<Cliente> {
-    private static final String[] AVATAR_TONES = {"tone-jade", "tone-sky", "tone-lilac", "tone-amber", "tone-coral", "tone-lime"};
-
     private final ClienteUseCase clientes;
     private final EmpleadoUseCase empleados;
     private final AnalyticsUseCase analytics;
@@ -129,7 +127,7 @@ public class ClientesView extends CrudModuleView<Cliente> {
     protected void configureColumns() {
         // Contacto, teléfono y dirección se ven en la ficha lateral: la tabla queda legible
         numberColumn("Cód.", Cliente::getCodigoCliente, 64).getStyleClass().add("col-code");
-        textColumn("Cliente", Cliente::getNombreCliente, 200).getStyleClass().add("col-strong");
+        personColumn("Cliente", Cliente::getNombreCliente, Cliente::getCodigoCliente, 230);
         textColumn("Ciudad", Cliente::getCiudad, 120);
         textColumn("País", c -> Formatters.display(c.getPais()), 120);
         textColumn("Representante", c -> representante(c.getCodigoEmpleadoRepVentas()), 160);
@@ -225,10 +223,7 @@ public class ClientesView extends CrudModuleView<Cliente> {
     }
 
     private Node identity(Cliente c) {
-        Label initials = new Label(initials(c.getNombreCliente()));
-        initials.getStyleClass().add("avatar-text");
-        StackPane avatar = new StackPane(initials);
-        avatar.getStyleClass().addAll("avatar", AVATAR_TONES[Math.floorMod(c.getCodigoCliente(), AVATAR_TONES.length)]);
+        Avatar avatar = new Avatar(c.getNombreCliente(), c.getCodigoCliente(), Avatar.Size.LARGE);
         Label name = new Label(c.getNombreCliente());
         name.getStyleClass().add("detail-title");
         name.setWrapText(true);
@@ -386,23 +381,6 @@ public class ClientesView extends CrudModuleView<Cliente> {
         l.getStyleClass().add("text-subtle");
         l.setWrapText(true);
         return l;
-    }
-
-    static String initials(String name) {
-        if (name == null || name.isBlank()) {
-            return "?";
-        }
-        String[] parts = name.trim().split("[\\s.\\-]+");
-        StringBuilder sb = new StringBuilder();
-        for (String p : parts) {
-            if (!p.isEmpty() && Character.isLetterOrDigit(p.charAt(0))) {
-                sb.append(Character.toUpperCase(p.charAt(0)));
-            }
-            if (sb.length() == 2) {
-                break;
-            }
-        }
-        return sb.isEmpty() ? "?" : sb.toString();
     }
 
     // ------------------------------------------------------------- formulario

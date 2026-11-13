@@ -2,6 +2,7 @@ package com.jardineria.infrastructure.adapter.in.desktop.views.crud;
 
 import atlantafx.base.controls.CustomTextField;
 import com.jardineria.infrastructure.adapter.in.common.Formatters;
+import com.jardineria.infrastructure.adapter.in.desktop.components.Avatar;
 import com.jardineria.infrastructure.adapter.in.desktop.components.EmptyState;
 import com.jardineria.infrastructure.adapter.in.desktop.components.StatusBadge;
 import com.jardineria.infrastructure.adapter.in.desktop.navigation.Route;
@@ -451,6 +452,33 @@ public abstract class CrudModuleView<T> extends BaseView {
                 if (!empty && (item == null || item.isBlank())) {
                     getStyleClass().add("cell-muted");
                 }
+            }
+        });
+        return col;
+    }
+
+    /**
+     * Columna de persona o empresa: avatar con iniciales y nombre en negrita. El tono del
+     * avatar sale de {@code seed}, así coincide con el de la ficha lateral.
+     */
+    protected TableColumn<T, T> personColumn(String title, Function<T, String> name, Function<T, Integer> seed, double width) {
+        TableColumn<T, T> col = column(title, Function.identity(), width);
+        col.setComparator(Comparator.comparing(t -> Formatters.fold(name.apply(t))));
+        col.getStyleClass().add("col-strong");
+        col.setCellFactory(c -> new TableCell<>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                }
+                String n = name.apply(item);
+                Integer s = seed.apply(item);
+                setText(Formatters.orDash(n));
+                setGraphic(new Avatar(n, s == null ? 0 : s, Avatar.Size.SMALL));
+                setGraphicTextGap(10);
             }
         });
         return col;
