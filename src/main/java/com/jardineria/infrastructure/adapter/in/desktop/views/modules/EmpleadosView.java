@@ -114,7 +114,7 @@ public class EmpleadosView extends CrudModuleView<Empleado> {
                 || (e.getPuesto() != null && CrudModuleView.normalize(e.getPuesto()).contains("director"))).count();
         long conEquipo = all.stream().map(Empleado::getCodigoJefe).filter(Objects::nonNull).distinct().count();
         return new StatStrip()
-                .stat(Feather.USERS, Formatters.integer(all.size()), "personas en plantilla", KpiCard.Tone.JADE)
+                .stat(Feather.USERS, Formatters.integer(all.size()), "personas en plantilla", KpiCard.Tone.ACCENT)
                 .stat(Feather.BRIEFCASE, Formatters.integer(representantes), "representantes de ventas", KpiCard.Tone.SKY)
                 .stat(Feather.AWARD, Formatters.integer(directivos), "dirección y gerencia", KpiCard.Tone.AMBER)
                 .stat(Feather.GIT_MERGE, Formatters.integer(conEquipo), "responsables con equipo", KpiCard.Tone.LILAC);

@@ -105,7 +105,7 @@ public class PagosView extends CrudModuleView<Pago> {
                 .max(Comparator.naturalOrder()).map(Formatters::date).orElse("—");
         return new StatStrip()
                 .stat(Feather.CREDIT_CARD, Formatters.compactCurrency(total), "cobrado en total", KpiCard.Tone.SKY)
-                .stat(Feather.HASH, Formatters.integer(all.size()), "pagos registrados", KpiCard.Tone.JADE)
+                .stat(Feather.HASH, Formatters.integer(all.size()), "pagos registrados", KpiCard.Tone.ACCENT)
                 .stat(Feather.DIVIDE, Formatters.currency(medio), "importe medio", KpiCard.Tone.LILAC)
                 .stat(Feather.USERS, Formatters.integer(pagadores), "clientes con pagos", KpiCard.Tone.AMBER)
                 .stat(Feather.CALENDAR, ultimo, "último cobro", KpiCard.Tone.LIME);

@@ -1,0 +1,76 @@
+/*
+ * Tema "Medianoche" (oscuro azulado).
+ * Capas azul marino con más separación entre lienzo y tarjetas.
+ * Contraste del texto sobre -jd-card (#10172B): 14,6:1 / 7,6:1 / 4,7:1.
+ */
+.root {
+    -color-bg-default: #0E1428;
+    -color-bg-subtle: #141C35;
+    -color-bg-overlay: #162039;
+    -color-bg-inset: #080C1A;
+
+    -color-fg-default: #E7EBF7;
+    -color-fg-muted: #A5AFCB;
+    -color-fg-subtle: #8090B4;
+    -color-fg-emphasis: #FFFFFF;
+
+    -color-border-default: #27345A;
+    -color-border-muted: #1D2846;
+    -color-border-subtle: #18213B;
+
+    -color-success-fg: #4ADE9A;
+    -color-success-emphasis: #1FAF6E;
+    -color-success-muted: rgba(74, 222, 154, 0.40);
+    -color-success-subtle: rgba(74, 222, 154, 0.12);
+
+    -color-warning-fg: #F7C766;
+    -color-warning-emphasis: #C98A12;
+    -color-warning-muted: rgba(247, 199, 102, 0.40);
+    -color-warning-subtle: rgba(247, 199, 102, 0.12);
+
+    -color-danger-fg: #FF8F82;
+    -color-danger-emphasis: #DC4A37;
+    -color-danger-muted: rgba(255, 143, 130, 0.40);
+    -color-danger-subtle: rgba(255, 143, 130, 0.12);
+
+    -color-chart-1: #45DB96;
+    -color-chart-2: #BEE57A;
+    -color-chart-3: #F7C766;
+    -color-chart-4: #6CC4FF;
+    -color-chart-5: #FF8F82;
+    -color-chart-6: #BCA6FF;
+    -color-chart-7: #67E6D8;
+    -color-chart-8: #F5A3CE;
+    -color-chart-1-alpha20: rgba(69, 219, 150, 0.18);
+    -color-chart-2-alpha20: rgba(190, 229, 122, 0.18);
+    -color-chart-3-alpha20: rgba(247, 199, 102, 0.18);
+    -color-chart-4-alpha20: rgba(108, 196, 255, 0.18);
+    -color-chart-5-alpha20: rgba(255, 143, 130, 0.18);
+    -color-chart-6-alpha20: rgba(188, 166, 255, 0.18);
+    -color-chart-1-alpha70: rgba(69, 219, 150, 0.70);
+    -color-chart-2-alpha70: rgba(190, 229, 122, 0.70);
+    -color-chart-3-alpha70: rgba(247, 199, 102, 0.70);
+    -color-chart-4-alpha70: rgba(108, 196, 255, 0.70);
+    -color-chart-5-alpha70: rgba(255, 143, 130, 0.70);
+    -color-chart-6-alpha70: rgba(188, 166, 255, 0.70);
+
+    -color-button-bg: #141C33;
+    -color-button-border: #28365C;
+    -color-button-bg-hover: #19233F;
+    -color-button-border-hover: #34446F;
+    -color-input-bg: #0C1226;
+    -color-input-border: #28365C;
+    -color-cell-bg: transparent;
+    -color-cell-bg-odd: rgba(160, 180, 255, 0.022);
+    -color-modal-pane-overlay: rgba(2, 4, 14, 0.70);
+    -color-shadow-default: rgba(0, 0, 12, 0.60);
+
+    -jd-canvas: #090D1C;
+    -jd-sidebar: #0B1022;
+    -jd-card: #10172B;
+    -jd-card-hover: #141C34;
+    -jd-card-border: rgba(150, 175, 255, 0.085);
+    -jd-track: rgba(160, 180, 255, 0.09);
+    -jd-shadow: rgba(0, 0, 14, 0.50);
+    -jd-glass: rgba(16, 23, 43, 0.86);
+}

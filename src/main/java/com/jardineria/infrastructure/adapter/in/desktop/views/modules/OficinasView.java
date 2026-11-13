@@ -57,7 +57,7 @@ public class OficinasView extends CrudModuleView<Oficina> {
                 .flatMap(e -> all.stream().filter(o -> o.getCodigoOficina().equals(e.getKey())).findFirst())
                 .map(Oficina::getCiudad).orElse("—");
         return new StatStrip()
-                .stat(Feather.MAP_PIN, Formatters.integer(all.size()), "oficinas activas", KpiCard.Tone.JADE)
+                .stat(Feather.MAP_PIN, Formatters.integer(all.size()), "oficinas activas", KpiCard.Tone.ACCENT)
                 .stat(Feather.GLOBE, Formatters.integer(paises), "países con presencia", KpiCard.Tone.SKY)
                 .stat(Feather.USERS, Formatters.integer(total), "empleados asignados", KpiCard.Tone.LILAC)
                 .stat(Feather.AWARD, mayor, "oficina con más plantilla", KpiCard.Tone.AMBER);

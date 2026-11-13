@@ -31,7 +31,12 @@
     -fx-background-color: -jd-canvas;
 }
 .content-host {
-    -fx-background-color: -jd-canvas, -jd-ambient;
+    /* Resplandor ambiental con el color de acento (se desactiva con .ambient-off) */
+    -fx-background-color: -jd-canvas,
+        radial-gradient(center 88% -10%, radius 62%, -jd-glow 0%, transparent 100%);
+}
+.ambient-off .content-host {
+    -fx-background-color: -jd-canvas;
 }
 
 /* ---------- Menú lateral ---------- */
@@ -316,7 +321,7 @@
     -fx-background-color: -jd-card-hover;
     -fx-border-color: -jd-card-border-hover;
 }
-.interactive:focused {
+.interactive:focus-visible {
     -fx-border-color: -color-accent-fg;
 }
 
@@ -542,6 +547,7 @@
 .tone-coral { -jd-tone: -color-chart-5; -jd-tone-soft: -color-chart-5-alpha20; }
 .tone-lilac { -jd-tone: -color-chart-6; -jd-tone-soft: -color-chart-6-alpha20; }
 .tone-neutral { -jd-tone: -color-fg-muted; -jd-tone-soft: -color-bg-subtle; }
+.tone-accent { -jd-tone: -color-accent-fg; -jd-tone-soft: -color-accent-subtle; }
 
 .legend-swatch {
     -fx-background-color: -jd-tone;
@@ -554,7 +560,8 @@
 
 /* ---------- Hero ---------- */
 .hero {
-    -fx-background-color: -jd-hero;
+    -fx-background-color: -jd-card, linear-gradient(to right, -jd-glow 0%, transparent 70%);
+    -fx-background-insets: 0, 1;
     -fx-padding: 1.7em 2em 1.7em 2em;
 }
 .hero-date {
@@ -589,6 +596,11 @@
     -fx-background-color: -jd-card, linear-gradient(to bottom, -jd-tone-soft 0%, transparent 70%);
     -fx-background-insets: 0, 1;
     -fx-background-radius: 18, 17;
+}
+/* En los temas claros el degradado de color satura: la tarjeta queda neutra y el tono vive en la insignia */
+.theme-light .kpi {
+    -fx-background-color: -jd-card;
+    -fx-background-insets: 0;
 }
 .kpi-badge {
     -fx-background-color: -jd-tone-soft;
@@ -633,7 +645,7 @@
 .bar-value { -fx-text-fill: -color-fg-default; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.9em; -fx-font-weight: bold; }
 .bar-track { -fx-background-color: -jd-track; -fx-background-radius: 99; -fx-min-height: 7; -fx-pref-height: 7; -fx-max-height: 7; }
 .bar-fill {
-    -fx-background-color: linear-gradient(to right, -color-accent-emphasis 0%, -color-chart-2 100%);
+    -fx-background-color: linear-gradient(to right, -color-accent-emphasis 0%, -color-accent-fg 100%);
     -fx-background-radius: 99;
 }
 .bar-fill.tone-jade, .bar-fill.tone-lime, .bar-fill.tone-amber,
@@ -1238,3 +1250,184 @@
 .toggle-switch:selected > .thumb {
     -fx-background-color: -color-accent-emphasis, #FFFFFF;
 }
+
+/* =====================================================================
+ * Modificadores de perfil (clases en la raíz que pone ThemeManager)
+ * ===================================================================== */
+
+/* ---------- Densidad compacta ---------- */
+.density-compact .view-page { -fx-padding: 1.1em 0 0 0; }
+.density-compact .view-header { -fx-padding: 0 1.8em 0.8em 1.8em; }
+.density-compact .view-body { -fx-padding: 0 1.8em 1.6em 1.8em; -fx-spacing: 12; }
+.density-compact .crud-body { -fx-padding: 0 1.8em 1.2em 1.8em; }
+.density-compact .view-title { -fx-font-size: 1.8em; }
+.density-compact .panel { -fx-padding: 0.85em 1em 0.85em 1em; }
+.density-compact .kpi { -fx-min-height: 164; }
+.density-compact .hero { -fx-padding: 1.1em 1.4em 1.1em 1.4em; }
+.density-compact .nav-item { -fx-padding: 0.42em 12px 0.42em 12px; }
+.density-compact .sidebar-section { -fx-padding: 0.8em 1.2em 0.3em 1.2em; }
+.density-compact .crud-table .table-row-cell { -fx-cell-size: 2.35em; }
+.density-compact .topbar { -fx-padding: 0.6em 1.6em 0.6em 1.8em; }
+.density-compact .stat-tile { -fx-padding: 0.55em 0.8em 0.55em 0.7em; }
+
+/* ---------- Esquinas ---------- */
+.corners-suaves .panel, .corners-suaves .pattern-hero { -fx-background-radius: 12; -fx-border-radius: 12; }
+.corners-suaves .kpi { -fx-background-radius: 12, 11; }
+.corners-suaves .button, .corners-suaves .menu-button, .corners-suaves .toggle-button,
+.corners-suaves .nav-item, .corners-suaves .combo-box-base, .corners-suaves .text-field { -fx-background-radius: 7; -fx-border-radius: 7; }
+.corners-suaves .dialog, .corners-suaves .palette, .corners-suaves .toast,
+.corners-suaves .stat-tile, .corners-suaves .settings-card { -fx-background-radius: 12; -fx-border-radius: 12; }
+.corners-suaves .search-pill { -fx-background-radius: 9; -fx-border-radius: 9; }
+
+.corners-rectas .panel, .corners-rectas .pattern-hero { -fx-background-radius: 4; -fx-border-radius: 4; }
+.corners-rectas .kpi { -fx-background-radius: 4, 3; }
+.corners-rectas .button, .corners-rectas .menu-button, .corners-rectas .toggle-button,
+.corners-rectas .nav-item, .corners-rectas .combo-box-base, .corners-rectas .text-field { -fx-background-radius: 3; -fx-border-radius: 3; }
+.corners-rectas .dialog, .corners-rectas .palette, .corners-rectas .toast,
+.corners-rectas .stat-tile, .corners-rectas .settings-card { -fx-background-radius: 4; -fx-border-radius: 4; }
+.corners-rectas .search-pill { -fx-background-radius: 4; -fx-border-radius: 4; }
+.corners-rectas .nav-item.active { -fx-background-radius: 3, 0 3 3 0, 0 3 3 0; }
+
+/* ---------- Alto contraste: sin sombras y con bordes visibles ---------- */
+.theme-contraste .panel, .theme-contraste .stat-tile { -fx-effect: null; }
+.theme-contraste .nav-item.active .nav-text { -fx-underline: true; }
+
+/* ---------- Foco visible para navegación con teclado ---------- */
+.button:focus-visible, .toggle-button:focus-visible, .menu-button:focus-visible {
+    -fx-border-color: -color-accent-fg;
+}
+.nav-item:focus-visible {
+    -fx-border-color: -color-accent-muted;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+}
+
+/* =====================================================================
+ * Barra superior: historial y migas navegables
+ * ===================================================================== */
+.history-buttons .topbar-icon:disabled { -fx-opacity: 0.35; }
+.crumb-link {
+    -fx-padding: 0.1em 0.25em 0.1em 0.25em;
+    -fx-border-color: transparent;
+    -fx-underline: false;
+}
+.crumb-link:hover { -fx-text-fill: -color-accent-fg; -fx-underline: true; }
+.crumb-link:visited { -fx-text-fill: -color-fg-subtle; }
+.crumb-link:focus-visible { -fx-border-color: -color-accent-muted; -fx-border-radius: 6; -fx-border-width: 1; }
+
+/* Ajustes en el pie del menú lateral */
+.nav-item-settings { -fx-padding: 0.5em 12px 0.5em 12px; }
+
+/* =====================================================================
+ * Chuleta de atajos
+ * ===================================================================== */
+.shortcut-group {
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-size: 0.72em;
+    -fx-font-weight: 800;
+    -fx-padding: 0 0 0.2em 0;
+}
+.shortcut-action { -fx-text-fill: -color-fg-default; -fx-font-size: 0.92em; }
+
+/* =====================================================================
+ * Ajustes: perfiles, temas, acentos
+ * ===================================================================== */
+.settings-label {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.74em;
+    -fx-font-weight: 800;
+    -fx-padding: 0.4em 0 0 0;
+}
+.settings-hint { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.84em; }
+.settings-value { -fx-text-fill: -color-fg-default; -fx-font-weight: 700; -fx-font-family: "JetBrains Mono"; -fx-font-size: 0.88em; -fx-min-width: 3.6em; }
+.settings-switch { -fx-text-fill: -color-fg-default; -fx-padding: 0.25em 0 0.25em 0; }
+
+.profile-card {
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 12;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 12;
+    -fx-padding: 0.6em 0.95em 0.6em 0.75em;
+    -fx-cursor: hand;
+}
+.profile-card:hover { -fx-border-color: -jd-card-border-hover; }
+.profile-card:selected {
+    -fx-background-color: -color-accent-subtle;
+    -fx-border-color: -color-accent-fg;
+}
+.profile-name { -fx-text-fill: -color-fg-default; -fx-font-weight: 800; }
+.profile-detail { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.78em; }
+.profile-dot {
+    -fx-background-color: -jd-swatch;
+    -fx-background-radius: 99;
+    -fx-min-width: 14; -fx-min-height: 14; -fx-max-width: 14; -fx-max-height: 14;
+    -fx-effect: dropshadow(gaussian, -jd-swatch, 6, 0.2, 0, 0);
+}
+.profile-lock { -fx-icon-color: -color-fg-subtle; }
+
+.theme-card {
+    -fx-background-color: transparent;
+    -fx-background-radius: 14;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 14;
+    -fx-border-width: 1.5;
+    -fx-padding: 0.55em 0.55em 0.75em 0.55em;
+    -fx-pref-width: 13.6em;
+    -fx-cursor: hand;
+}
+.theme-card:hover { -fx-border-color: -jd-card-border-hover; -fx-background-color: -color-bg-subtle; }
+.theme-card:paired { -fx-border-color: -color-border-default; }
+.theme-card:selected {
+    -fx-border-color: -color-accent-fg;
+    -fx-background-color: -color-accent-subtle;
+}
+.theme-name { -fx-text-fill: -color-fg-default; -fx-font-weight: 800; }
+.theme-mode {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 0.72em;
+    -fx-font-weight: 700;
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 99;
+    -fx-padding: 0.1em 0.55em 0.1em 0.55em;
+}
+.theme-desc { -fx-text-fill: -color-fg-subtle; -fx-font-size: 0.78em; }
+
+/* Maqueta en miniatura de cada tema (colores fijos: muestran el tema aunque no esté activo) */
+.theme-preview {
+    -fx-min-height: 6.4em; -fx-pref-height: 6.4em;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-border-color: -p-line;
+}
+.theme-preview .tp-canvas { -fx-background-color: -p-canvas; -fx-background-radius: 9; }
+.theme-preview .tp-side { -fx-background-color: -p-side; -fx-min-width: 2.2em; -fx-background-radius: 9 0 0 9; }
+.theme-preview .tp-main { -fx-padding: 0.6em; }
+.theme-preview .tp-card { -fx-background-color: -p-card; -fx-background-radius: 5; -fx-border-color: -p-line; -fx-border-radius: 5; -fx-min-height: 2.2em; }
+.theme-preview .tp-accent { -fx-background-color: -color-accent-emphasis; -fx-background-radius: 99; -fx-min-height: 6; -fx-max-height: 6; -fx-max-width: 3.4em; }
+.theme-preview .tp-line { -fx-background-color: -p-text; -fx-opacity: 0.55; -fx-background-radius: 99; -fx-min-height: 4; -fx-max-height: 4; -fx-max-width: 6em; }
+.theme-preview .tp-line-short { -fx-max-width: 3.8em; -fx-opacity: 0.3; }
+.preview-grafito    { -p-canvas: #0C0E12; -p-side: #0E1014; -p-card: #14171D; -p-line: #2B303B; -p-text: #E8EAEF; }
+.preview-medianoche { -p-canvas: #090D1C; -p-side: #0B1022; -p-card: #10172B; -p-line: #27345A; -p-text: #E7EBF7; }
+.preview-bosque     { -p-canvas: #09110F; -p-side: #08100E; -p-card: #0F1A17; -p-line: #24362F; -p-text: #E6F1EB; }
+.preview-contraste  { -p-canvas: #000000; -p-side: #000000; -p-card: #050505; -p-line: #9A9A9A; -p-text: #FFFFFF; }
+.preview-niebla     { -p-canvas: #EEF1F5; -p-side: #E8ECF1; -p-card: #FAFBFC; -p-line: #D5DBE4; -p-text: #1B2230; }
+.preview-arena      { -p-canvas: #F1EDE6; -p-side: #EBE6DD; -p-card: #FAF8F4; -p-line: #DCD4C6; -p-text: #2A251D; }
+
+.accent-swatch {
+    -fx-background-color: transparent;
+    -fx-background-radius: 99;
+    -fx-border-color: transparent;
+    -fx-border-radius: 99;
+    -fx-border-width: 2;
+    -fx-padding: 3;
+    -fx-cursor: hand;
+}
+.accent-swatch .swatch-fill {
+    -fx-background-color: -jd-swatch;
+    -fx-background-radius: 99;
+    -fx-min-width: 30; -fx-min-height: 30; -fx-max-width: 30; -fx-max-height: 30;
+}
+.accent-swatch .swatch-check { -fx-icon-color: white; -fx-opacity: 0; }
+.accent-swatch:hover { -fx-border-color: -color-border-default; }
+.accent-swatch:selected { -fx-border-color: -jd-swatch; }
+.accent-swatch:selected .swatch-check { -fx-opacity: 1; }

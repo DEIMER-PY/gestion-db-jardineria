@@ -30,7 +30,7 @@ import java.util.function.DoubleFunction;
  */
 public class KpiCard extends VBox {
     /** Tono de color de la tarjeta (definido en app.css como {@code .tone-*}). */
-    public enum Tone { JADE, LIME, AMBER, SKY, CORAL, LILAC }
+    public enum Tone { ACCENT, JADE, LIME, AMBER, SKY, CORAL, LILAC }
 
     private final Label value = new Label("—");
     private final Label caption = new Label();

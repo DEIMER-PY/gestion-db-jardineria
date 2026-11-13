@@ -151,7 +151,7 @@ public class ProductosView extends CrudModuleView<Producto> {
                 .map(p -> p.getPrecioVenta().multiply(BigDecimal.valueOf(stock(p))))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return new StatStrip()
-                .stat(Feather.PACKAGE, Formatters.integer(all.size()), "productos en catálogo", KpiCard.Tone.JADE)
+                .stat(Feather.PACKAGE, Formatters.integer(all.size()), "productos en catálogo", KpiCard.Tone.ACCENT)
                 .stat(Feather.LAYERS, Formatters.integer(unidades), "unidades en almacén", KpiCard.Tone.SKY)
                 .stat(Feather.DOLLAR_SIGN, Formatters.compactCurrency(valor), "valor del inventario (PVP)", KpiCard.Tone.LIME)
                 .stat(Feather.ALERT_TRIANGLE, Formatters.integer(criticos), "bajo " + UMBRAL + " unidades", KpiCard.Tone.CORAL);

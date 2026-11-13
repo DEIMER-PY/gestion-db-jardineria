@@ -1,0 +1,78 @@
+/*
+ * Tema "Niebla" (claro, predeterminado).
+ * Pensado para no deslumbrar: el lienzo es gris azulado y las tarjetas no son blanco puro,
+ * las series de datos están desaturadas y las sombras son mínimas.
+ * Contraste del texto sobre -jd-card (#FAFBFC): 15,1:1 / 7,3:1 / 4,9:1.
+ */
+.root {
+    -color-bg-default: #FAFBFC;
+    -color-bg-subtle: #EEF1F5;
+    -color-bg-overlay: #FFFFFF;
+    -color-bg-inset: #E6EAF0;
+
+    -color-fg-default: #1B2230;
+    -color-fg-muted: #4D5667;
+    -color-fg-subtle: #646E80;
+    -color-fg-emphasis: #0B1020;
+
+    -color-border-default: #D5DBE4;
+    -color-border-muted: #E1E6ED;
+    -color-border-subtle: #EAEEF3;
+
+    -color-success-fg: #12784A;
+    -color-success-emphasis: #16935A;
+    -color-success-muted: rgba(22, 147, 90, 0.32);
+    -color-success-subtle: rgba(22, 147, 90, 0.09);
+
+    -color-warning-fg: #855700;
+    -color-warning-emphasis: #C47F00;
+    -color-warning-muted: rgba(196, 127, 0, 0.32);
+    -color-warning-subtle: rgba(196, 127, 0, 0.09);
+
+    -color-danger-fg: #B0301E;
+    -color-danger-emphasis: #D0412C;
+    -color-danger-muted: rgba(208, 65, 44, 0.32);
+    -color-danger-subtle: rgba(208, 65, 44, 0.08);
+
+    /* Series desaturadas para fondos claros */
+    -color-chart-1: #2E9E6B;
+    -color-chart-2: #7FA83A;
+    -color-chart-3: #D49A2A;
+    -color-chart-4: #3B82C4;
+    -color-chart-5: #D9644F;
+    -color-chart-6: #7E68D0;
+    -color-chart-7: #2A9D94;
+    -color-chart-8: #C4628F;
+    -color-chart-1-alpha20: rgba(46, 158, 107, 0.14);
+    -color-chart-2-alpha20: rgba(127, 168, 58, 0.14);
+    -color-chart-3-alpha20: rgba(212, 154, 42, 0.14);
+    -color-chart-4-alpha20: rgba(59, 130, 196, 0.14);
+    -color-chart-5-alpha20: rgba(217, 100, 79, 0.14);
+    -color-chart-6-alpha20: rgba(126, 104, 208, 0.14);
+    -color-chart-1-alpha70: rgba(46, 158, 107, 0.70);
+    -color-chart-2-alpha70: rgba(127, 168, 58, 0.70);
+    -color-chart-3-alpha70: rgba(212, 154, 42, 0.70);
+    -color-chart-4-alpha70: rgba(59, 130, 196, 0.70);
+    -color-chart-5-alpha70: rgba(217, 100, 79, 0.70);
+    -color-chart-6-alpha70: rgba(126, 104, 208, 0.70);
+
+    -color-button-bg: #FFFFFF;
+    -color-button-border: #D3D9E2;
+    -color-button-bg-hover: #F2F4F7;
+    -color-button-border-hover: #BAC2CF;
+    -color-input-bg: #FFFFFF;
+    -color-input-border: #CDD4DE;
+    -color-cell-bg: transparent;
+    -color-cell-bg-odd: rgba(16, 24, 40, 0.02);
+    -color-modal-pane-overlay: rgba(20, 28, 40, 0.32);
+    -color-shadow-default: rgba(30, 40, 60, 0.14);
+
+    -jd-canvas: #EEF1F5;
+    -jd-sidebar: #E8ECF1;
+    -jd-card: #FAFBFC;
+    -jd-card-hover: #FFFFFF;
+    -jd-card-border: rgba(16, 24, 40, 0.085);
+    -jd-track: rgba(16, 24, 40, 0.075);
+    -jd-shadow: rgba(30, 40, 60, 0.06);
+    -jd-glass: rgba(250, 251, 252, 0.90);
+}

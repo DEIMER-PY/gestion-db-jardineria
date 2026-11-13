@@ -124,7 +124,7 @@ public class PedidosView extends CrudModuleView<Pedido> {
         long retrasados = all.stream().filter(p -> p.getFechaEntrega() != null && p.getFechaEsperada() != null
                 && p.getFechaEntrega().isAfter(p.getFechaEsperada())).count();
         return new StatStrip()
-                .stat(Feather.SHOPPING_BAG, Formatters.integer(all.size()), "pedidos registrados", KpiCard.Tone.JADE)
+                .stat(Feather.SHOPPING_BAG, Formatters.integer(all.size()), "pedidos registrados", KpiCard.Tone.ACCENT)
                 .stat(Feather.CLOCK, Formatters.integer(porEstado.getOrDefault("Pendiente", 0L)), "pendientes de entrega", KpiCard.Tone.AMBER)
                 .stat(Feather.CHECK_CIRCLE, Formatters.integer(porEstado.getOrDefault("Entregado", 0L)), "entregados", KpiCard.Tone.SKY)
                 .stat(Feather.X_CIRCLE, Formatters.integer(porEstado.getOrDefault("Rechazado", 0L)), "rechazados", KpiCard.Tone.CORAL)

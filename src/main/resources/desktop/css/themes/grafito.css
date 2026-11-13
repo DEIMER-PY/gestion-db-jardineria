@@ -1,0 +1,78 @@
+/*
+ * Tema "Grafito" (oscuro, predeterminado).
+ * Gris pizarra neutro: no compite con el color de acento ni con los datos.
+ * Contraste del texto sobre -jd-card (#14171D): 15,2:1 / 7,9:1 / 4,9:1.
+ * Solo define superficies, texto, bordes y colores semánticos; el acento está en accents.css.
+ */
+.root {
+    -color-bg-default: #121419;
+    -color-bg-subtle: #181B22;
+    -color-bg-overlay: #1A1D24;
+    -color-bg-inset: #0B0D10;
+
+    -color-fg-default: #E8EAEF;
+    -color-fg-muted: #A6ACB8;
+    -color-fg-subtle: #80879A;
+    -color-fg-emphasis: #FFFFFF;
+
+    -color-border-default: #2B303B;
+    -color-border-muted: #21252D;
+    -color-border-subtle: #1B1E25;
+
+    -color-success-fg: #4ADE9A;
+    -color-success-emphasis: #1FAF6E;
+    -color-success-muted: rgba(74, 222, 154, 0.40);
+    -color-success-subtle: rgba(74, 222, 154, 0.12);
+
+    -color-warning-fg: #F5C35B;
+    -color-warning-emphasis: #C98A12;
+    -color-warning-muted: rgba(245, 195, 91, 0.40);
+    -color-warning-subtle: rgba(245, 195, 91, 0.12);
+
+    -color-danger-fg: #FF8A7A;
+    -color-danger-emphasis: #DC4A37;
+    -color-danger-muted: rgba(255, 138, 122, 0.40);
+    -color-danger-subtle: rgba(255, 138, 122, 0.12);
+
+    /* Series: verde, lima, ámbar, cielo, coral, lila, turquesa, rosa */
+    -color-chart-1: #3DD68C;
+    -color-chart-2: #B5E06A;
+    -color-chart-3: #F5C35B;
+    -color-chart-4: #5CB8FF;
+    -color-chart-5: #FF8A7A;
+    -color-chart-6: #B59CFF;
+    -color-chart-7: #5EE0D2;
+    -color-chart-8: #F29BC8;
+    -color-chart-1-alpha20: rgba(61, 214, 140, 0.18);
+    -color-chart-2-alpha20: rgba(181, 224, 106, 0.18);
+    -color-chart-3-alpha20: rgba(245, 195, 91, 0.18);
+    -color-chart-4-alpha20: rgba(92, 184, 255, 0.18);
+    -color-chart-5-alpha20: rgba(255, 138, 122, 0.18);
+    -color-chart-6-alpha20: rgba(181, 156, 255, 0.18);
+    -color-chart-1-alpha70: rgba(61, 214, 140, 0.70);
+    -color-chart-2-alpha70: rgba(181, 224, 106, 0.70);
+    -color-chart-3-alpha70: rgba(245, 195, 91, 0.70);
+    -color-chart-4-alpha70: rgba(92, 184, 255, 0.70);
+    -color-chart-5-alpha70: rgba(255, 138, 122, 0.70);
+    -color-chart-6-alpha70: rgba(181, 156, 255, 0.70);
+
+    -color-button-bg: #1A1D24;
+    -color-button-border: #2D323D;
+    -color-button-bg-hover: #20242C;
+    -color-button-border-hover: #3B414E;
+    -color-input-bg: #111318;
+    -color-input-border: #2D323D;
+    -color-cell-bg: transparent;
+    -color-cell-bg-odd: rgba(255, 255, 255, 0.018);
+    -color-modal-pane-overlay: rgba(4, 5, 8, 0.68);
+    -color-shadow-default: rgba(0, 0, 0, 0.55);
+
+    -jd-canvas: #0C0E12;
+    -jd-sidebar: #0E1014;
+    -jd-card: #14171D;
+    -jd-card-hover: #181B22;
+    -jd-card-border: rgba(255, 255, 255, 0.065);
+    -jd-track: rgba(255, 255, 255, 0.07);
+    -jd-shadow: rgba(0, 0, 0, 0.42);
+    -jd-glass: rgba(20, 23, 29, 0.86);
+}
