@@ -63,7 +63,7 @@ class DesktopGalleryTest {
                 ctx.getDashboardService(), ctx.getAnalyticsService(), ctx.getClienteService(),
                 ctx.getPedidoService(), ctx.getDetallePedidoService(), ctx.getPagoService(),
                 ctx.getProductoService(), ctx.getGamaProductoService(), ctx.getOficinaService(),
-                ctx.getEmpleadoService(), ctx.getBusinessFacade(), ctx.getCachedProductProxy(),
+                ctx.getEmpleadoService(),
                 new DesktopServices.ConnectionProbe() {
                     @Override
                     public boolean isAvailable() {

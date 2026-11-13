@@ -12,7 +12,6 @@ import com.jardineria.infrastructure.adapter.in.desktop.views.modules.OficinasVi
 import com.jardineria.infrastructure.adapter.in.desktop.views.modules.PagosView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.modules.PedidosView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.modules.ProductosView;
-import com.jardineria.infrastructure.adapter.in.desktop.views.patterns.PatternsView;
 import com.jardineria.infrastructure.adapter.in.desktop.views.settings.SettingsView;
 
 /**
@@ -34,8 +33,6 @@ public final class DesktopViews {
         navigator.register(Route.GAMAS, () -> new GamasView(services.gamas(), services.productos()));
         navigator.register(Route.OFICINAS, () -> new OficinasView(services.oficinas(), services.empleados()));
         navigator.register(Route.EMPLEADOS, () -> new EmpleadosView(services.empleados(), services.oficinas()));
-        navigator.register(Route.PATRONES, () -> new PatternsView(services.productos(), services.clientes(),
-                services.facade(), services.productLookup()));
         navigator.register(Route.AJUSTES, SettingsView::new);
     }
 }

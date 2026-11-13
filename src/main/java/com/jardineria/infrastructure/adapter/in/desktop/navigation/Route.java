@@ -20,7 +20,6 @@ public enum Route {
     GAMAS("Gamas", "Familias botánicas del catálogo", Material2AL.ECO, Section.CATALOGO, KeyCode.DIGIT7),
     OFICINAS("Oficinas", "Red de oficinas comerciales", Feather.MAP_PIN, Section.ORGANIZACION, KeyCode.DIGIT8),
     EMPLEADOS("Empleados", "Equipo, puestos y jerarquía", Feather.BRIEFCASE, Section.ORGANIZACION, KeyCode.DIGIT9),
-    PATRONES("Patrones GoF", "Patrones estructurales aplicados al dominio", Feather.LAYERS, Section.ARQUITECTURA, null),
     /** Se abre desde el pie del menú lateral, la barra superior o Ctrl+, (no aparece en la lista de módulos). */
     AJUSTES("Ajustes", "Perfiles de apariencia, temas, colores de acento y accesibilidad", Feather.SETTINGS,
             Section.PREFERENCIAS, KeyCode.COMMA);
@@ -83,7 +82,6 @@ public enum Route {
         OPERACION("Operación"),
         CATALOGO("Catálogo"),
         ORGANIZACION("Organización"),
-        ARQUITECTURA("Arquitectura"),
         PREFERENCIAS("Preferencias");
 
         private final String label;

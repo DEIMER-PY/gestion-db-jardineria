@@ -1,8 +1,6 @@
 package com.jardineria.infrastructure.adapter.in.desktop;
 
-import com.jardineria.application.facade.JardineriaBusinessFacade;
 import com.jardineria.application.port.in.*;
-import com.jardineria.domain.pattern.proxy.CachedProductLookupProxy;
 
 import java.util.Objects;
 
@@ -25,8 +23,6 @@ public record DesktopServices(
         GamaProductoUseCase gamas,
         OficinaUseCase oficinas,
         EmpleadoUseCase empleados,
-        JardineriaBusinessFacade facade,
-        CachedProductLookupProxy productLookup,
         ConnectionProbe connection
 ) {
     public DesktopServices {

@@ -1,9 +1,7 @@
 package com.jardineria.infrastructure.config;
 
-import com.jardineria.application.facade.JardineriaBusinessFacade;
 import com.jardineria.application.port.in.*;
 import com.jardineria.application.service.*;
-import com.jardineria.domain.pattern.proxy.CachedProductLookupProxy;
 import com.jardineria.domain.repository.*;
 import com.jardineria.infrastructure.adapter.out.persistence.jdbc.*;
 
@@ -30,9 +28,6 @@ public final class ApplicationContext {
     private final DashboardUseCase dashboardService;
     private final AnalyticsUseCase analyticsService;
 
-    private final CachedProductLookupProxy cachedProductProxy;
-    private final JardineriaBusinessFacade businessFacade;
-
     private ApplicationContext() {
         // Adaptadores de salida (persistencia JDBC sobre MySQL)
         OficinaRepository oficinaRepository = new OficinaJdbcRepository();
@@ -44,9 +39,6 @@ public final class ApplicationContext {
         DetallePedidoRepository detallePedidoRepository = new DetallePedidoJdbcRepository();
         PagoRepository pagoRepository = new PagoJdbcRepository();
         AnalyticsRepository analyticsRepository = new AnalyticsJdbcRepository();
-
-        // Patrón Proxy sobre el repositorio de productos
-        this.cachedProductProxy = new CachedProductLookupProxy(productoRepository);
 
         // Capa de aplicación
         this.oficinaService = new OficinaService(oficinaRepository);
@@ -61,10 +53,6 @@ public final class ApplicationContext {
                 clienteRepository, pedidoRepository, productoRepository,
                 empleadoRepository, oficinaRepository, pagoRepository);
         this.analyticsService = new AnalyticsService(analyticsRepository);
-
-        // Patrón Facade sobre los casos de uso
-        this.businessFacade = new JardineriaBusinessFacade(
-                clienteService, productoService, pedidoService, detallePedidoService, pagoService);
     }
 
     /** Devuelve el contexto único de la aplicación (Singleton con doble verificación). */
@@ -77,14 +65,6 @@ public final class ApplicationContext {
             }
         }
         return instance;
-    }
-
-    public CachedProductLookupProxy getCachedProductProxy() {
-        return cachedProductProxy;
-    }
-
-    public JardineriaBusinessFacade getBusinessFacade() {
-        return businessFacade;
     }
 
     public OficinaUseCase getOficinaService() {

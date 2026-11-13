@@ -79,8 +79,6 @@ public final class JardineriaApplication {
                 ctx.getGamaProductoService(),
                 ctx.getOficinaService(),
                 ctx.getEmpleadoService(),
-                ctx.getBusinessFacade(),
-                ctx.getCachedProductProxy(),
                 probe);
     }
 }
