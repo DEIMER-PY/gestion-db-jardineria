@@ -17,14 +17,14 @@ import java.util.List;
  * Vista de administración y CRUD para Empleados con búsqueda en tiempo real y exportación.
  */
 public class EmpleadoView extends JPanel {
-    private final EmpleadoService service;
+    private final com.jardineria.application.port.in.EmpleadoUseCase service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JComboBox<String> cbFilter;
     private JTextField txtSearch;
     private List<Empleado> cachedEmpleados;
 
-    public EmpleadoView(EmpleadoService service) {
+    public EmpleadoView(com.jardineria.application.port.in.EmpleadoUseCase service) {
         this.service = service;
         setLayout(new BorderLayout(12, 12));
         setBorder(new EmptyBorder(16, 16, 16, 16));

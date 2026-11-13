@@ -21,8 +21,8 @@ import java.util.List;
  * Vista de administración Maestro-Detalle para Pedidos y Líneas de Pedido con exportación y filtros en tiempo real.
  */
 public class PedidoView extends JPanel {
-    private final PedidoService pedidoService;
-    private final DetallePedidoService detalleService;
+    private final com.jardineria.application.port.in.PedidoUseCase pedidoService;
+    private final com.jardineria.application.port.in.DetallePedidoUseCase detalleService;
 
     private DefaultTableModel ordersTableModel;
     private JTable ordersTable;
@@ -35,7 +35,7 @@ public class PedidoView extends JPanel {
     private JTextField txtSearch;
     private List<Pedido> cachedPedidos;
 
-    public PedidoView(PedidoService pedidoService, DetallePedidoService detalleService) {
+    public PedidoView(com.jardineria.application.port.in.PedidoUseCase pedidoService, com.jardineria.application.port.in.DetallePedidoUseCase detalleService) {
         this.pedidoService = pedidoService;
         this.detalleService = detalleService;
 

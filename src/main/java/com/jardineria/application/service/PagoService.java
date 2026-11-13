@@ -1,5 +1,6 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.port.in.PagoUseCase;
 import com.jardineria.domain.exception.BusinessValidationException;
 import com.jardineria.domain.exception.DuplicateEntityException;
 import com.jardineria.domain.exception.EntityNotFoundException;
@@ -16,7 +17,7 @@ import java.util.Objects;
 /**
  * Servicio de aplicación para la gestión de Pagos, conciliación financiera y métodos de pago.
  */
-public class PagoService {
+public class PagoService implements PagoUseCase {
     private final PagoRepository pagoRepository;
     private final ClienteRepository clienteRepository;
 
@@ -25,6 +26,7 @@ public class PagoService {
         this.clienteRepository = clienteRepository;
     }
 
+    @Override
     public Pago registrarPago(Pago pago) {
         validarPago(pago);
         PagoId id = pago.getId();
@@ -37,6 +39,7 @@ public class PagoService {
         return pagoRepository.save(pago);
     }
 
+    @Override
     public Pago actualizarPago(Pago pago) {
         validarPago(pago);
         PagoId id = pago.getId();
@@ -46,6 +49,7 @@ public class PagoService {
         return pagoRepository.update(pago);
     }
 
+    @Override
     public Pago obtenerPorId(PagoId id) {
         if (id == null) {
             throw new BusinessValidationException("El identificador del pago no puede ser nulo");
@@ -54,10 +58,12 @@ public class PagoService {
                 .orElseThrow(() -> new EntityNotFoundException("Pago", id));
     }
 
+    @Override
     public List<Pago> listarTodos() {
         return pagoRepository.findAll();
     }
 
+    @Override
     public boolean eliminarPago(PagoId id) {
         if (!pagoRepository.existsById(id)) {
             throw new EntityNotFoundException("Pago", id);
@@ -65,6 +71,7 @@ public class PagoService {
         return pagoRepository.deleteById(id);
     }
 
+    @Override
     public List<Pago> buscarPorCliente(Integer codigoCliente) {
         if (codigoCliente == null || codigoCliente <= 0) {
             throw new BusinessValidationException("El código de cliente debe ser positivo");
@@ -72,6 +79,7 @@ public class PagoService {
         return pagoRepository.findByCliente(codigoCliente);
     }
 
+    @Override
     public List<Pago> buscarPorFormaPago(String formaPago) {
         if (formaPago == null || formaPago.isBlank()) {
             return listarTodos();
@@ -79,10 +87,12 @@ public class PagoService {
         return pagoRepository.findByFormaPago(formaPago.trim());
     }
 
+    @Override
     public BigDecimal calcularTotalIngresos() {
         return pagoRepository.totalPagos();
     }
 
+    @Override
     public long contarPagos() {
         return pagoRepository.count();
     }

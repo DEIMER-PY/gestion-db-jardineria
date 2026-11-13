@@ -1,5 +1,6 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.port.in.PedidoUseCase;
 import com.jardineria.domain.exception.BusinessValidationException;
 import com.jardineria.domain.exception.DuplicateEntityException;
 import com.jardineria.domain.exception.EntityNotFoundException;
@@ -16,7 +17,7 @@ import java.util.Set;
 /**
  * Servicio de aplicación para la gestión del ciclo de vida y estados de los Pedidos.
  */
-public class PedidoService {
+public class PedidoService implements PedidoUseCase {
     private static final Set<String> ESTADOS_VALIDOS = Set.of("PENDIENTE", "ENTREGADO", "RECHAZADO");
 
     private final PedidoRepository pedidoRepository;
@@ -31,6 +32,7 @@ public class PedidoService {
         this.detalleRepository = detalleRepository;
     }
 
+    @Override
     public Pedido crearPedido(Pedido pedido) {
         validarPedido(pedido);
         if (pedidoRepository.existsById(pedido.getCodigoPedido())) {
@@ -42,6 +44,7 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
+    @Override
     public Pedido actualizarPedido(Pedido pedido) {
         validarPedido(pedido);
         if (!pedidoRepository.existsById(pedido.getCodigoPedido())) {
@@ -53,6 +56,7 @@ public class PedidoService {
         return pedidoRepository.update(pedido);
     }
 
+    @Override
     public Pedido cambiarEstado(Integer codigoPedido, String nuevoEstado, LocalDate fechaEntrega) {
         Pedido pedido = obtenerPorId(codigoPedido);
         if (nuevoEstado == null || !ESTADOS_VALIDOS.contains(nuevoEstado.trim().toUpperCase())) {
@@ -65,6 +69,7 @@ public class PedidoService {
         return pedidoRepository.update(pedido);
     }
 
+    @Override
     public Pedido obtenerPorId(Integer codigoPedido) {
         if (codigoPedido == null || codigoPedido <= 0) {
             throw new BusinessValidationException("El código de pedido debe ser un entero positivo");
@@ -73,10 +78,12 @@ public class PedidoService {
                 .orElseThrow(() -> new EntityNotFoundException("Pedido", codigoPedido));
     }
 
+    @Override
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
 
+    @Override
     public boolean eliminarPedido(Integer codigoPedido) {
         if (!pedidoRepository.existsById(codigoPedido)) {
             throw new EntityNotFoundException("Pedido", codigoPedido);
@@ -87,6 +94,7 @@ public class PedidoService {
         return pedidoRepository.deleteById(codigoPedido);
     }
 
+    @Override
     public List<Pedido> buscarPorCliente(Integer codigoCliente) {
         if (codigoCliente == null || codigoCliente <= 0) {
             throw new BusinessValidationException("El código de cliente debe ser positivo");
@@ -94,6 +102,7 @@ public class PedidoService {
         return pedidoRepository.findByCliente(codigoCliente);
     }
 
+    @Override
     public List<Pedido> buscarPorEstado(String estado) {
         if (estado == null || estado.isBlank()) {
             return listarTodos();
@@ -101,6 +110,7 @@ public class PedidoService {
         return pedidoRepository.findByEstado(estado.trim());
     }
 
+    @Override
     public long contarPorEstado(String estado) {
         if (estado == null || estado.isBlank()) {
             return 0;
@@ -108,6 +118,7 @@ public class PedidoService {
         return pedidoRepository.countByEstado(estado.trim());
     }
 
+    @Override
     public long contarPedidos() {
         return pedidoRepository.count();
     }

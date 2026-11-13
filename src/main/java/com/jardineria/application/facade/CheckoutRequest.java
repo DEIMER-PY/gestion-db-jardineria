@@ -1,4 +1,4 @@
-package com.jardineria.domain.pattern.facade;
+package com.jardineria.application.facade;
 
 import java.math.BigDecimal;
 import java.util.List;

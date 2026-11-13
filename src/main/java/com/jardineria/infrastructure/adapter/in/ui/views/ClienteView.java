@@ -18,13 +18,13 @@ import java.util.List;
  * Vista de administración y CRUD para Clientes con búsqueda en tiempo real y exportación.
  */
 public class ClienteView extends JPanel {
-    private final ClienteService service;
+    private final com.jardineria.application.port.in.ClienteUseCase service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField txtSearch;
     private List<Cliente> cachedClientes;
 
-    public ClienteView(ClienteService service) {
+    public ClienteView(com.jardineria.application.port.in.ClienteUseCase service) {
         this.service = service;
         setLayout(new BorderLayout(12, 12));
         setBorder(new EmptyBorder(16, 16, 16, 16));

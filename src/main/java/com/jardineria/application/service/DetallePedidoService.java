@@ -1,5 +1,6 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.port.in.DetallePedidoUseCase;
 import com.jardineria.domain.exception.BusinessValidationException;
 import com.jardineria.domain.exception.DuplicateEntityException;
 import com.jardineria.domain.exception.EntityNotFoundException;
@@ -17,7 +18,7 @@ import java.util.Objects;
 /**
  * Servicio de aplicación para la gestión de líneas de Detalle de Pedidos y control de stock.
  */
-public class DetallePedidoService {
+public class DetallePedidoService implements DetallePedidoUseCase {
     private final DetallePedidoRepository detalleRepository;
     private final PedidoRepository pedidoRepository;
     private final ProductoRepository productoRepository;
@@ -30,6 +31,7 @@ public class DetallePedidoService {
         this.productoRepository = productoRepository;
     }
 
+    @Override
     public DetallePedido agregarDetalle(DetallePedido detalle) {
         validarDetalle(detalle);
         DetallePedidoId id = detalle.getId();
@@ -53,6 +55,7 @@ public class DetallePedidoService {
         return detalleRepository.save(detalle);
     }
 
+    @Override
     public DetallePedido actualizarDetalle(DetallePedido detalle) {
         validarDetalle(detalle);
         DetallePedidoId id = detalle.getId();
@@ -62,6 +65,7 @@ public class DetallePedidoService {
         return detalleRepository.update(detalle);
     }
 
+    @Override
     public DetallePedido obtenerPorId(DetallePedidoId id) {
         if (id == null) {
             throw new BusinessValidationException("El ID compuesto no puede ser nulo");
@@ -70,6 +74,7 @@ public class DetallePedidoService {
                 .orElseThrow(() -> new EntityNotFoundException("Detalle de Pedido", id));
     }
 
+    @Override
     public List<DetallePedido> listarPorPedido(Integer codigoPedido) {
         if (codigoPedido == null || codigoPedido <= 0) {
             throw new BusinessValidationException("El código de pedido debe ser positivo");
@@ -77,6 +82,7 @@ public class DetallePedidoService {
         return detalleRepository.findByPedido(codigoPedido);
     }
 
+    @Override
     public boolean eliminarDetalle(DetallePedidoId id) {
         if (!detalleRepository.existsById(id)) {
             throw new EntityNotFoundException("Detalle de Pedido", id);
@@ -84,6 +90,7 @@ public class DetallePedidoService {
         return detalleRepository.deleteById(id);
     }
 
+    @Override
     public long contarDetalles() {
         return detalleRepository.count();
     }

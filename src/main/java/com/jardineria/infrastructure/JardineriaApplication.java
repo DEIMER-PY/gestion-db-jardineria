@@ -1,6 +1,7 @@
 package com.jardineria.infrastructure;
 
 import com.jardineria.infrastructure.adapter.in.cli.ConsoleMenuRunner;
+import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.adapter.in.ui.MainDashboardWindow;
 import com.jardineria.infrastructure.adapter.in.ui.components.ElectronModeLauncher;
 import com.jardineria.infrastructure.adapter.in.ui.components.ThemeManager;
@@ -30,7 +31,7 @@ public class JardineriaApplication {
         boolean forceApp = argList.contains("--app") || argList.contains("--desktop-app");
         boolean isHeadless = GraphicsEnvironment.isHeadless();
 
-        ServiceRegistry registry = ServiceRegistry.getInstance();
+        ApplicationContext registry = ApplicationContext.getInstance();
 
         if (forceCli || (isHeadless && !forceApp)) {
             if (isHeadless && !forceCli) {
@@ -42,7 +43,7 @@ public class JardineriaApplication {
             cli.run();
         } else if (forceApp) {
             log.info("Argumento --app / --desktop-app recibido. Lanzando Aplicación de Escritorio enriquecida...");
-            String url = (registry.getWebServer() != null) ? registry.getWebServer().getDashboardUrl() : "http://localhost:8080/dashboard";
+            String url = (com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()) != null) ? com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()).getDashboardUrl() : "http://localhost:8080/dashboard";
             ElectronModeLauncher.openElectronMode(url);
             log.info("Aplicación de Escritorio en ejecución en {}", url);
         } else {
@@ -56,7 +57,7 @@ public class JardineriaApplication {
                     log.info("Ventana de Dashboard mostrada con éxito.");
                 } catch (Exception e) {
                     log.error("Error al iniciar la interfaz gráfica Swing, iniciando en modo Web App...", e);
-                    String url = (registry.getWebServer() != null) ? registry.getWebServer().getDashboardUrl() : "http://localhost:8080/dashboard";
+                    String url = (com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()) != null) ? com.jardineria.infrastructure.adapter.in.web.JardineriaWebServer.shared(com.jardineria.infrastructure.config.ApplicationContext.getInstance()).getDashboardUrl() : "http://localhost:8080/dashboard";
                     ElectronModeLauncher.openElectronMode(url);
                 }
             });

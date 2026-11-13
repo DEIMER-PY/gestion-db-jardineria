@@ -66,7 +66,7 @@ public class ProductBundleComposite implements CatalogComponent {
     @Override
     public void renderEstructura(StringBuilder sb, String indent) {
         sb.append(indent)
-          .append("📦 [Kit/Paquete Compuesto] ")
+          .append("[KIT] ")
           .append(nombreKit)
           .append(" [Cód: ").append(codigoKit).append("]")
           .append(" | Descuento: ").append(descuentoKitPorc.multiply(BigDecimal.valueOf(100))).append("%")

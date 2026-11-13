@@ -2,7 +2,7 @@ package com.jardineria.infrastructure.adapter.in.cli;
 
 import com.jardineria.application.service.*;
 import com.jardineria.domain.model.*;
-import com.jardineria.infrastructure.ServiceRegistry;
+import com.jardineria.infrastructure.config.ApplicationContext;
 import com.jardineria.infrastructure.adapter.in.ui.components.UiHelper;
 
 import java.math.BigDecimal;
@@ -14,10 +14,10 @@ import java.util.Scanner;
  * Adaptador de entrada por consola con menú principal y submenús CRUD para todas las entidades.
  */
 public class ConsoleMenuRunner {
-    private final ServiceRegistry registry;
+    private final ApplicationContext registry;
     private final Scanner scanner;
 
-    public ConsoleMenuRunner(ServiceRegistry registry) {
+    public ConsoleMenuRunner(ApplicationContext registry) {
         this.registry = registry;
         this.scanner = new Scanner(System.in);
     }
@@ -59,7 +59,7 @@ public class ConsoleMenuRunner {
     private void mostrarDashboard() {
         printHeader("📊 DASHBOARD EJECUTIVO Y OPERACIONAL");
         try {
-            DashboardService.DashboardMetrics m = registry.getDashboardService().obtenerMetricas();
+            com.jardineria.application.dto.DashboardMetrics m = registry.getDashboardService().obtenerMetricas();
             System.out.printf("  • Clientes Registrados:        %d%n", m.totalClientes());
             System.out.printf("  • Pedidos Totales:              %d%n", m.totalPedidos());
             System.out.printf("    - Pedidos Entregados:         %d%n", m.pedidosEntregados());
@@ -78,7 +78,7 @@ public class ConsoleMenuRunner {
 
     private void submenuOficinas() {
         boolean volver = false;
-        OficinaService service = registry.getOficinaService();
+        com.jardineria.application.port.in.OficinaUseCase service = registry.getOficinaService();
         while (!volver) {
             printHeader("🏢 SUBMENÚ: GESTIÓN DE OFICINAS");
             System.out.println("  [1] Listar todas las oficinas");
@@ -163,7 +163,7 @@ public class ConsoleMenuRunner {
 
     private void submenuEmpleados() {
         boolean volver = false;
-        EmpleadoService service = registry.getEmpleadoService();
+        com.jardineria.application.port.in.EmpleadoUseCase service = registry.getEmpleadoService();
         while (!volver) {
             printHeader("👥 SUBMENÚ: GESTIÓN DE EMPLEADOS");
             System.out.println("  [1] Listar todos los empleados");
@@ -220,7 +220,7 @@ public class ConsoleMenuRunner {
 
     private void submenuClientes() {
         boolean volver = false;
-        ClienteService service = registry.getClienteService();
+        com.jardineria.application.port.in.ClienteUseCase service = registry.getClienteService();
         while (!volver) {
             printHeader("🛍️ SUBMENÚ: GESTIÓN DE CLIENTES");
             System.out.println("  [1] Listar todos los clientes");
@@ -271,7 +271,7 @@ public class ConsoleMenuRunner {
 
     private void submenuProductos() {
         boolean volver = false;
-        ProductoService service = registry.getProductoService();
+        com.jardineria.application.port.in.ProductoUseCase service = registry.getProductoService();
         while (!volver) {
             printHeader("📦 SUBMENÚ: CATÁLOGO DE PRODUCTOS");
             System.out.println("  [1] Listar todos los productos");
@@ -327,8 +327,8 @@ public class ConsoleMenuRunner {
 
     private void submenuPedidos() {
         boolean volver = false;
-        PedidoService pedidoService = registry.getPedidoService();
-        DetallePedidoService detalleService = registry.getDetallePedidoService();
+        com.jardineria.application.port.in.PedidoUseCase pedidoService = registry.getPedidoService();
+        com.jardineria.application.port.in.DetallePedidoUseCase detalleService = registry.getDetallePedidoService();
         while (!volver) {
             printHeader("📑 SUBMENÚ: PEDIDOS Y LÍNEAS DE DETALLE");
             System.out.println("  [1] Listar pedidos recientes");
@@ -392,7 +392,7 @@ public class ConsoleMenuRunner {
 
     private void submenuPagos() {
         boolean volver = false;
-        PagoService service = registry.getPagoService();
+        com.jardineria.application.port.in.PagoUseCase service = registry.getPagoService();
         while (!volver) {
             printHeader("💳 SUBMENÚ: PAGOS Y FINANZAS");
             System.out.println("  [1] Listar todos los pagos");
@@ -445,7 +445,7 @@ public class ConsoleMenuRunner {
 
     private void submenuGamas() {
         boolean volver = false;
-        GamaProductoService service = registry.getGamaProductoService();
+        com.jardineria.application.port.in.GamaProductoUseCase service = registry.getGamaProductoService();
         while (!volver) {
             printHeader("🌿 SUBMENÚ: GAMAS DE PRODUCTO");
             System.out.println("  [1] Listar gamas de productos");

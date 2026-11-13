@@ -20,7 +20,7 @@ import java.util.List;
  * Vista de administración de pagos, conciliación financiera y exportación CSV.
  */
 public class PagoView extends JPanel {
-    private final PagoService service;
+    private final com.jardineria.application.port.in.PagoUseCase service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JComboBox<String> cbFormaPago;
@@ -28,7 +28,7 @@ public class PagoView extends JPanel {
     private JLabel lblTotalIngresos;
     private List<Pago> cachedPagos;
 
-    public PagoView(PagoService service) {
+    public PagoView(com.jardineria.application.port.in.PagoUseCase service) {
         this.service = service;
         setLayout(new BorderLayout(12, 12));
         setBorder(new EmptyBorder(16, 16, 16, 16));

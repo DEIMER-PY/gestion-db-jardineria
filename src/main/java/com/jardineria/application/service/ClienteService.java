@@ -1,5 +1,6 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.port.in.ClienteUseCase;
 import com.jardineria.domain.exception.BusinessValidationException;
 import com.jardineria.domain.exception.DuplicateEntityException;
 import com.jardineria.domain.exception.EntityNotFoundException;
@@ -14,7 +15,7 @@ import java.util.Objects;
 /**
  * Servicio de aplicación para la gestión de Clientes y políticas de crédito.
  */
-public class ClienteService {
+public class ClienteService implements ClienteUseCase {
     private final ClienteRepository clienteRepository;
     private final EmpleadoRepository empleadoRepository;
 
@@ -23,6 +24,7 @@ public class ClienteService {
         this.empleadoRepository = empleadoRepository;
     }
 
+    @Override
     public Cliente crearCliente(Cliente cliente) {
         validarCliente(cliente);
         if (clienteRepository.existsById(cliente.getCodigoCliente())) {
@@ -37,6 +39,7 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
+    @Override
     public Cliente actualizarCliente(Cliente cliente) {
         validarCliente(cliente);
         if (!clienteRepository.existsById(cliente.getCodigoCliente())) {
@@ -51,6 +54,7 @@ public class ClienteService {
         return clienteRepository.update(cliente);
     }
 
+    @Override
     public Cliente obtenerPorId(Integer codigoCliente) {
         if (codigoCliente == null || codigoCliente <= 0) {
             throw new BusinessValidationException("El código de cliente debe ser un entero positivo");
@@ -59,10 +63,12 @@ public class ClienteService {
                 .orElseThrow(() -> new EntityNotFoundException("Cliente", codigoCliente));
     }
 
+    @Override
     public List<Cliente> listarTodos() {
         return clienteRepository.findAll();
     }
 
+    @Override
     public boolean eliminarCliente(Integer codigoCliente) {
         if (!clienteRepository.existsById(codigoCliente)) {
             throw new EntityNotFoundException("Cliente", codigoCliente);
@@ -70,6 +76,7 @@ public class ClienteService {
         return clienteRepository.deleteById(codigoCliente);
     }
 
+    @Override
     public List<Cliente> buscarPorPais(String pais) {
         if (pais == null || pais.isBlank()) {
             return listarTodos();
@@ -77,6 +84,7 @@ public class ClienteService {
         return clienteRepository.findByPais(pais.trim());
     }
 
+    @Override
     public List<Cliente> buscarPorCiudad(String ciudad) {
         if (ciudad == null || ciudad.isBlank()) {
             return listarTodos();
@@ -84,6 +92,7 @@ public class ClienteService {
         return clienteRepository.findByCiudad(ciudad.trim());
     }
 
+    @Override
     public List<Cliente> buscarPorRepresentante(Integer codigoEmpleado) {
         if (codigoEmpleado == null || codigoEmpleado <= 0) {
             throw new BusinessValidationException("El código de representante debe ser válido");
@@ -91,6 +100,7 @@ public class ClienteService {
         return clienteRepository.findByRepresentanteVentas(codigoEmpleado);
     }
 
+    @Override
     public long contarClientes() {
         return clienteRepository.count();
     }

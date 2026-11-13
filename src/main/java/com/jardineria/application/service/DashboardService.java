@@ -1,17 +1,20 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.dto.DashboardMetrics;
+import com.jardineria.application.port.in.DashboardUseCase;
 import com.jardineria.domain.model.Pedido;
 import com.jardineria.domain.model.Producto;
 import com.jardineria.domain.repository.*;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Servicio de agregación para el Dashboard ejecutivo y operativo del sistema.
+ * Servicio de agregación para el panel ejecutivo y operativo del sistema.
  */
-public class DashboardService {
+public class DashboardService implements DashboardUseCase {
     private final ClienteRepository clienteRepository;
     private final PedidoRepository pedidoRepository;
     private final ProductoRepository productoRepository;
@@ -33,58 +36,36 @@ public class DashboardService {
         this.pagoRepository = Objects.requireNonNull(pagoRepository);
     }
 
+    @Override
     public DashboardMetrics obtenerMetricas() {
-        long totalClientes = clienteRepository.count();
-        long totalPedidos = pedidoRepository.count();
-        long totalProductos = productoRepository.count();
-        long totalEmpleados = empleadoRepository.count();
-        long totalOficinas = oficinaRepository.count();
-        BigDecimal totalIngresos = pagoRepository.totalPagos();
-
-        long pedidosEntregados = pedidoRepository.countByEstado("Entregado");
-        long pedidosPendientes = pedidoRepository.countByEstado("Pendiente");
-        long pedidosRechazados = pedidoRepository.countByEstado("Rechazado");
-
-        List<Producto> productosBajoStock = productoRepository.findBajoStock(10);
-        long totalBajoStock = productosBajoStock.size();
-
         return new DashboardMetrics(
-                totalClientes,
-                totalPedidos,
-                totalProductos,
-                totalEmpleados,
-                totalOficinas,
-                totalIngresos,
-                pedidosEntregados,
-                pedidosPendientes,
-                pedidosRechazados,
-                totalBajoStock
+                clienteRepository.count(),
+                pedidoRepository.count(),
+                productoRepository.count(),
+                empleadoRepository.count(),
+                oficinaRepository.count(),
+                pagoRepository.totalPagos(),
+                pedidoRepository.countByEstado("Entregado"),
+                pedidoRepository.countByEstado("Pendiente"),
+                pedidoRepository.countByEstado("Rechazado"),
+                productoRepository.findBajoStock(UMBRAL_STOCK_CRITICO).size()
         );
     }
 
-    public List<Pedido> obtenerUltimosPedidos() {
-        List<Pedido> todos = pedidoRepository.findAll();
-        return todos.stream().limit(10).toList();
+    @Override
+    public List<Pedido> obtenerUltimosPedidos(int limite) {
+        return pedidoRepository.findAll().stream()
+                .sorted(Comparator.comparing(Pedido::getFechaPedido,
+                        Comparator.nullsLast(Comparator.<LocalDate>reverseOrder())))
+                .limit(Math.max(0, limite))
+                .toList();
     }
 
+    @Override
     public List<Producto> obtenerAlertasStock() {
-        return productoRepository.findBajoStock(10);
-    }
-
-    /**
-     * DTO inmutable con las métricas del dashboard.
-     */
-    public record DashboardMetrics(
-            long totalClientes,
-            long totalPedidos,
-            long totalProductos,
-            long totalEmpleados,
-            long totalOficinas,
-            BigDecimal totalIngresos,
-            long pedidosEntregados,
-            long pedidosPendientes,
-            long pedidosRechazados,
-            long totalBajoStock
-    ) {
+        return productoRepository.findBajoStock(UMBRAL_STOCK_CRITICO).stream()
+                .sorted(Comparator.comparing(Producto::getCantidadEnStock,
+                        Comparator.nullsFirst(Comparator.naturalOrder())))
+                .toList();
     }
 }

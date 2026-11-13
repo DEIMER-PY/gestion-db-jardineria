@@ -103,7 +103,7 @@ class ApplicationServicesTest {
         when(pedidoRepository.countByEstado("Pendiente")).thenReturn(12L);
         when(pedidoRepository.countByEstado("Rechazado")).thenReturn(5L);
 
-        DashboardService.DashboardMetrics metricas = service.obtenerMetricas();
+        com.jardineria.application.dto.DashboardMetrics metricas = service.obtenerMetricas();
 
         assertThat(metricas.totalClientes()).isEqualTo(36L);
         assertThat(metricas.totalPedidos()).isEqualTo(47L);

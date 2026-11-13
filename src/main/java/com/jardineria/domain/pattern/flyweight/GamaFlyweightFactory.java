@@ -14,15 +14,15 @@ public class GamaFlyweightFactory {
 
     static {
         // Inicializar flyweights canónicos para las gamas de la base de datos
-        registrar("Aromáticas", "Plantas aromáticas culinarias y medicinales", "#10B981", "🌿", "aromaticas.jpg");
-        registrar("Frutales", "Árboles y arbustos de producción frutal de huerto", "#F59E0B", "🍎", "frutales.jpg");
-        registrar("Herbaceas", "Plantas herbáceas para jardín decorativo y tapizantes", "#3B82F6", "🌱", "herbaceas.jpg");
-        registrar("Herramientas", "Herramientas profesionales para poda, labranza y riego", "#6B7280", "🛠️", "herramientas.jpg");
-        registrar("Ornamentales", "Flores vistosas y plantas de floración continua para decoración", "#EC4899", "🌺", "ornamentales.jpg");
+        registrar("Aromáticas", "Plantas aromáticas culinarias y medicinales", "#10B981", "leaf", "aromaticas.jpg");
+        registrar("Frutales", "Árboles y arbustos de producción frutal de huerto", "#F59E0B", "apple", "frutales.jpg");
+        registrar("Herbaceas", "Plantas herbáceas para jardín decorativo y tapizantes", "#3B82F6", "sprout", "herbaceas.jpg");
+        registrar("Herramientas", "Herramientas profesionales para poda, labranza y riego", "#6B7280", "tools", "herramientas.jpg");
+        registrar("Ornamentales", "Flores vistosas y plantas de floración continua para decoración", "#EC4899", "flower", "ornamentales.jpg");
     }
 
-    private static void registrar(String gama, String desc, String colorHex, String emoji, String url) {
-        POOL.put(gama.toLowerCase(), new GamaFlyweight(gama, desc, colorHex, emoji, url));
+    private static void registrar(String gama, String desc, String colorHex, String iconKey, String url) {
+        POOL.put(gama.toLowerCase(), new GamaFlyweight(gama, desc, colorHex, iconKey, url));
     }
 
     public static GamaFlyweight getFlyweight(String gamaName) {
@@ -35,7 +35,7 @@ public class GamaFlyweightFactory {
         if (key.contains("herbacea")) key = "herbaceas";
 
         return POOL.computeIfAbsent(key, k ->
-                new GamaFlyweight(gamaName, "Familia botánica de jardinería", "#4F46E5", "🌻", "default.jpg")
+                new GamaFlyweight(gamaName, "Familia botánica de jardinería", "#4F46E5", "seedling", "default.jpg")
         );
     }
 

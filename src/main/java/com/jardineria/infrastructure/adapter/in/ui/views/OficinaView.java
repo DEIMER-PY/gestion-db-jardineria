@@ -17,13 +17,13 @@ import java.util.List;
  * Vista de administración y CRUD para Oficinas con búsqueda en tiempo real y exportación CSV.
  */
 public class OficinaView extends JPanel {
-    private final OficinaService service;
+    private final com.jardineria.application.port.in.OficinaUseCase service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField txtSearch;
     private List<Oficina> cachedOficinas;
 
-    public OficinaView(OficinaService service) {
+    public OficinaView(com.jardineria.application.port.in.OficinaUseCase service) {
         this.service = service;
         setLayout(new BorderLayout(12, 12));
         setBorder(new EmptyBorder(16, 16, 16, 16));

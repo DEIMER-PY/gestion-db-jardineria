@@ -1,5 +1,6 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.port.in.OficinaUseCase;
 import com.jardineria.domain.exception.BusinessValidationException;
 import com.jardineria.domain.exception.DuplicateEntityException;
 import com.jardineria.domain.exception.EntityNotFoundException;
@@ -12,13 +13,14 @@ import java.util.Objects;
 /**
  * Servicio de aplicación para la gestión del ciclo de vida y reglas de negocio de Oficinas.
  */
-public class OficinaService {
+public class OficinaService implements OficinaUseCase {
     private final OficinaRepository repository;
 
     public OficinaService(OficinaRepository repository) {
         this.repository = Objects.requireNonNull(repository, "El repositorio de oficina no puede ser nulo");
     }
 
+    @Override
     public Oficina crearOficina(Oficina oficina) {
         validarDatosOficina(oficina);
         if (repository.existsById(oficina.getCodigoOficina())) {
@@ -27,6 +29,7 @@ public class OficinaService {
         return repository.save(oficina);
     }
 
+    @Override
     public Oficina actualizarOficina(Oficina oficina) {
         validarDatosOficina(oficina);
         if (!repository.existsById(oficina.getCodigoOficina())) {
@@ -35,6 +38,7 @@ public class OficinaService {
         return repository.update(oficina);
     }
 
+    @Override
     public Oficina obtenerPorId(String codigoOficina) {
         if (codigoOficina == null || codigoOficina.isBlank()) {
             throw new BusinessValidationException("El código de oficina es obligatorio");
@@ -43,10 +47,12 @@ public class OficinaService {
                 .orElseThrow(() -> new EntityNotFoundException("Oficina", codigoOficina));
     }
 
+    @Override
     public List<Oficina> listarTodas() {
         return repository.findAll();
     }
 
+    @Override
     public boolean eliminarOficina(String codigoOficina) {
         if (!repository.existsById(codigoOficina)) {
             throw new EntityNotFoundException("Oficina", codigoOficina);
@@ -54,6 +60,7 @@ public class OficinaService {
         return repository.deleteById(codigoOficina);
     }
 
+    @Override
     public List<Oficina> buscarPorPais(String pais) {
         if (pais == null || pais.isBlank()) {
             return listarTodas();
@@ -61,6 +68,7 @@ public class OficinaService {
         return repository.findByPais(pais.trim());
     }
 
+    @Override
     public List<Oficina> buscarPorCiudad(String ciudad) {
         if (ciudad == null || ciudad.isBlank()) {
             return listarTodas();
@@ -68,6 +76,7 @@ public class OficinaService {
         return repository.findByCiudad(ciudad.trim());
     }
 
+    @Override
     public long contarOficinas() {
         return repository.count();
     }

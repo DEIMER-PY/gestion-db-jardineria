@@ -1,5 +1,6 @@
 package com.jardineria.application.service;
 
+import com.jardineria.application.port.in.ProductoUseCase;
 import com.jardineria.domain.exception.BusinessValidationException;
 import com.jardineria.domain.exception.DuplicateEntityException;
 import com.jardineria.domain.exception.EntityNotFoundException;
@@ -14,7 +15,7 @@ import java.util.Objects;
 /**
  * Servicio de aplicación para la gestión del catálogo de Productos, stock y precios.
  */
-public class ProductoService {
+public class ProductoService implements ProductoUseCase {
     private final ProductoRepository productoRepository;
     private final GamaProductoRepository gamaRepository;
 
@@ -23,6 +24,7 @@ public class ProductoService {
         this.gamaRepository = gamaRepository;
     }
 
+    @Override
     public Producto crearProducto(Producto prod) {
         validarProducto(prod);
         if (productoRepository.existsById(prod.getCodigoProducto())) {
@@ -34,6 +36,7 @@ public class ProductoService {
         return productoRepository.save(prod);
     }
 
+    @Override
     public Producto actualizarProducto(Producto prod) {
         validarProducto(prod);
         if (!productoRepository.existsById(prod.getCodigoProducto())) {
@@ -45,6 +48,7 @@ public class ProductoService {
         return productoRepository.update(prod);
     }
 
+    @Override
     public Producto obtenerPorId(String codigoProducto) {
         if (codigoProducto == null || codigoProducto.isBlank()) {
             throw new BusinessValidationException("El código de producto es obligatorio");
@@ -53,10 +57,12 @@ public class ProductoService {
                 .orElseThrow(() -> new EntityNotFoundException("Producto", codigoProducto));
     }
 
+    @Override
     public List<Producto> listarTodos() {
         return productoRepository.findAll();
     }
 
+    @Override
     public boolean eliminarProducto(String codigoProducto) {
         if (!productoRepository.existsById(codigoProducto)) {
             throw new EntityNotFoundException("Producto", codigoProducto);
@@ -64,6 +70,7 @@ public class ProductoService {
         return productoRepository.deleteById(codigoProducto);
     }
 
+    @Override
     public List<Producto> buscarPorGama(String gama) {
         if (gama == null || gama.isBlank()) {
             return listarTodos();
@@ -71,6 +78,7 @@ public class ProductoService {
         return productoRepository.findByGama(gama.trim());
     }
 
+    @Override
     public List<Producto> buscarBajoStock(int umbral) {
         if (umbral < 0) {
             umbral = 10;
@@ -78,6 +86,7 @@ public class ProductoService {
         return productoRepository.findBajoStock(umbral);
     }
 
+    @Override
     public List<Producto> buscarPorNombre(String termino) {
         if (termino == null || termino.isBlank()) {
             return listarTodos();
@@ -85,6 +94,7 @@ public class ProductoService {
         return productoRepository.searchByNombre(termino.trim());
     }
 
+    @Override
     public long contarProductos() {
         return productoRepository.count();
     }

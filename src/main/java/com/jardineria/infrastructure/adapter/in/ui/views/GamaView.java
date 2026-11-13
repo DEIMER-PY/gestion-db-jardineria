@@ -17,13 +17,13 @@ import java.util.List;
  * Vista de administración para Gamas o Familias de Productos con galería visual tipo tarjeta y exportación CSV.
  */
 public class GamaView extends JPanel {
-    private final GamaProductoService service;
+    private final com.jardineria.application.port.in.GamaProductoUseCase service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JPanel cardsPanel;
     private List<GamaProducto> cachedGamas;
 
-    public GamaView(GamaProductoService service) {
+    public GamaView(com.jardineria.application.port.in.GamaProductoUseCase service) {
         this.service = service;
         setLayout(new BorderLayout(14, 14));
         setBorder(new EmptyBorder(16, 16, 16, 16));
@@ -112,7 +112,7 @@ public class GamaView extends JPanel {
                 // Crear tarjeta visual para la galería superior
                 GamaFlyweight fw = GamaFlyweightFactory.getFlyweight(g.getGama());
                 Color color = Color.decode(fw.colorHex());
-                cardsPanel.add(createGamaCard(g.getGama(), fw.emojiVisual(), color, g.getDescripcionTexto()));
+                cardsPanel.add(createGamaCard(g.getGama(), fw.nombreGama().substring(0, 1), color, g.getDescripcionTexto()));
             }
 
             cardsPanel.revalidate();

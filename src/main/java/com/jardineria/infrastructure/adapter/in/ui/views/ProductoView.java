@@ -22,7 +22,7 @@ import java.util.List;
  * control de stock crítico, márgenes comerciales y exportación CSV.
  */
 public class ProductoView extends JPanel {
-    private final ProductoService service;
+    private final com.jardineria.application.port.in.ProductoUseCase service;
     private DefaultTableModel tableModel;
     private JTable table;
     private JComboBox<String> cbGama;
@@ -41,7 +41,7 @@ public class ProductoView extends JPanel {
     private JLabel lblPreviewDimensiones;
     private JProgressBar progressStock;
 
-    public ProductoView(ProductoService service) {
+    public ProductoView(com.jardineria.application.port.in.ProductoUseCase service) {
         this.service = service;
         setLayout(new BorderLayout(12, 12));
         setBorder(new EmptyBorder(16, 16, 16, 16));
@@ -272,7 +272,7 @@ public class ProductoView extends JPanel {
 
         GamaFlyweight fw = GamaFlyweightFactory.getFlyweight(p.getGama());
         lblPreviewTitle.setText("<html><b>" + p.getNombre() + "</b> (" + p.getCodigoProducto() + ")</html>");
-        lblPreviewGama.setText(fw.emojiVisual() + " Gama: " + p.getGama());
+        lblPreviewGama.setText("Gama: " + p.getGama());
         lblPreviewGama.setForeground(Color.decode(fw.colorHex()));
 
         int stock = p.getCantidadEnStock();

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JdbcRepositoriesIntegrationTest {
@@ -24,6 +25,12 @@ class JdbcRepositoriesIntegrationTest {
     private ProductoJdbcRepository productoRepo;
     private DetallePedidoJdbcRepository detalleRepo;
     private PagoJdbcRepository pagoRepo;
+
+    @BeforeAll
+    static void requiereBaseDeDatos() {
+        assumeTrue(DatabaseConnectionManager.isAvailable(3),
+                "MySQL no disponible: ejecute 'docker compose -f docker/docker-compose.yml up -d'");
+    }
 
     @BeforeEach
     void setUp() {
