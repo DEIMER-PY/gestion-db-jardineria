@@ -68,9 +68,7 @@ flowchart LR
     R1 --> S1[ClienteService]
     R2 --> S2[PedidoService]
     R3 --> S3[AnalyticsService]
-    S1 & S2 & S3 --> DS[DesktopServices]
-    S1 & S2 --> F[JardineriaBusinessFacade]
-    F --> DS
+    S1 & S2 & S3 --> DS[DesktopServices<br/>solo puertos *UseCase]
     DS --> SHELL[AppShell · GUI]
 ```
 
@@ -190,15 +188,15 @@ flowchart TB
     VIEWS --> DV[DashboardView]
     VIEWS --> AV[AnalyticsView]
     VIEWS --> CRUD["CrudModuleView&lt;T&gt; × 7"]
-    VIEWS --> PV[PatternsView]
     VIEWS --> SV[SettingsView]
-    DV & AV & CRUD & PV & SV --> BV[BaseView<br/>cabecera, scroll, cargando/error]
+    DV & AV & CRUD & SV --> BV[BaseView<br/>cabecera, scroll, cargando/error]
+    DV & AV -. "navigate(ruta, consulta)" .-> NAV
     TM[ThemeManager] -. estilos .-> SH
 ```
 
 - **Template Method**: `BaseView` y `CrudModuleView` fijan el esqueleto; cada módulo rellena `fetch`, `configureColumns`, `openEditor`…
 - **Command**: la paleta de comandos ejecuta acciones con nombre (navegar, cambiar tema o perfil, exportar…).
-- **Strategy**: cada demostración de patrón GoF implementa `PatternDemo`.
+- **Navegación contextual**: `Navigator.navigate(ruta, consulta)` abre la vista y llama a `View.reveal(consulta)`. Las vistas CRUD filtran por ese texto y seleccionan la mejor coincidencia (`#30` elige el pedido 30, no el 300); `PedidosView` traduce un estado («Pendiente») a su filtro segmentado.
 
 ## 6. Mapa de paquetes
 
@@ -216,7 +214,7 @@ src/main/java/com/jardineria
             ├── shell/       AppShell · Sidebar · TopBar · CommandPalette · ShortcutsSheet
             ├── navigation/  Route · Navigator
             ├── theme/       ThemeManager · ThemePreset · Accent · AppearanceProfile · ProfileStore
-            ├── support/     Motion · Icons · Series · CsvExport · FxTasks · ModalHost · Notifier
+            ├── support/     Motion · Icons · Interactions · Keys · Series · CsvExport · FxTasks · ModalHost · Notifier
             ├── components/  KpiCard · AreaTrendChart · ActivityHeatmap · Treemap · DonutChart · Sparkline · ResponsiveGrid · form/ …
-            └── views/       dashboard · analytics · crud · modules · patterns · settings
+            └── views/       dashboard · analytics · crud · modules · settings
 ```

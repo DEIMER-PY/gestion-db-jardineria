@@ -113,10 +113,14 @@ Cada tipo (`Kind`) decide el icono y el tono en la vista. Sin datos, no se inven
 | Tarjetas KPI | Se elevan; clic abre su módulo | `Tab` + `Enter` / `Espacio` | Contador ascendente de 0 al valor |
 | Sparklines | Guía vertical y burbuja «mes · valor» | — | — |
 | Ventas frente a cobros | Cursor con valores del mes y diferencia | `←` `→` recorren los meses | Revelado de izquierda a derecha |
-| Donut logístico | Resalta segmento y fila de la leyenda; el centro muestra ese estado | — | — |
+| Donut logístico | Resalta segmento y fila de la leyenda; el centro muestra ese estado; clic abre Pedidos filtrado por ese estado | Filas de la leyenda: `Tab` + `Enter` / `Espacio` | — |
 | Treemap de gamas | Ficha con gama, importe y porcentaje | — | Aparición progresiva de las teselas |
 | Mapa de actividad | Ficha con «mes: n pedidos»; la celda crece | Celdas con pedidos enfocables | Aparición escalonada; barras anuales que crecen |
-| Actividad reciente | Clic abre el módulo de pedidos | `Tab` + `Enter` / `Espacio` | — |
+| Clientes más activos | Clic abre Clientes con ese cliente seleccionado | `Tab` + `Enter` / `Espacio` | Barras que crecen |
+| Stock crítico | Clic abre Productos con ese producto seleccionado | `Tab` + `Enter` / `Espacio` | Barras que crecen |
+| Actividad reciente | Clic abre Pedidos con ese pedido seleccionado | `Tab` + `Enter` / `Espacio` | — |
+
+Estas filas usan `Interactions.activatable` (foco, rol de botón, clic, `Enter` y `Espacio`) y llegan al módulo con `Navigator.navigate(ruta, consulta)`, que rellena el buscador y selecciona la fila; el botón **Atrás** devuelve al panel. En **Métricas** funcionan igual las listas de gamas (→ Productos), países y clientes (→ Clientes).
 
 ![Cursor sobre «Ventas frente a cobros»](img/dashboard-hover.png)
 
