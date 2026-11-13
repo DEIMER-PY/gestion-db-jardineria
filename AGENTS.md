@@ -18,7 +18,8 @@ Contexto operativo para cualquier agente (Claude, Cursor, Copilot…) que modifi
 | Infraestructura | `infrastructure..` | todo | — |
 
 - La GUI y la CLI consumen **puertos de entrada** (`application.port.in.*UseCase`), nunca servicios concretos ni repositorios. La GUI los recibe agrupados en el record `DesktopServices`.
-- `ApplicationContext` es el único *composition root*: crea repositorios, servicios, fachada y proxy. No arranca hilos ni servidores.
+- `ApplicationContext` es el único *composition root*: crea repositorios y servicios. No arranca hilos ni servidores.
+- Los patrones GoF viven en `domain.pattern` y `application.facade` y se verifican con pruebas (`GofStructuralPatternsTest`, `JardineriaBusinessFacadeTest`). La GUI no tiene pantalla de demostración: no la reintroduzcas.
 - Toda conexión sale de `DatabaseConnectionManager.getInstance().getConnection()` (Singleton con HikariCP). Siempre `PreparedStatement` y *try-with-resources*.
 - Las entidades con clave compuesta usan `DetallePedidoId` y `PagoId`.
 - La gama `Herbaceas` es clave primaria y foránea en MySQL: **no se renombra**. Se muestra como "Herbáceas" con `Formatters.display`.
@@ -28,6 +29,8 @@ Contexto operativo para cualquier agente (Claude, Cursor, Copilot…) que modifi
 - **Vistas**: heredan de `BaseView` (cabecera, scroll y estados cargando/error) y consultan datos con `load(callable, render)`, que ejecuta en un hilo virtual. **Nunca** se hace JDBC en el hilo de JavaFX.
 - **Módulos CRUD**: heredan de `CrudModuleView<T>` e implementan `fetch`, `configureColumns`, `searchableText`, `openEditor`, `deleteItem`, `describe`, `csvHeader` y `csvRow`. Los formularios se construyen con `FormDialog` (validación inline y guardado en segundo plano).
 - **Registro**: cada ruta de `navigation.Route` se registra en `views.DesktopViews.registerAll`. Una ruta nueva necesita entrada en el enum, vista y registro.
+- **Navegación contextual**: para abrir un módulo con un elemento concreto usa `Navigator.navigate(ruta, consulta)`; la vista lo recibe en `View.reveal`. Los elementos clicables que no son botones se preparan con `Interactions.activatable` (foco, rol de botón, clic, `Enter` y `Espacio`).
+- **Validación**: las reglas de formulario van con `FormField.rule`; para claves de altas usa `CrudModuleView.uniqueKey`. La capa de aplicación vuelve a validar al guardar.
 - **Estilos**: solo CSS. `ThemeManager` aplica, por este orden, Primer (AtlantaFX), `css/themes/<tema>.css` (superficies y texto), `css/accents.css` (acento por modo, `.theme-dark.accent-*` / `.theme-light.accent-*`) y `css/app.css` (componentes), más clases en la raíz (`theme-*`, `accent-*`, `density-*`, `corners-*`, `ambient-off`). Los colores salen de variables (`-color-*`, `-jd-*`, `.tone-*`), nunca de valores fijos en Java, salvo los datos que traen su propio color (los hex del flyweight). Un tema nuevo necesita entrada en `ThemePreset` y su CSS; un acento nuevo, entrada en `Accent` y sus dos bloques en `accents.css`. Detalle en `docs/APARIENCIA.md`.
 - **Apariencia**: la configura el usuario en Ajustes mediante `AppearanceProfile` (record inmutable, se modifica con `ThemeManager.update(p -> p.withX(...))`) y se persiste con `ProfileStore` (`preferences()` en la app, `inMemory()` en pruebas). No guardes preferencias visuales por otra vía.
 - **Panel general**: los datos se obtienen en una sola carga (`DashboardSnapshot.load`); las conclusiones textuales viven en `DashboardInsights` (lógica pura, con pruebas). Las variaciones se calculan con `Series.recentChange` (ventana fija, vacío si la base es cero); no compares periodos de distinta duración. Detalle en `docs/DASHBOARD.md`.

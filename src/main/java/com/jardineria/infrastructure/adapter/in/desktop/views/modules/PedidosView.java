@@ -61,6 +61,7 @@ public class PedidosView extends CrudModuleView<Pedido> {
     private volatile Map<String, Producto> productoPorCodigo = Map.of();
 
     private final VBox detail = new VBox(16);
+    private final ToggleGroup estados;
     private int detailRequest;
 
     public PedidosView(PedidoUseCase pedidos, DetallePedidoUseCase detalles, ClienteUseCase clientes, ProductoUseCase productos) {
@@ -70,7 +71,7 @@ public class PedidosView extends CrudModuleView<Pedido> {
         this.clientes = clientes;
         this.productos = productos;
 
-        ToggleGroup estados = new ToggleGroup();
+        estados = new ToggleGroup();
         HBox segmented = new HBox();
         segmented.getStyleClass().add("segmented");
         for (String label : List.of("Todos", "Pendiente", "Entregado", "Rechazado")) {
@@ -89,6 +90,20 @@ public class PedidosView extends CrudModuleView<Pedido> {
             setExtraFilter(p -> estado == null || estado.equalsIgnoreCase(p.getEstado()));
         });
         addFilter(segmented);
+    }
+
+    /** Un estado ("Pendiente", "Entregado"…) activa el filtro segmentado; el resto busca en la tabla. */
+    @Override
+    public void reveal(String query) {
+        for (javafx.scene.control.Toggle t : estados.getToggles()) {
+            if (t.getUserData() != null && Formatters.fold(t.getUserData().toString()).equals(Formatters.fold(query))) {
+                estados.selectToggle(t);
+                super.reveal("");
+                return;
+            }
+        }
+        estados.selectToggle(estados.getToggles().get(0));
+        super.reveal(query);
     }
 
     private String cliente(Integer codigo) {
@@ -343,7 +358,13 @@ public class PedidosView extends CrudModuleView<Pedido> {
         FormField<Producto> producto = form.choice("Producto", disponibles, null,
                 prod -> prod.getNombre() + " · " + prod.getCantidadEnStock() + " uds").required().wide();
         FormField<Integer> cantidad = form.integer("Cantidad", 1).required()
-                .rule(v -> v <= 0 ? "La cantidad debe ser mayor que cero." : null);
+                .rule(v -> v <= 0 ? "La cantidad debe ser mayor que cero." : null)
+                .rule(v -> {
+                    Producto elegido = producto.value();
+                    Integer stock = elegido == null ? null : elegido.getCantidadEnStock();
+                    return stock != null && v > stock
+                            ? "Solo quedan " + stock + (stock == 1 ? " unidad" : " unidades") + " en stock." : null;
+                });
         FormField<BigDecimal> precio = form.decimal("Precio por unidad (€)", null)
                 .rule(v -> v.signum() <= 0 ? "El precio debe ser mayor que cero." : null);
         ((javafx.scene.control.ComboBox<?>) producto.control()).valueProperty().addListener((obs, o, n) -> {
@@ -382,7 +403,8 @@ public class PedidosView extends CrudModuleView<Pedido> {
                 nuevo ? "Se propone el número " + siguiente + ". Las líneas se añaden después desde el panel del pedido."
                         : "El número de pedido no se puede cambiar.");
         FormField<Integer> codigo = form.integer("Número de pedido", nuevo ? siguiente : p.getCodigoPedido()).required().locked(!nuevo)
-                .rule(v -> v <= 0 ? "Debe ser un número positivo." : null);
+                .rule(v -> v <= 0 ? "Debe ser un número positivo." : null)
+                .rule(uniqueKey(nuevo, Pedido::getCodigoPedido, "un pedido"));
         FormField<String> estado = form.choice("Estado", Series.ESTADOS, nuevo ? "Pendiente"
                 : Series.ESTADOS.stream().filter(s -> s.equalsIgnoreCase(p.getEstado())).findFirst().orElse("Pendiente"), s -> s).required();
         FormField<Integer> cliente = form.choice("Cliente",
@@ -392,7 +414,8 @@ public class PedidosView extends CrudModuleView<Pedido> {
         FormField<LocalDate> esperada = form.date("Entrega prevista", nuevo ? hoy.plusDays(7) : p.getFechaEsperada()).required()
                 .rule(d -> fecha.value() != null && d.isBefore(fecha.value()) ? "No puede ser anterior a la fecha del pedido." : null);
         FormField<LocalDate> entrega = form.date("Fecha de entrega", p.getFechaEntrega())
-                .rule(d -> fecha.value() != null && d.isBefore(fecha.value()) ? "No puede ser anterior a la fecha del pedido." : null);
+                .rule(d -> fecha.value() != null && d.isBefore(fecha.value()) ? "No puede ser anterior a la fecha del pedido." : null)
+                .rule(d -> d.isAfter(hoy) ? "Una entrega registrada no puede ser futura." : null);
         FormField<String> comentarios = form.area("Comentarios", p.getComentarios());
         form.keyField(codigo);
         form.show(() -> {

@@ -425,7 +425,8 @@ public class ClientesView extends CrudModuleView<Cliente> {
                         : "El código de cliente no se puede cambiar una vez creado.");
         form.section("Empresa");
         FormField<Integer> codigo = form.integer("Código", nuevo ? siguiente : c.getCodigoCliente()).required().locked(!nuevo)
-                .rule(v -> v <= 0 ? "Debe ser un número positivo." : null);
+                .rule(v -> v <= 0 ? "Debe ser un número positivo." : null)
+                .rule(uniqueKey(nuevo, Cliente::getCodigoCliente, "un cliente"));
         FormField<String> nombre = form.text("Nombre del cliente", c.getNombreCliente(), 50).required();
         FormField<String> contacto = form.text("Nombre de contacto", c.getNombreContacto(), 30);
         FormField<String> apellido = form.text("Apellido de contacto", c.getApellidoContacto(), 30);

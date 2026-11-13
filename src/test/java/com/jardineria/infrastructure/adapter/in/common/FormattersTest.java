@@ -46,4 +46,12 @@ class FormattersTest {
         assertThat(Formatters.display("Frutales")).isEqualTo("Frutales");
         assertThat(Formatters.display(null)).isEqualTo("—");
     }
+
+    @Test
+    @DisplayName("fold quita tildes, pasa a minúsculas y nunca devuelve null")
+    void plegadoParaBusquedas() {
+        assertThat(Formatters.fold("  Jardín Botánico ")).isEqualTo("jardin botanico");
+        assertThat(Formatters.fold("PEÑA")).isEqualTo("pena");
+        assertThat(Formatters.fold(null)).isEmpty();
+    }
 }

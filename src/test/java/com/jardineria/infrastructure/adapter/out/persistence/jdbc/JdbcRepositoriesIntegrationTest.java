@@ -1,7 +1,6 @@
-package com.jardineria.infrastructure;
+package com.jardineria.infrastructure.adapter.out.persistence.jdbc;
 
 import com.jardineria.domain.model.*;
-import com.jardineria.infrastructure.adapter.out.persistence.jdbc.*;
 import com.jardineria.infrastructure.config.DatabaseConnectionManager;
 import org.junit.jupiter.api.*;
 

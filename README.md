@@ -11,8 +11,8 @@ Aplicación de escritorio en **Java 21 + JavaFX** para gestionar la base de dato
 | Métricas | Ficha de cliente |
 |---|---|
 | ![Métricas](docs/img/analytics-dark.png) | ![Ficha de cliente](docs/img/clientes-detalle.png) |
-| **Alta de pedido** | **Laboratorio de patrones** |
-| ![Formulario](docs/img/pedidos-formulario.png) | ![Decorator](docs/img/patron-decorator.png) |
+| **Alta de pedido** | **Pedidos (tema claro)** |
+| ![Formulario](docs/img/pedidos-formulario.png) | ![Pedidos en tema claro](docs/img/pedidos-light.png) |
 
 ---
 
@@ -67,12 +67,11 @@ docker exec -i jardineria-mysql mysql -uroot -ppassword --default-character-set=
 
 | Módulo | Qué ofrece |
 |---|---|
-| **Panel general** | Saludo con hora de actualización, 5 indicadores con variación trimestral honesta y sparklines interactivas, ventas frente a cobros (cursor y teclado), estado logístico, pedidos por mes, treemap de ventas por gama, mapa de calor de actividad con totales anuales, **lecturas clave** calculadas automáticamente, clientes más activos, stock crítico y actividad reciente. Ver [docs/DASHBOARD.md](docs/DASHBOARD.md). |
-| **Métricas** | Filtro por año, ventas frente a cobros, pedidos por mes y estado, ticket medio, tasa de rechazo, distribución por gama, país y forma de pago, ranking de clientes y exportación CSV. |
+| **Panel general** | Saludo con hora de actualización, 5 indicadores con variación trimestral honesta y sparklines interactivas, ventas frente a cobros (cursor y teclado), estado logístico, pedidos por mes, treemap de ventas por gama, mapa de calor de actividad con totales anuales, **lecturas clave** calculadas automáticamente, clientes más activos, stock crítico y actividad reciente. **Navegación contextual**: un clic en un estado, cliente, producto o pedido abre su módulo ya filtrado y con el elemento seleccionado. Ver [docs/DASHBOARD.md](docs/DASHBOARD.md). |
+| **Métricas** | Filtro por año, ventas frente a cobros (gráfico de áreas con cursor), pedidos por mes y estado, ticket medio, tasa de rechazo, distribución por gama, país y forma de pago, ranking de clientes y exportación CSV. Las gamas, los países y los clientes llevan a su módulo filtrado. |
 | **Clientes** | Búsqueda sin tildes, filtro por país y ficha lateral con contacto, representante, crédito usado frente al límite y últimos pedidos y pagos. |
 | **Pedidos** | Filtro por estado, cronología con aviso de retraso, cambio rápido de estado y gestión de líneas (el alta descuenta stock). |
-| **Pagos, Productos, Gamas, Oficinas, Empleados** | CRUD con validación inline, filtros propios (forma de pago, gama, oficina, stock crítico) y resumen superior. |
-| **Patrones GoF** | Una demo en vivo por patrón que ejecuta las clases del dominio con datos de MySQL (ver más abajo). |
+| **Pagos, Productos, Gamas, Oficinas, Empleados** | CRUD con validación inline (claves repetidas, importes y stock no negativos, fechas coherentes, cantidad de una línea ≤ stock disponible), filtros propios (forma de pago, gama, oficina, stock crítico) y resumen superior. |
 | **Ajustes** | Perfiles de apariencia al estilo de la terminal de Ubuntu: 6 temas (4 oscuros, 2 claros), 7 acentos, tamaño de texto, densidad, esquinas, movimiento reducido, vista de inicio; exportar e importar perfiles. Ver [docs/APARIENCIA.md](docs/APARIENCIA.md). |
 
 Todas las tablas permiten ordenar, buscar, copiar filas, exportar a CSV (UTF-8 con BOM y `;`, apto para Excel) y abrir el menú contextual. Las consultas se ejecutan en hilos virtuales, así que la interfaz nunca se congela; los errores de MySQL (clave duplicada, clave foránea, longitud) se traducen a mensajes comprensibles junto al campo afectado.
@@ -149,22 +148,24 @@ src/main/java/com/jardineria
     └── adapter/in/
         ├── common/    Formatters (compartido por GUI y CLI)
         ├── cli/
-        └── desktop/   shell · navigation · theme · support · components(/form) · views/{dashboard,analytics,crud,modules,patterns}
+        └── desktop/   shell · navigation · theme · support · components(/form) · views/{dashboard,analytics,crud,modules,settings}
 ```
 
 ### Patrones de diseño
 
-| Patrón | Dónde | Qué muestra la demo |
-|---|---|---|
-| **Decorator** | `PriceCalculator` + descuentos e IVA | Pila de capas activables con el subtotal de cada nivel |
-| **Adapter** | `PaymentGatewayPort` ← PayPal / Stripe | Traducción de la llamada del dominio a cada SDK y el `Pago` resultante |
-| **Composite** | `CatalogComponent` ← `ProductLeaf` / `ProductBundleComposite` | Árbol de kits editable con precio y stock ensamblable recursivos |
-| **Bridge** | `ExecutiveReport` × CSV / HTML / JSON | Mismo informe en tres formatos, con opción de guardarlo |
-| **Flyweight** | `GamaFlyweightFactory` | Una instancia compartida por gama (identidad visible) frente a N productos |
-| **Proxy** | `CachedProductLookupProxy` | Aciertos y fallos de caché con tiempos reales contra MySQL |
-| **Facade** | `JardineriaBusinessFacade` | Checkout real de 7 pasos (con confirmación) que crea pedido, líneas y pago |
+Los siete patrones estructurales viven en el dominio y en la capa de aplicación, y se verifican con pruebas; la interfaz no tiene una pantalla de demostración, porque no aporta nada al trabajo diario.
 
-En la GUI también se aplican **Template Method** (`BaseView`, `CrudModuleView`), **Strategy** (`PatternDemo`), **Command** (paleta `Ctrl+K`) y **Singleton** (`DatabaseConnectionManager`).
+| Patrón | Dónde | Cómo se comprueba |
+|---|---|---|
+| **Decorator** | `PriceCalculator` + descuentos e IVA | `GofStructuralPatternsTest`: el orden de las capas cambia el total |
+| **Adapter** | `PaymentGatewayPort` ← PayPal / Stripe | `GofStructuralPatternsTest`: cada SDK produce el mismo `Pago` |
+| **Composite** | `CatalogComponent` ← `ProductLeaf` / `ProductBundleComposite` | `GofStructuralPatternsTest`: precio y stock ensamblable recursivos |
+| **Bridge** | `ExecutiveReport` × CSV / HTML / JSON | `GofStructuralPatternsTest`: mismo informe en tres formatos |
+| **Flyweight** | `GamaFlyweightFactory` | `GofStructuralPatternsTest`; además lo usa la vista **Gamas** para el color de cada gama |
+| **Proxy** | `CachedProductLookupProxy` | `GofStructuralPatternsTest`: aciertos y fallos de caché |
+| **Facade** | `JardineriaBusinessFacade` | `JardineriaBusinessFacadeTest`: checkout que crea pedido, líneas y pago, o no crea nada si falla una regla |
+
+En la GUI también se aplican **Template Method** (`BaseView`, `CrudModuleView`), **Command** (paleta `Ctrl+K`) y **Singleton** (`DatabaseConnectionManager`).
 
 ---
 
@@ -177,11 +178,12 @@ En la GUI también se aplican **Template Method** (`BaseView`, `CrudModuleView`)
 
 | Prueba | Cubre |
 |---|---|
-| `DomainEntitiesTest`, `GofStructuralPatternsTest` | Reglas del dominio y los 7 patrones |
+| `DomainEntitiesTest`, `GofStructuralPatternsTest`, `JardineriaBusinessFacadeTest` | Reglas del dominio y los 7 patrones |
 | `ApplicationServicesTest`, `AnalyticsServiceTest` | Servicios con repositorios simulados (Mockito) |
 | `JdbcRepositoriesIntegrationTest`, `AnalyticsJdbcRepositoryIntegrationTest` | SQL real contra el MySQL de Docker (se omiten si no está levantado) |
 | `HexagonalArchitectureTest` | Fronteras entre capas (ArchUnit) |
 | `DesktopSmokeTest` | La GUI completa sin base de datos: todas las rutas en ambos temas y los 7 formularios, sin errores |
+| `NavigationRevealTest` | Navegación contextual: abrir Pedidos filtrado por código o por estado y con la fila correcta seleccionada |
 | `FormattersTest`, `SeriesTest`, `CsvExportTest` | Formato es-ES, series temporales y CSV RFC 4180 |
 | `AppearanceProfileTest` | Perfiles de apariencia: límites, serialización tolerante y predefinidos |
 | `DashboardInsightsTest`, `TreemapTest`, `ActivityHeatmapTest` | Lecturas clave, algoritmo squarified y niveles del mapa de calor |

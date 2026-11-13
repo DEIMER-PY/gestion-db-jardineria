@@ -176,7 +176,8 @@ public class ProductosView extends CrudModuleView<Producto> {
         FormDialog form = new FormDialog(Feather.PACKAGE, nuevo ? "Nuevo producto" : "Editar " + p.getNombre(),
                 "Precios en euros; puedes usar coma decimal. El código no se puede cambiar una vez creado.");
         form.section("Identificación");
-        FormField<String> codigo = form.text("Código", p.getCodigoProducto(), 15).required().locked(!nuevo);
+        FormField<String> codigo = form.text("Código", p.getCodigoProducto(), 15).required().locked(!nuevo)
+                .rule(uniqueKey(nuevo, Producto::getCodigoProducto, "un producto"));
         FormField<String> gama = form.choice("Gama", nombresGama, p.getGama(), Formatters::display).required();
         FormField<String> nombre = form.text("Nombre", p.getNombre(), 70).required().wide();
         FormField<String> proveedor = form.text("Proveedor", p.getProveedor(), 50);

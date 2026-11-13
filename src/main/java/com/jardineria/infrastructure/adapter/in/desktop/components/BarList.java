@@ -1,5 +1,6 @@
 package com.jardineria.infrastructure.adapter.in.desktop.components;
 
+import com.jardineria.infrastructure.adapter.in.desktop.support.Interactions;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Motion;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -15,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Ranking de barras horizontales con etiqueta, valor y barra proporcional animada.
@@ -38,9 +40,24 @@ public class BarList extends VBox {
         }
     }
 
+    private Consumer<Item> onOpen;
+    private String openHint;
+
     public BarList() {
         super(12);
         getStyleClass().add("bar-list");
+    }
+
+    /**
+     * Hace cada fila activable (clic, Intro o Espacio) para abrir el detalle del elemento.
+     * Debe llamarse antes de {@link #setItems(List)}.
+     *
+     * @param action acción con el elemento elegido
+     * @param hint   descripción de la acción para tooltip y lector de pantalla
+     */
+    public void setOnOpen(Consumer<Item> action, String hint) {
+        this.onOpen = action;
+        this.openHint = hint;
     }
 
     public void setItems(List<Item> items) {
@@ -95,8 +112,15 @@ public class BarList extends VBox {
 
         VBox row = new VBox(6, head, track);
         row.getStyleClass().add("bar-row");
-        Tooltip.install(row, new Tooltip(item.label() + ": " + item.display()));
-        row.setAccessibleText(item.label() + ", " + item.display());
+        String text = item.label() + ": " + item.display();
+        if (onOpen == null) {
+            Tooltip.install(row, new Tooltip(text));
+            row.setAccessibleText(item.label() + ", " + item.display());
+            return row;
+        }
+        Tooltip.install(row, new Tooltip(text + "\n" + openHint));
+        row.setAccessibleText(item.label() + ", " + item.display() + ". " + openHint);
+        Interactions.activatable(row, () -> onOpen.accept(item));
         return row;
     }
 }

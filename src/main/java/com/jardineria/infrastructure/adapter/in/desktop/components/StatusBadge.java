@@ -3,8 +3,7 @@ package com.jardineria.infrastructure.adapter.in.desktop.components;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
 
-import java.text.Normalizer;
-import java.util.Locale;
+import com.jardineria.infrastructure.adapter.in.common.Formatters;
 
 /**
  * Insignia de estado de pedido con punto de color: Entregado (jade),
@@ -24,8 +23,7 @@ public class StatusBadge extends Label {
 
     /** Clase CSS de tono según el estado del pedido. */
     public static String toneFor(String estado) {
-        String e = estado == null ? "" : Normalizer.normalize(estado, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "").toLowerCase(Locale.ROOT);
+        String e = Formatters.fold(estado);
         if (e.startsWith("entregado")) {
             return "tone-jade";
         }

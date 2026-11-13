@@ -21,10 +21,9 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.feather.Feather;
 
-import java.text.Normalizer;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Supplier;
+import com.jardineria.infrastructure.adapter.in.common.Formatters;
 
 /**
  * Paleta de comandos (Ctrl+K) al estilo de los editores modernos: búsqueda difusa
@@ -36,7 +35,7 @@ public class CommandPalette extends VBox {
     /** Entrada de la paleta. */
     public record Command(String title, String hint, Ikon icon, String shortcut, Runnable action) {
         String searchable() {
-            return normalize(title + " " + hint);
+            return Formatters.fold(title + " " + hint);
         }
     }
 
@@ -71,7 +70,7 @@ public class CommandPalette extends VBox {
         VBox.setVgrow(list, Priority.ALWAYS);
 
         input.textProperty().addListener((obs, old, text) -> {
-            String[] tokens = normalize(text).trim().split("\\s+");
+            String[] tokens = Formatters.fold(text).split("\\s+");
             filtered.setPredicate(c -> {
                 String haystack = c.searchable();
                 for (String t : tokens) {
@@ -148,14 +147,6 @@ public class CommandPalette extends VBox {
         Platform.runLater(command.action());
     }
 
-    static String normalize(String text) {
-        if (text == null) {
-            return "";
-        }
-        return Normalizer.normalize(text, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "")
-                .toLowerCase(Locale.ROOT);
-    }
 
     private static final class CommandCell extends ListCell<Command> {
         @Override

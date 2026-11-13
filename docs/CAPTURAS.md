@@ -14,7 +14,7 @@ docker-compose -f docker/docker-compose.yml up -d          # MySQL con datos
 
 ```mermaid
 flowchart LR
-    T1[DesktopScreenshotTest] --> O1["target/screenshots/<br/>dark-* · light-* · narrow-*<br/>form-* · detail-* · pattern-*"]
+    T1[DesktopScreenshotTest] --> O1["target/screenshots/<br/>dark-* · light-* · narrow-*<br/>form-* · detail-*"]
     T2[DesktopGalleryTest] --> O2["target/screenshots/gallery/<br/>dashboard-&lt;tema&gt; · dashboard-hover<br/>settings-* · shortcuts · palette"]
     O1 & O2 -->|selección| D[docs/img]
 ```
@@ -44,5 +44,5 @@ Si MySQL no está disponible, ambas clases se omiten (`assumeTrue`) en lugar de 
 | ![](img/analytics-dark.png) | ![](img/pedidos-light.png) |
 | **Ficha de cliente** | **Formulario de pedido** |
 | ![](img/clientes-detalle.png) | ![](img/pedidos-formulario.png) |
-| **Patrón Decorator** | **Ajustes (parte inferior)** |
-| ![](img/patron-decorator.png) | ![](img/ajustes-dark-bottom.png) |
+| **Ventana mínima (1100×720)** | **Ajustes (parte inferior)** |
+| ![](img/ventana-minima.png) | ![](img/ajustes-dark-bottom.png) |

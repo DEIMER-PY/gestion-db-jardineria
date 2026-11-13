@@ -1,5 +1,6 @@
 package com.jardineria.infrastructure.adapter.in.desktop.components;
 
+import com.jardineria.infrastructure.adapter.in.desktop.support.Interactions;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.chart.PieChart;
@@ -35,6 +36,9 @@ public class DonutChart extends VBox {
     private String defaultCaption = "";
     private double total;
 
+    private java.util.function.Consumer<Slice> onOpen;
+    private String openHint;
+
     public DonutChart() {
         super(18);
         getStyleClass().add("donut");
@@ -66,6 +70,18 @@ public class DonutChart extends VBox {
         getChildren().addAll(ring, legend);
     }
 
+    /**
+     * Hace activables segmentos y filas de la leyenda (clic, Intro o Espacio).
+     * Debe llamarse antes de {@link #setData}.
+     *
+     * @param action acción con el segmento elegido
+     * @param hint   descripción de la acción para tooltip y lector de pantalla
+     */
+    public void setOnOpen(java.util.function.Consumer<Slice> action, String hint) {
+        this.onOpen = action;
+        this.openHint = hint;
+    }
+
     public void setData(List<Slice> slices, String centerText, String caption) {
         defaultValue = centerText;
         defaultCaption = caption;
@@ -89,6 +105,11 @@ public class DonutChart extends VBox {
             HBox row = legendRow(s, pct);
             row.setOnMouseEntered(e -> focusSlice(index, s));
             row.setOnMouseExited(e -> focusSlice(-1, null));
+            if (onOpen != null) {
+                Interactions.activatable(row, () -> onOpen.accept(s));
+                row.setAccessibleText(s.label() + ": " + (long) s.value() + ". " + openHint);
+                Tooltip.install(row, new Tooltip(openHint));
+            }
             legend.getChildren().add(row);
         }
         current.addAll(data);
@@ -106,7 +127,11 @@ public class DonutChart extends VBox {
         if (!node.getStyleClass().contains("donut-slice")) {
             node.getStyleClass().addAll("donut-slice", s.tone());
         }
-        Tooltip.install(node, new Tooltip(s.label() + ": " + (long) s.value()));
+        Tooltip.install(node, new Tooltip(s.label() + ": " + (long) s.value()
+                + (onOpen == null ? "" : "\n" + openHint)));
+        if (onOpen != null) {
+            node.setOnMouseClicked(e -> onOpen.accept(s));
+        }
         node.setOnMouseEntered(e -> focusSlice(index, s));
         node.setOnMouseExited(e -> focusSlice(-1, null));
     }

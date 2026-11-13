@@ -97,7 +97,8 @@ public class GamasView extends CrudModuleView<GamaProducto> {
         GamaProducto g = nueva ? new GamaProducto() : existing;
         FormDialog form = new FormDialog(Material2AL.ECO, nueva ? "Nueva gama" : "Editar gama " + Formatters.display(g.getGama()),
                 "El nombre de la gama es su clave: los productos la referencian, por eso no se puede renombrar.");
-        FormField<String> nombre = form.text("Nombre de la gama", g.getGama(), 50).required().locked(!nueva).wide();
+        FormField<String> nombre = form.text("Nombre de la gama", g.getGama(), 50).required().locked(!nueva).wide()
+                .rule(uniqueKey(nueva, GamaProducto::getGama, "una gama"));
         FormField<String> descripcion = form.area("Descripción", g.getDescripcionTexto());
         FormField<String> imagen = form.text("Imagen (ruta o URL)", g.getImagen(), 256).wide();
         form.keyField(nombre);

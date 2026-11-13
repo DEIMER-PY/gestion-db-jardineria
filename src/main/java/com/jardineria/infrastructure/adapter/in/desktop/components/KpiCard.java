@@ -1,6 +1,7 @@
 package com.jardineria.infrastructure.adapter.in.desktop.components;
 
 import com.jardineria.infrastructure.adapter.in.desktop.support.Icons;
+import com.jardineria.infrastructure.adapter.in.desktop.support.Interactions;
 import com.jardineria.infrastructure.adapter.in.desktop.support.Motion;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -11,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -143,13 +143,6 @@ public class KpiCard extends VBox {
     /** Convierte la tarjeta en un acceso directo (ratón y teclado). */
     public void setOnOpen(Runnable action) {
         getStyleClass().add("interactive");
-        setFocusTraversable(true);
-        setAccessibleRole(AccessibleRole.BUTTON);
-        setOnMouseClicked(e -> action.run());
-        setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.SPACE) {
-                action.run();
-            }
-        });
+        Interactions.onActivate(this, action);
     }
 }

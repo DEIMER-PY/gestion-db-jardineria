@@ -46,11 +46,9 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.feather.Feather;
 
 import java.math.BigDecimal;
-import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -73,6 +71,8 @@ public abstract class CrudModuleView<T> extends BaseView {
     private final ObservableList<T> master = FXCollections.observableArrayList();
     private final FilteredList<T> filtered = new FilteredList<>(master);
     private final CustomTextField search = new CustomTextField();
+    /** Búsqueda pedida desde otra vista; se resuelve tras la siguiente carga. */
+    private String pendingReveal;
     private final Label count = new Label();
     private final HBox filters = new HBox(10);
     private final VBox summaryHost = new VBox();
@@ -288,7 +288,43 @@ public abstract class CrudModuleView<T> extends BaseView {
             summaryHost.setManaged(summary != null);
             reselect(selected);
             afterLoad(items);
+            if (pendingReveal != null) {
+                selectRevealed(pendingReveal);
+                pendingReveal = null;
+            }
         });
+    }
+
+    /** Filtra por {@code query} y selecciona la mejor coincidencia (vacío limpia la búsqueda). */
+    @Override
+    public void reveal(String query) {
+        String q = query == null ? "" : query.trim();
+        search.setText(q);
+        if (q.isEmpty()) {
+            pendingReveal = null;
+            return;
+        }
+        pendingReveal = q;
+        if (!master.isEmpty()) {
+            selectRevealed(q);
+        }
+    }
+
+    /**
+     * Prefiere el elemento cuyo texto buscable empieza por la consulta como palabra completa
+     * ({@code #30} no debe elegir el pedido 300), luego el que empieza por ella y, si no, el primero.
+     */
+    private void selectRevealed(String query) {
+        String q = Formatters.fold(query);
+        List<T> visible = table.getItems();
+        if (visible.isEmpty()) {
+            return;
+        }
+        T best = visible.stream().filter(t -> Formatters.fold(searchableText(t)).startsWith(q + " ")).findFirst()
+                .or(() -> visible.stream().filter(t -> Formatters.fold(searchableText(t)).startsWith(q)).findFirst())
+                .orElse(visible.get(0));
+        table.getSelectionModel().select(best);
+        table.scrollTo(best);
     }
 
     /** Gancho tras cada recarga (p. ej. para rellenar opciones de filtros). */
@@ -363,21 +399,24 @@ public abstract class CrudModuleView<T> extends BaseView {
     }
 
     private void applyFilter() {
-        String q = normalize(search.getText());
-        filtered.setPredicate(t -> extraFilter.test(t) && (q.isEmpty() || normalize(searchableText(t)).contains(q)));
+        String q = Formatters.fold(search.getText());
+        filtered.setPredicate(t -> extraFilter.test(t) && (q.isEmpty() || Formatters.fold(searchableText(t)).contains(q)));
     }
 
-    /** Minúsculas sin tildes, para que "jardin" encuentre "Jardín". */
-    public static String normalize(String s) {
-        if (s == null) {
-            return "";
-        }
-        return Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("\\p{M}", "")
-                .toLowerCase(Locale.ROOT).trim();
-    }
 
     protected List<T> visibleItems() {
         return List.copyOf(table.getItems());
+    }
+
+    /**
+     * Regla de formulario para altas: avisa en línea si la clave ya existe en los datos
+     * cargados (la capa de aplicación sigue validándolo al guardar).
+     */
+    protected <K> Function<K, String> uniqueKey(boolean nuevo, Function<T, K> key, String singular) {
+        return v -> nuevo && master.stream().anyMatch(t -> v instanceof String s
+                ? s.trim().equalsIgnoreCase(String.valueOf(key.apply(t)))
+                : Objects.equals(key.apply(t), v))
+                ? "Ya existe " + singular + " con esa clave." : null;
     }
 
     protected List<T> allItems() {
@@ -487,7 +526,7 @@ public abstract class CrudModuleView<T> extends BaseView {
             return;
         }
         CsvExport.saveWithDialog(getScene() == null ? null : getScene().getWindow(),
-                CrudModuleView.normalize(plural).replace(' ', '-') + "-jardineria", csvHeader(), rows);
+                Formatters.fold(plural).replace(' ', '-') + "-jardineria", csvHeader(), rows);
     }
 
     // ------------------------------------------------------------- utilidades

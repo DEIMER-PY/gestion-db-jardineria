@@ -66,7 +66,6 @@ class DesktopSmokeTest {
                 mock(GamaProductoUseCase.class, Mockito.RETURNS_SMART_NULLS),
                 mock(OficinaUseCase.class, Mockito.RETURNS_SMART_NULLS),
                 mock(EmpleadoUseCase.class, Mockito.RETURNS_SMART_NULLS),
-                null, null,
                 new DesktopServices.ConnectionProbe() {
                     @Override
                     public boolean isAvailable() {
@@ -110,7 +109,7 @@ class DesktopSmokeTest {
                 assertThat(visibleErrorOverlays()).as("estado de error visible en %s (%s)", route, mode).isEmpty();
             }
             // Fuerza que la siguiente pasada vuelva a navegar al panel general.
-            WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(Route.PATRONES)).get();
+            WaitForAsyncUtils.asyncFx(() -> shell.getNavigator().navigate(Route.AJUSTES)).get();
         }
         assertThat(uncaught).as("excepciones no capturadas en el hilo de JavaFX").isEmpty();
     }

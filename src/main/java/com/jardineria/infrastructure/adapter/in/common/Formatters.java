@@ -1,6 +1,7 @@
 package com.jardineria.infrastructure.adapter.in.common;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -107,6 +108,18 @@ public final class Formatters {
             return "—";
         }
         return DISPLAY.getOrDefault(value.trim().toLowerCase(ES), value.trim());
+    }
+
+    /**
+     * Texto «plegado» para búsquedas: minúsculas, sin tildes ni diacríticos y sin espacios
+     * en los extremos, para que «jardin» encuentre «Jardín». Nunca devuelve {@code null}.
+     */
+    public static String fold(String value) {
+        if (value == null) {
+            return "";
+        }
+        return Normalizer.normalize(value, Normalizer.Form.NFD).replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT).trim();
     }
 
     /** Devuelve el texto o un guion largo si está vacío. */

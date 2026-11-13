@@ -54,6 +54,18 @@ public class Navigator {
         }
     }
 
+    /**
+     * Navega a {@code route} y le pide que muestre {@code query} (navegación contextual).
+     * También funciona si la ruta ya es la actual.
+     */
+    public void navigate(Route route, String query) {
+        navigate(route);
+        View view = currentView();
+        if (view != null && current.get() == route && query != null) {
+            view.reveal(query);
+        }
+    }
+
     private void navigate(Route route, boolean recordHistory) {
         if (route == null || route == current.get()) {
             return;
